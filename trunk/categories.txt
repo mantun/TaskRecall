@@ -1,0 +1,8 @@
+(none)
+(all)
+(reminders)
+Mine
+	Projects
+		Reminder
+			Features
+			Bugs
