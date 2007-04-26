@@ -1,0 +1,500 @@
+180
+
+009230E4
+TReminder
+"break"
+"(and (>= (time) 10:00) (<= (time) 17:30) (in (dow) 1 2 3 4 5))"
+"(hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)"
+""
+"26.04.2007 18:57:10"
+00000000
+
+00922074
+TTask
+1
+"Track time"
+"Task to be able to be added to 'active tasks' list. This list to be saved to file. One of these tasks is the 'current' or 'active' task. Time spent on the 'current' task to be tracked automatically. 'Time spent' should be added in the task properties (form, class, save/load).\r\n'Current' task to be selected using key win+number, double click.\r\nOn the tasks popup 'send to active tasks' option to be added.\r\nEditing and deleting the list to allow drag&drop of task, delete key."
+-2
+-1
+"Features"
+00000000
+0
+10
+""
+""
+
+0092536C
+TTask
+2
+"Task logging"
+"The user should be able to log various comments for each task. This must be very easy (especially for the active task). Log comments should have date and time. Should they have also file attachments?"
+-2
+-1
+"Features"
+00000000
+0
+0.999966664239764
+""
+""
+
+00925B58
+TTask
+3
+"Multiple categories for task"
+"A task should be able to have multiple categories. The Category property to be replaced by HasCategory, ?Add?Category and ?Delete?Category. The Task properties form to include list, instead of edit box. Should the list be editable?\r\nFull path instead of end node only to be available in the list?"
+-2
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+0092658C
+TTask
+4
+"Mute option"
+"A 'mute' mode to be available, to disallow popping of anything. A tray popup menu to be included? To be available by keystroke win+something?"
+-2
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00926BE0
+TTask
+5
+"Parser to allow time lists and range comparison"
+"In date/time (or both) expressions a new kind of list to be available - list of dates to popup and list of times to popup. TBD exactly.\r\nA 'between' function for range comparison to be added also.\r\n"
+-2
+-1
+"Features"
+00000000
+0
+0
+""
+"07.04.2007 14:29:13"
+
+0092765C
+TTask
+6
+"Quick new task"
+"Creation of quick new task to be allowed via the edit box. The task should have entered name and no category. Creation of anonimous task via keystroke win+something?\r\nCreated task to be added to 'active tasks' and made the 'current' task."
+-2
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00922138
+TTask
+7
+"Quick search"
+"Quick filtering of visible tasks to be allowed via the search edit box. The entered substring to be searched in name, description and ?log entries?"
+-1
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+009220D0
+TTask
+8
+"Sort reminders by their execution time"
+"This involves some method to determine when is the next execution.\r\nShow timeline for tasks? Calendar?"
+-5
+-1
+"Features"
+00000000
+0
+0
+""
+"05.04.2007 12:21:32"
+
+00926838
+TTask
+10
+"Reminder Time expression sometimes reverts to old value when apply is pressed"
+""
+-1
+-1
+"Bugs"
+00000000
+0
+0
+""
+""
+
+009226E4
+TTask
+11
+"Button 'properties' from PopUp for reminder without task displays empty form"
+""
+-1
+-1
+"Bugs"
+00000000
+0
+0
+""
+""
+
+009278B8
+TTask
+15
+"Make TimeSpent real, instead of integer"
+""
+0
+-1
+"Bugs"
+00000000
+0
+0
+""
+""
+
+00922930
+TTask
+16
+"Double click on active tasks shall not display task properties"
+""
+0
+-1
+"Bugs"
+00000000
+0
+0
+""
+""
+
+0092297C
+TTask
+17
+"Install WinKey hook to activate tasks and log"
+""
+-1
+-1
+"Features"
+00000000
+0
+0
+""
+""
+
+009227A0
+TTask
+18
+"Find a way to show/hide Active Tasks form"
+""
+-1
+-1
+"Features"
+00000000
+0
+0
+""
+""
+
+00922C4C
+TTask
+19
+"Allow subtasks?"
+""
+-3
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00922FE4
+TTask
+105
+"Allow task activation from PopUp form"
+""
+-1
+-1
+"Features"
+00000000
+0
+0
+""
+""
+
+009231EC
+TTask
+106
+"Enable Log Search and Save with visual clue"
+""
+-1
+-1
+"Features"
+00000000
+0
+0
+""
+""
+
+009253B8
+TTask
+109
+"Track task switches and time along with the total time spent"
+"more specifically, at be able to see how much time is spent each day"
+-1
+-1
+"Features"
+00000000
+0
+0
+""
+""
+
+009261C4
+TTask
+114
+"Remove/rename log file upon deletion of task"
+""
+-3
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00926668
+TTask
+117
+"Show task ID everywhere"
+""
+-1
+-1
+"Features"
+00000000
+0
+0
+""
+"06.04.2007 10:59:13"
+
+00926F44
+TTask
+118
+"Keyboard hook doesn't work"
+"i want also hotkey for log enrty of active task and for quick task and for unnamed quick task"
+-1
+-1
+"Bugs"
+00000000
+0
+0
+""
+""
+
+009270F4
+TTask
+122
+"Hierarchical Text"
+"Investigate the possibility to create a hierarchical text structure with decent search and side-by-side compare functions."
+-5
+0
+"Projects"
+00000000
+0
+0
+""
+""
+
+00925124
+TTask
+129
+"Display (and edit?) task switches"
+"Editing in task 144"
+-1
+-1
+"Reminder"
+00000000
+0
+0
+""
+""
+
+0093AC58
+TTask
+141
+"Show open-ended tasks"
+"Task with start date and no end date to be shown as gradient"
+-1
+-1
+"Features"
+00000000
+0
+0
+""
+"05.04.2007 12:19:47"
+
+0093AE48
+TTask
+142
+"Show hint for tasks on timeline"
+"When task is pointed on the timeline, a hint with whole task name (and possibly more) to be displayed"
+-1
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+0093B474
+TTask
+143
+"Allow vertical scrolling for timeline"
+"When tasks cannot fit in the visible height, a scrollbar should appear"
+-3
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+0093B7B8
+TTask
+144
+"Allow drag&drop editing of timeline"
+"Tasks should be moved and resized with mouse on the timeline.\r\nAbility to open task properties.\r\nAbility to merge task switches?\r\n"
+-1
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+009368B0
+TTask
+145
+"Ability to create timeline for a single task or a task category only"
+""
+-1
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+0093BF70
+TTask
+146
+"Show Log entries in the timeline"
+""
+-2
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00936C7C
+TTask
+147
+"Show Tasks in color in the lists?"
+""
+-3
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00936CC8
+TTask
+148
+"Show visually in the task properties whether a task has reminder"
+""
+-1
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00936FDC
+TTask
+149
+"Ability to work with keyboard only"
+""
+-3
+0
+"Features"
+00000000
+0
+0
+""
+""
+
+00937280
+TTask
+153
+"Update timeline with new task switches"
+"when active task is changed, the new active task is not loaded in the timeline\r\n"
+0
+-1
+"Bugs"
+00000000
+0
+0
+""
+"06.04.2007 10:58:02"
+
+0092C134
+TTask
+159
+"Update timeline when task changes its start time to/from empty"
+""
+0
+0
+"Bugs"
+00000000
+0
+0
+""
+""
+
+00937028
+TTask
+179
+"Shoosing 'Make Completed' on task swither, does not set end time"
+""
+0
+0
+"Bugs"
+00000000
+0
+0
+""
+""

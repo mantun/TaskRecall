@@ -1,0 +1,41 @@
+Meta:
+
+<:time>                                 - time/date/both expression
+<#int>                                  - integer expression
+<~bool>                                 - boolean expression
+<any>                                   - arbitrary expression
+= :                                     - returns time
+= #                                     - returns integer
+= ~                                     - returns boolean
+
+Grammar:
+
+(true) = ~                              - const true
+(false) = ~                             - const false
+
+(now) = :                               - current time and date
+(time) = :                              - current time
+(hour [<:time>]) = #                    - hour of given/current time
+(min [<:time>]) = #                     - minute of given/current time
+(sec [<:time>]) = #                     - minute of given/current time
+(hms <#hour> <#min> [<#sec>]) = :       - returns the specified time 
+
+(date) = :                              - current date
+(day [<:date>]) = #                     - day of given/current date
+(month [<:date>]) = #                   - month of given/current date
+(year [<:date>]) = #                    - year of given/current date
+(dow [<:date>]) = #                     - day of week of given/current date
+(doy [<:date>]) = #                     - day of year of given/current date
+(dmy <#day> <#month> [<#year>]) = :     - returns the specified date 
+
+(= <value1> [<value2> ...]) = ~         - returns true if all values are equal
+(in <value> [<value1> ...]) = ~         - returns true if 'value' is equal to one of the following values
+(between <value> <bound1> <bound2>) = ~ - returns true if value >= bound1 and value <= bound2
+(>= <value1> <value2>) = ~              - returns true if value1 >= value2
+(<= <value1> <value2>) = ~              - returns true if value1 <= value2
+
+(if <~cond> <value1> <value2>) = ?      - returns value1 if condition is true and value2 otherwise
+(and <~value1> [<~value2> ...]) = ~     - returns true if all values are true
+(or <~value1> [<~value2> ...]) = ~      - returns true if any value is true
+(not <~value>) = ~                      - returns true if value is false
+
