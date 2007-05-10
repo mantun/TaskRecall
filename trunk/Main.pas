@@ -151,7 +151,7 @@ uses Math, Parse, TaskProp, PopUp, ReminderProp, TaskSwitcher, Logging,
 
 const
   HK_ACTIVATE = 1;
-  CategoriesFileName = 'categories.txt';
+  CategoriesFileName = 'data\categories.txt';
 
   CategoryAll = '(all)';
   CategoryNone = '(none)';
