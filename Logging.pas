@@ -58,7 +58,7 @@ var
 
 function LogFileName(task : TTask) : String;
 begin
-  Result := 'task' + IntToStr(task.TaskID) + '.log';
+  Result := 'data\task' + IntToStr(task.TaskID) + '.log';
 end;
 
 class procedure TfrmLog.LogEntry(task : TTask);
