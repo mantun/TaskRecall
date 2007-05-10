@@ -1,15 +1,15 @@
 180
 
-009230E4
+00993088
 TReminder
 "break"
 "(and (>= (time) 10:00) (<= (time) 17:30) (in (dow) 1 2 3 4 5))"
 "(hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)"
 ""
-"26.04.2007 18:57:10"
+"10.05.2007 16:37:49"
 00000000
 
-00922074
+00992014
 TTask
 1
 "Track time"
@@ -23,7 +23,7 @@ TTask
 ""
 ""
 
-0092536C
+00995484
 TTask
 2
 "Task logging"
@@ -37,7 +37,7 @@ TTask
 ""
 ""
 
-00925B58
+00995C70
 TTask
 3
 "Multiple categories for task"
@@ -51,7 +51,7 @@ TTask
 ""
 ""
 
-0092658C
+009966A4
 TTask
 4
 "Mute option"
@@ -65,7 +65,7 @@ TTask
 ""
 ""
 
-00926BE0
+00996CF8
 TTask
 5
 "Parser to allow time lists and range comparison"
@@ -79,7 +79,7 @@ TTask
 ""
 "07.04.2007 14:29:13"
 
-0092765C
+00997774
 TTask
 6
 "Quick new task"
@@ -93,7 +93,7 @@ TTask
 ""
 ""
 
-00922138
+00997B94
 TTask
 7
 "Quick search"
@@ -107,7 +107,7 @@ TTask
 ""
 ""
 
-009220D0
+009920D8
 TTask
 8
 "Sort reminders by their execution time"
@@ -121,7 +121,7 @@ TTask
 ""
 "05.04.2007 12:21:32"
 
-00926838
+009921BC
 TTask
 10
 "Reminder Time expression sometimes reverts to old value when apply is pressed"
@@ -135,7 +135,7 @@ TTask
 ""
 ""
 
-009226E4
+00992070
 TTask
 11
 "Button 'properties' from PopUp for reminder without task displays empty form"
@@ -149,7 +149,7 @@ TTask
 ""
 ""
 
-009278B8
+009922E8
 TTask
 15
 "Make TimeSpent real, instead of integer"
@@ -163,7 +163,7 @@ TTask
 ""
 ""
 
-00922930
+00992144
 TTask
 16
 "Double click on active tasks shall not display task properties"
@@ -177,7 +177,7 @@ TTask
 ""
 ""
 
-0092297C
+009925D0
 TTask
 17
 "Install WinKey hook to activate tasks and log"
@@ -191,7 +191,7 @@ TTask
 ""
 ""
 
-009227A0
+00992684
 TTask
 18
 "Find a way to show/hide Active Tasks form"
@@ -205,7 +205,7 @@ TTask
 ""
 ""
 
-00922C4C
+00997F84
 TTask
 19
 "Allow subtasks?"
@@ -219,7 +219,7 @@ TTask
 ""
 ""
 
-00922FE4
+00992374
 TTask
 105
 "Allow task activation from PopUp form"
@@ -233,7 +233,7 @@ TTask
 ""
 ""
 
-009231EC
+009926D0
 TTask
 106
 "Enable Log Search and Save with visual clue"
@@ -247,7 +247,7 @@ TTask
 ""
 ""
 
-009253B8
+00996870
 TTask
 109
 "Track task switches and time along with the total time spent"
@@ -261,7 +261,7 @@ TTask
 ""
 ""
 
-009261C4
+009979AC
 TTask
 114
 "Remove/rename log file upon deletion of task"
@@ -275,7 +275,7 @@ TTask
 ""
 ""
 
-00926668
+00993D70
 TTask
 117
 "Show task ID everywhere"
@@ -289,7 +289,7 @@ TTask
 ""
 "06.04.2007 10:59:13"
 
-00926F44
+00993C9C
 TTask
 118
 "Keyboard hook doesn't work"
@@ -303,7 +303,7 @@ TTask
 ""
 ""
 
-009270F4
+00992BD0
 TTask
 122
 "Hierarchical Text"
@@ -317,7 +317,7 @@ TTask
 ""
 ""
 
-00925124
+00997D34
 TTask
 129
 "Display (and edit?) task switches"
@@ -331,7 +331,7 @@ TTask
 ""
 ""
 
-0093AC58
+00992FDC
 TTask
 141
 "Show open-ended tasks"
@@ -345,7 +345,7 @@ TTask
 ""
 "05.04.2007 12:19:47"
 
-0093AE48
+009965E0
 TTask
 142
 "Show hint for tasks on timeline"
@@ -359,7 +359,7 @@ TTask
 ""
 ""
 
-0093B474
+00997CC8
 TTask
 143
 "Allow vertical scrolling for timeline"
@@ -373,7 +373,7 @@ TTask
 ""
 ""
 
-0093B7B8
+009929C8
 TTask
 144
 "Allow drag&drop editing of timeline"
@@ -387,7 +387,7 @@ TTask
 ""
 ""
 
-009368B0
+00997AEC
 TTask
 145
 "Ability to create timeline for a single task or a task category only"
@@ -401,7 +401,7 @@ TTask
 ""
 ""
 
-0093BF70
+00996D44
 TTask
 146
 "Show Log entries in the timeline"
@@ -415,7 +415,7 @@ TTask
 ""
 ""
 
-00936C7C
+00996790
 TTask
 147
 "Show Tasks in color in the lists?"
@@ -429,7 +429,7 @@ TTask
 ""
 ""
 
-00936CC8
+00996E98
 TTask
 148
 "Show visually in the task properties whether a task has reminder"
@@ -443,7 +443,7 @@ TTask
 ""
 ""
 
-00936FDC
+00993170
 TTask
 149
 "Ability to work with keyboard only"
@@ -457,7 +457,7 @@ TTask
 ""
 ""
 
-00937280
+00995670
 TTask
 153
 "Update timeline with new task switches"
@@ -471,7 +471,7 @@ TTask
 ""
 "06.04.2007 10:58:02"
 
-0092C134
+00996BA4
 TTask
 159
 "Update timeline when task changes its start time to/from empty"
@@ -485,16 +485,17 @@ TTask
 ""
 ""
 
-00937028
+009964FC
 TTask
 179
 "Shoosing 'Make Completed' on task swither, does not set end time"
 ""
 0
-0
+-1
 "Bugs"
 00000000
 0
 0
-""
-""
+"10.05.2007 16:37:20"
+"10.05.2007 16:37:24"
+
