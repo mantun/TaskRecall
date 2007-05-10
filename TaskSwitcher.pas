@@ -75,7 +75,7 @@ uses TaskProp, Logging, Main;
 {$R *.dfm}
 
 const
-  TaskSwitchFileName = 'TaskSwitches.txt';
+  TaskSwitchFileName = 'data\TaskSwitches.txt';
   HK_SWITCH_TASK_BASE = 10;
   HK_LOG_ENTRY = 20;
 
@@ -326,9 +326,14 @@ begin
 end;
 
 procedure TfrmTaskSwitcher.acCompleteExecute(Sender: TObject);
+var t : TTask;
 begin
-  if ListView.Selected <> nil then
-    TTask(ListView.Selected.Data).Complete := True;
+  if ListView.Selected <> nil then begin
+    t := TTask(ListView.Selected.Data);
+    t.Complete := True;
+    if t.EndTime = 0 then
+      t.EndTime := Now;
+  end;
 end;
 
 procedure TfrmTaskSwitcher.acLogExecute(Sender: TObject);
