@@ -10,6 +10,10 @@ type
   private
     FOwner : TNamedObjectsStorage;
     FName : String;
+
+    FUpdating : Boolean;
+    FChanged : Boolean;
+
     procedure SetName(const value : String); virtual;
   protected
     procedure Changed;
@@ -17,6 +21,9 @@ type
     property Name : String read FName write SetName;
     function ToString : String; virtual; abstract;
     constructor Create(const AName : String);
+
+    procedure BeginUpdate;
+    procedure EndUpdate;
   end;
 
   TReminder = class;
@@ -209,7 +216,7 @@ type
   end;
 
 const
-  TasksFileName = 'tasks.txt';
+  TasksFileName = 'data\tasks.txt';
 var
   TaskStorage : TNamedObjectsStorage;
 
@@ -260,8 +267,25 @@ end;
 
 procedure TNamedObject.Changed;
 begin
-  if FOwner <> nil then
-    FOwner.NotifyChange(Self);
+  if FUpdating then
+    FChanged := True
+  else begin
+    if FOwner <> nil then
+      FOwner.NotifyChange(Self);
+    FChanged := False;
+  end;
+end;
+
+procedure TNamedObject.BeginUpdate;
+begin
+  FUpdating := True;
+end;
+
+procedure TNamedObject.EndUpdate;
+begin
+  FUpdating := False;
+  if FChanged then
+    Changed;
 end;
 
 { TTask }

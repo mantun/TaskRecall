@@ -169,45 +169,50 @@ var task : TTask;
 begin
   if FTask.Item = nil then Exit;
   task := TTask(FTask.Item);
-  if eTaskName.Modified then begin
-    task.Name := eTaskName.Text;
-    eTaskName.Modified := False;
-  end;
-  if eCategory.Modified then begin
-    task.Category := eCategory.Text;
-    eCategory.Modified := False;
-  end;
-  if sePriority.Modified then begin
-    task.Priority := sePriority.Value;
-    sePriority.Modified := False;
-  end;
-  if mDescription.Modified then begin
-    task.Description := mDescription.Lines.Text;
-    mDescription.Modified := False;
-  end;
-  if eTimeSpent.Modified then begin
-    task.TimeSpentAsString := eTimeSpent.Text;
-    eTaskName.Modified := False;
-  end;
-  if eStartTime.Modified then begin
-    if eStartTime.Text = '' then
-      task.StartTime := 0
-    else
-      task.StartTime := StrToDateTime(eStartTime.Text);
-    eStartTime.Modified := False;
-  end;
-  if eEndTime.Modified then begin
-    if eEndTime.Text = '' then
-      task.EndTime := 0
-    else
-      task.EndTime := StrToDateTime(eEndTime.Text);
-    eEndTime.Modified := False;
-  end;
-  if FCompleteModified then begin
-    if (task.EndTime = 0) and not task.Complete and cbComplete.Checked then
-      task.EndTime := Now;
-    task.Complete := cbComplete.Checked;
-    FCompleteModified := False;
+  task.BeginUpdate;
+  try
+    if eTaskName.Modified then begin
+      task.Name := eTaskName.Text;
+      eTaskName.Modified := False;
+    end;
+    if eCategory.Modified then begin
+      task.Category := eCategory.Text;
+      eCategory.Modified := False;
+    end;
+    if sePriority.Modified then begin
+      task.Priority := sePriority.Value;
+      sePriority.Modified := False;
+    end;
+    if mDescription.Modified then begin
+      task.Description := mDescription.Lines.Text;
+      mDescription.Modified := False;
+    end;
+    if eTimeSpent.Modified then begin
+      task.TimeSpentAsString := eTimeSpent.Text;
+      eTaskName.Modified := False;
+    end;
+    if eStartTime.Modified then begin
+      if eStartTime.Text = '' then
+        task.StartTime := 0
+      else
+        task.StartTime := StrToDateTime(eStartTime.Text);
+      eStartTime.Modified := False;
+    end;
+    if eEndTime.Modified then begin
+      if eEndTime.Text = '' then
+        task.EndTime := 0
+      else
+        task.EndTime := StrToDateTime(eEndTime.Text);
+      eEndTime.Modified := False;
+    end;
+    if FCompleteModified then begin
+      if (task.EndTime = 0) and not task.Complete and cbComplete.Checked then
+        task.EndTime := Now;
+      task.Complete := cbComplete.Checked;
+      FCompleteModified := False;
+    end;
+  finally
+    task.EndUpdate;
   end;
   btnApply.Enabled := False;
   btnReminder.Enabled := task.Name <> '';
