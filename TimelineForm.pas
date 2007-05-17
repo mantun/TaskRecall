@@ -50,7 +50,7 @@ uses Math;
 
 function TTaskSelection.Belongs(const obj : TNamedObject) : Boolean;
 begin
-  Result := obj is TTask;
+  Result := (obj is TTask) and (TTask(obj).StartTime <> 0);
 end;
 
 constructor TfrmTimeline.Create(AOwner : TComponent; ASelection : TObjectsSelection);

@@ -6,7 +6,7 @@ TReminder
 "(and (>= (time) 10:00) (<= (time) 17:30) (in (dow) 1 2 3 4 5))"
 "(hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)"
 ""
-"10.05.2007 16:37:49"
+"17.05.2007 14:08:25"
 00000000
 
 00992014
@@ -477,15 +477,15 @@ TTask
 "Update timeline when task changes its start time to/from empty"
 ""
 0
-0
+-1
 "Bugs"
 00000000
 0
 0
-""
-""
+"17.05.2007 14:00:00"
+"17.05.2007 14:07:59"
 
-009964FC
+00996C9C
 TTask
 179
 "Shoosing 'Make Completed' on task swither, does not set end time"
