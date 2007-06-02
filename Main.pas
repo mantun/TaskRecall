@@ -25,15 +25,14 @@ type
     property ShowIncomplete : Boolean read FIncomplete write SetIncomplete;
     function Belongs(const obj : TNamedObject) : Boolean; override;
   end;
+  TReminderSelection = class(TObjectsSelection)
+    function Belongs(const obj : TNamedObject) : Boolean; override;
+  end;
 
   TfrmMain = class(TForm)
     Timer: TTimer;
     ApplicationEvents: TApplicationEvents;
     XPManifest: TXPManifest;
-    Panel: TPanel;
-    ListView: TListView;
-    TreeView: TTreeView;
-    Splitter: TSplitter;
     ActionList: TActionList;
     acAddTask: TAction;
     acChangeTask: TAction;
@@ -44,13 +43,11 @@ type
     DeleteTask1: TMenuItem;
     acAddCategory: TAction;
     acDeleteCategory: TAction;
-    eQuickNewTask: TLabeledEdit;
     pmCategories: TPopupMenu;
     NewCategory1: TMenuItem;
     DeleteTask2: TMenuItem;
     acAddChildCategory: TAction;
     NewSubcategory1: TMenuItem;
-    eSearch: TLabeledEdit;
     acAddReminder: TAction;
     acChangeReminder: TAction;
     acRemoveReminder: TAction;
@@ -58,24 +55,24 @@ type
     NewReminder1: TMenuItem;
     ReminderDetails1: TMenuItem;
     DeleteReminder1: TMenuItem;
-    pmAll: TPopupMenu;
-    NewTask2: TMenuItem;
-    askDetails1: TMenuItem;
-    DeleteTask3: TMenuItem;
-    N1: TMenuItem;
-    NewReminder2: TMenuItem;
-    ReminderDetails2: TMenuItem;
-    DeleteReminder2: TMenuItem;
-    cbCompleteTasks: TCheckBox;
-    cbIncompleteTasks: TCheckBox;
     acAddToActiveTasks: TAction;
     AddToActiveTasks1: TMenuItem;
-    AddToActiveTasks2: TMenuItem;
     acLogEntry: TAction;
     askLog1: TMenuItem;
-    askLog2: TMenuItem;
-    SpeedButton: TSpeedButton;
     acShowTimeline: TAction;
+    PageControl: TPageControl;
+    tsTasks: TTabSheet;
+    tsReminders: TTabSheet;
+    tsActiveTasks: TTabSheet;
+    Panel1: TPanel;
+    eQuickNewTask: TLabeledEdit;
+    eSearch: TLabeledEdit;
+    cbCompleteTasks: TCheckBox;
+    cbIncompleteTasks: TCheckBox;
+    TreeView: TTreeView;
+    Splitter: TSplitter;
+    TasksListView: TListView;
+    RemindersListView: TListView;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -89,40 +86,49 @@ type
     procedure TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
-    procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
+    procedure TasksListViewSelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
+    procedure RemindersListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure acChangeTaskExecute(Sender: TObject);
     procedure acRemoveTaskExecute(Sender: TObject);
+    procedure acRemoveReminderExecute(Sender: TObject);
     procedure TreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure eQuickNewTaskKeyPress(Sender: TObject; var Key: Char);
-    procedure ListViewKeyDown(Sender: TObject; var Key: Word;
+    procedure TasksListViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure RemindersListViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure eSearchChange(Sender: TObject);
-    procedure ListViewDblClick(Sender: TObject);
-    procedure ListViewEdited(Sender: TObject; Item: TListItem;
+    procedure TasksListViewDblClick(Sender: TObject);
+    procedure RemindersListViewDblClick(Sender: TObject);
+    procedure TasksListViewEdited(Sender: TObject; Item: TListItem;
       var S: String);
-    procedure ListViewCustomDrawItem(Sender: TCustomListView;
+    procedure RemindersListViewEdited(Sender: TObject; Item: TListItem;
+      var S: String);
+    procedure TasksListViewCustomDrawItem(Sender: TCustomListView;
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure acAddReminderExecute(Sender: TObject);
     procedure acChangeReminderExecute(Sender: TObject);
     procedure pmCategoriesPopup(Sender: TObject);
     procedure cbCompleteTasksClick(Sender: TObject);
     procedure cbIncompleteTasksClick(Sender: TObject);
-    procedure ListViewData(Sender: TObject; Item: TListItem);
+    procedure TasksListViewData(Sender: TObject; Item: TListItem);
+    procedure RemindersListViewData(Sender: TObject; Item: TListItem);
     procedure TreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: String);
     procedure TreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
     procedure acAddToActiveTasksExecute(Sender: TObject);
     procedure acLogEntryExecute(Sender: TObject);
-    procedure SpeedButtonClick(Sender: TObject);
     procedure acShowTimelineExecute(Sender: TObject);
   private
     TrayIconData : TNotifyIconData;
 
-    Selection : TCategorySelection;
+    TaskSelection : TCategorySelection;
+    ReminderSelection : TReminderSelection;
 
     procedure LoadCategories;
     procedure AddCategory(const CatName : String);
@@ -131,9 +137,12 @@ type
     procedure TrayMessage(var Msg : TMessage); message WM_TRAYICON;
     procedure KeyHookHandler(var msg : TMessage); message WM_HOTKEY;
 
-    procedure OnItemAdd(Sender : TObject; obj : TNamedObject);
-    procedure OnItemDelete(Sender : TObject; obj : TNamedObject);
-    procedure OnItemChange(Sender : TObject; obj : TNamedObject);
+    procedure OnTaskAdd(Sender : TObject; obj : TNamedObject);
+    procedure OnTaskDelete(Sender : TObject; obj : TNamedObject);
+    procedure OnTaskChange(Sender : TObject; obj : TNamedObject);
+    procedure OnReminderAdd(Sender : TObject; obj : TNamedObject);
+    procedure OnReminderDelete(Sender : TObject; obj : TNamedObject);
+    procedure OnReminderChange(Sender : TObject; obj : TNamedObject);
 
     procedure SaveCategories;
 
@@ -155,11 +164,10 @@ const
 
   CategoryAll = '(all)';
   CategoryNone = '(none)';
-  CategoryReminders = '(reminders)';
 
 function TCategorySelection.Belongs(const obj : TNamedObject) : Boolean;
 begin
-  Result := (obj is TReminder) or (TTask(obj).Complete and FComplete or not TTask(obj).Complete and FIncomplete);
+  Result := (obj is TTask) and (TTask(obj).Complete and FComplete or not TTask(obj).Complete and FIncomplete);
   Result := Result and frmMain.MatchCategory(FNode, obj);
 end;
 
@@ -185,6 +193,11 @@ begin
     FIncomplete := value;
     ReSelectAll;
   end;
+end;
+
+function TReminderSelection.Belongs(const obj : TNamedObject) : Boolean;
+begin
+  Result := (obj is TReminder) and (TReminder(obj).Task = nil);
 end;
 
 function CompareItems(Item1, Item2: Pointer) : Integer;
@@ -226,35 +239,53 @@ begin
     Result := 0;
 end;
 
-procedure TfrmMain.OnItemAdd(Sender : TObject; obj : TNamedObject);
+procedure TfrmMain.OnTaskAdd(Sender : TObject; obj : TNamedObject);
 begin
-  ListView.Items.Count := Selection.Count;
-  ListView.Invalidate;
+  TasksListView.Items.Count := TaskSelection.Count;
+  TasksListView.Invalidate;
 end;
 
-procedure TfrmMain.OnItemDelete(Sender : TObject; obj : TNamedObject);
+procedure TfrmMain.OnTaskDelete(Sender : TObject; obj : TNamedObject);
 begin
-  ListView.Items.Count := Selection.Count - 1;
-  ListView.Invalidate;
-  acChangeTask.Enabled := Selection.Count > 1;
-  acLogEntry.Enabled := Selection.Count > 1;
-  acAddToActiveTasks.Enabled := Selection.Count > 1;
-  acRemoveTask.Enabled := Selection.Count > 1;
+  TasksListView.Items.Count := TaskSelection.Count - 1;
+  TasksListView.Invalidate;
+  acChangeTask.Enabled := TaskSelection.Count > 1;
+  acLogEntry.Enabled := TaskSelection.Count > 1;
+  acAddToActiveTasks.Enabled := TaskSelection.Count > 1;
+  acRemoveTask.Enabled := TaskSelection.Count > 1;
 end;
 
-procedure TfrmMain.OnItemChange(Sender : TObject; obj : TNamedObject);
+procedure TfrmMain.OnTaskChange(Sender : TObject; obj : TNamedObject);
 begin
-  ListView.Invalidate;
+  TasksListView.Invalidate;
+end;
+
+procedure TfrmMain.OnReminderAdd(Sender : TObject; obj : TNamedObject);
+begin
+  RemindersListView.Items.Count := ReminderSelection.Count;
+  RemindersListView.Invalidate;
+end;
+
+procedure TfrmMain.OnReminderDelete(Sender : TObject; obj : TNamedObject);
+begin
+  RemindersListView.Items.Count := ReminderSelection.Count - 1;
+  RemindersListView.Invalidate;
+  acChangeReminder.Enabled := ReminderSelection.Count > 1;
+  acRemoveReminder.Enabled := ReminderSelection.Count > 1;
+end;
+
+procedure TfrmMain.OnReminderChange(Sender : TObject; obj : TNamedObject);
+begin
+  RemindersListView.Invalidate;
 end;
 
 function TfrmMain.MatchCategory(const node : TTreeNode; const obj : TNamedObject) : Boolean;
 var i : Integer;
 begin
   Result := node = nil;
-  Result := Result or ((obj is TTask) and (node.Text = CategoryAll));
-  Result := Result or ((obj is TTask) and (TTask(obj).Category = node.Text));
-  Result := Result or ((node.Text = CategoryNone) and (obj is TTask) and (TTask(obj).Category = ''));
-  Result := Result or ((obj is TReminder) and (TReminder(obj).Task = nil) and (node.Text = CategoryReminders));
+  Result := Result or (node.Text = CategoryAll);
+  Result := Result or (TTask(obj).Category = node.Text);
+  Result := Result or (node.Text = CategoryNone) and (TTask(obj).Category = '');
   if not Result then
     for i := 0 to TreeView.Items.Count - 1 do
       if TreeView.Items[i].Parent = node then begin
@@ -263,19 +294,20 @@ begin
       end;
 end;
 
-procedure TfrmMain.SaveCategories;
-begin
-  TreeView.SaveToFile(CategoriesFileName);
-end;
-
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-  Selection := TCategorySelection.Create(TaskStorage);
-  Selection.OnAdd := OnItemAdd;
-  Selection.OnItemChange := OnItemChange;
-  Selection.OnDelete := OnItemDelete;
-  Selection.PermanentSortComparator := CompareItems;
-  Selection.ShowIncomplete := True;
+  ReminderSelection := TReminderSelection.Create(TaskStorage);
+  ReminderSelection.OnAdd := OnReminderAdd;
+  ReminderSelection.OnItemChange := OnReminderChange;
+  ReminderSelection.OnDelete := OnReminderDelete;
+  ReminderSelection.PermanentSortComparator := CompareItems;
+  ReminderSelection.ReSelectAll;
+  TaskSelection := TCategorySelection.Create(TaskStorage);
+  TaskSelection.OnAdd := OnTaskAdd;
+  TaskSelection.OnItemChange := OnTaskChange;
+  TaskSelection.OnDelete := OnTaskDelete;
+  TaskSelection.PermanentSortComparator := CompareItems;
+  TaskSelection.ShowIncomplete := True;
   LoadCategories;
   TreeView.Selected := TreeView.Items[0];
 
@@ -292,6 +324,16 @@ begin
   RegisterHotKey(Handle, HK_ACTIVATE, MOD_WIN, ord('A'));
 end;
 
+procedure TfrmMain.FormDestroy(Sender: TObject);
+begin
+  TaskSelection.Free;
+  TaskSelection := nil;
+  ReminderSelection.Free;
+  ReminderSelection := nil;
+  Shell_NotifyIcon(NIM_DELETE, @TrayIconData);
+  UnregisterHotKey(Handle, HK_ACTIVATE);
+end;
+
 procedure TfrmMain.LoadCategories;
 var i : Integer;
 begin
@@ -299,7 +341,6 @@ begin
     TreeView.LoadFromFile(CategoriesFileName);
   AddCategory(CategoryNone);
   AddCategory(CategoryAll);
-  AddCategory(CategoryReminders);
   for i := 0 to TaskStorage.Count - 1 do
     if (TaskStorage[i] is TTask) and (TTask(TaskStorage[i]).Category <> '') then
       AddCategory(TTask(TaskStorage[i]).Category);
@@ -314,12 +355,14 @@ begin
   TreeView.Items.Add(nil, CatName);
 end;
 
-procedure TfrmMain.FormDestroy(Sender: TObject);
+procedure TfrmMain.SaveCategories;
 begin
-  Selection.Free;
-  Selection := nil;
-  Shell_NotifyIcon(NIM_DELETE, @TrayIconData);
-  UnregisterHotKey(Handle, HK_ACTIVATE);
+  TreeView.SaveToFile(CategoriesFileName);
+end;
+
+procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := MessageDlg('Exit?', mtConfirmation, [mbYes, mbNo], 0) = mrYes;
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -367,11 +410,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
-  CanClose := MessageDlg('Exit?', mtConfirmation, [mbYes, mbNo], 0) = mrYes;
-end;
-
 procedure TfrmMain.acAddTaskExecute(Sender: TObject);
 var
   t : TTask;
@@ -386,7 +424,7 @@ begin
   frmTaskProperties.Hide;
   frmTaskProperties.Position := poOwnerFormCenter;
   if frmTaskProperties.ShowModal = mrOK then begin
-    Selection.Add(t);
+    TaskSelection.Add(t);
   end else
     t.Free;
   if vis then
@@ -405,10 +443,47 @@ end;
 procedure TfrmMain.acRemoveTaskExecute(Sender: TObject);
 var t : TNamedObject;
 begin
-  if ListView.Selected <> nil then begin
-    t := TNamedObject(ListView.Selected.Data);
+  if TasksListView.Selected <> nil then begin
+    t := TNamedObject(TasksListView.Selected.Data);
     if MessageDlg('Delete "' + t.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      Selection.Delete(t);
+      TaskSelection.Delete(t);
+  end;
+end;
+
+procedure TfrmMain.acAddReminderExecute(Sender: TObject);
+var
+  r : TReminder;
+  vis : Boolean;
+begin
+  r := TReminder.Create;
+  frmReminderProperties.Reminder := r;
+  vis := frmTaskProperties.Visible;
+  frmReminderProperties.Hide;
+  frmReminderProperties.Position := poOwnerFormCenter;
+  if frmReminderProperties.ShowModal = mrOK then begin
+    TaskSelection.Add(r);
+  end else
+    r.Free;
+  if vis then
+    acChangeReminder.Execute;
+end;
+
+procedure TfrmMain.acChangeReminderExecute(Sender: TObject);
+begin
+  if not frmReminderProperties.Visible then begin
+    frmReminderProperties.Left := Left + Width;
+    frmReminderProperties.Top := Top + frmTaskProperties.Height;
+  end;
+  frmReminderProperties.Show;
+end;
+
+procedure TfrmMain.acRemoveReminderExecute(Sender: TObject);
+var t : TNamedObject;
+begin
+  if RemindersListView.Selected <> nil then begin
+    t := TNamedObject(RemindersListView.Selected.Data);
+    if MessageDlg('Delete "' + t.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      TaskSelection.Delete(t);
   end;
 end;
 
@@ -440,7 +515,6 @@ begin
   if (TreeView.Selected <> nil)
         and (TreeView.Selected.Text <> CategoryNone)
         and (TreeView.Selected.Text <> CategoryAll)
-        and (TreeView.Selected.Text <> CategoryReminders)
         and (MessageDlg('Delete category "' + TreeView.Selected.Text + '"?',
                 mtConfirmation, [mbYes, mbNo], 0) = mrYes) then begin
     for i := 0 to TaskStorage.Count - 1 do
@@ -460,15 +534,14 @@ begin
     if (TaskStorage[i] is TTask) and (TTask(TaskStorage[i]).Category = Node.Text) then 
       TTask(TaskStorage[i]).Category := s;
   Node.Text := s;
-  Selection.ReSelectAll;
+  TaskSelection.ReSelectAll;
 end;
 
 procedure TfrmMain.TreeViewEditing(Sender: TObject; Node: TTreeNode;
   var AllowEdit: Boolean);
 begin
   AllowEdit := (Node.Text <> CategoryAll)
-           and (Node.Text <> CategoryNone)
-           and (Node.Text <> CategoryReminders);
+           and (Node.Text <> CategoryNone);
 end;
 
 procedure TfrmMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -493,15 +566,15 @@ begin
       TreeView.Selected.MoveTo(AnItem, AttachMode);
       SaveCategories;
     end;
-  end else if Source = ListView then begin
-    if (ListView.Selected = nil) or not (TNamedObject(ListView.Selected.Data) is TTask) then Exit;
+  end else if Source = TasksListView then begin
+    if (TasksListView.Selected = nil) or not (TNamedObject(TasksListView.Selected.Data) is TTask) then Exit;
     AnItem := TreeView.GetNodeAt(X, Y);
     if AnItem = nil then Exit;
-    if (AnItem.Text = CategoryAll) or (AnItem.Text = CategoryReminders) then Exit;
+    if AnItem.Text = CategoryAll then Exit;
     if AnItem.Text = CategoryNone then
-      TTask(ListView.Selected.Data).Category := ''
+      TTask(TasksListView.Selected.Data).Category := ''
     else
-      TTask(ListView.Selected.Data).Category := AnItem.Text;
+      TTask(TasksListView.Selected.Data).Category := AnItem.Text;
   end;
 end;
 
@@ -511,41 +584,37 @@ var target : TTreeNode;
 begin
   target := TreeView.GetNodeAt(X, Y);
   Accept := (Source = TreeView)
-         or (Source = ListView)
+         or (Source = TasksListView)
              and (target <> nil)
-             and (target.Text <> CategoryReminders)
              and (target.Text <> CategoryAll)
-             and (ListView.Selected <> nil)
-             and (TNamedObject(ListView.Selected.Data) is TTask);
+             and (TasksListView.Selected <> nil);
 end;
 
-procedure TfrmMain.ListViewSelectItem(Sender: TObject; Item: TListItem;
+procedure TfrmMain.TasksListViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
-  if (ListView.Selected <> nil) and (frmTaskProperties <> nil) and (frmReminderProperties <> nil) then
-    if TNamedObject(ListView.Selected.Data) is TTask then
-      frmTaskProperties.Task := TTask(ListView.Selected.Data)
-    else
-      frmReminderProperties.Reminder := TReminder(ListView.Selected.Data);
+  if (TasksListView.Selected <> nil) and (frmTaskProperties <> nil) then
+    frmTaskProperties.Task := TTask(TasksListView.Selected.Data);
 
-  acChangeReminder.Enabled := (ListView.Selected <> nil) and (TNamedObject(ListView.Selected.Data) is TReminder);
-  acRemoveReminder.Enabled := acChangeReminder.Enabled;
-  acChangeTask.Enabled := (ListView.Selected <> nil) and (TNamedObject(ListView.Selected.Data) is TTask);
+  acChangeTask.Enabled := TasksListView.Selected <> nil;
   acRemoveTask.Enabled := acChangeTask.Enabled;
-  acAddToActiveTasks.Enabled := acChangeTask.Enabled and not TTask(ListView.Selected.Data).Complete;
+  acAddToActiveTasks.Enabled := acChangeTask.Enabled and not TTask(TasksListView.Selected.Data).Complete;
   acLogEntry.Enabled := acChangeTask.Enabled;
+end;
+
+procedure TfrmMain.RemindersListViewSelectItem(Sender: TObject; Item: TListItem;
+  Selected: Boolean);
+begin
+  if (TasksListView.Selected <> nil) and (frmReminderProperties <> nil) then
+    frmReminderProperties.Reminder := TReminder(RemindersListView.Selected.Data);
+
+  acChangeReminder.Enabled := RemindersListView.Selected <> nil;
+  acRemoveReminder.Enabled := acChangeReminder.Enabled;
 end;
 
 procedure TfrmMain.TreeViewChange(Sender: TObject; Node: TTreeNode);
 begin
-  Selection.Category := Node;
-  if TreeView.Selected <> nil then
-    if TreeView.Selected.Text = CategoryAll then
-      ListView.PopupMenu := pmAll
-    else if TreeView.Selected.Text = CategoryReminders then
-      ListView.PopupMenu := pmReminders
-    else
-      ListView.PopupMenu := pmTasks;
+  TaskSelection.Category := Node;
 end;
 
 procedure TfrmMain.eQuickNewTaskKeyPress(Sender: TObject; var Key: Char);
@@ -554,19 +623,28 @@ begin
   if (Key = #13) and (eQuickNewTask.Text <> '') then begin
     t := TTask.Create;
     t.Name := eQuickNewTask.Text;
-    t.Category := Selection.Category.Text;
-    Selection.Add(t);
+    t.Category := TaskSelection.Category.Text;
+    TaskSelection.Add(t);
     eQuickNewTask.Text := '';
   end;
 end;
 
-procedure TfrmMain.ListViewKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmMain.TasksListViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_DELETE) and not ListView.IsEditing then
+  if (Key = VK_DELETE) and not TasksListView.IsEditing then
     acRemoveTask.Execute
-  else if (Key = VK_F2) and (ListView.Selected <> nil) then
-    ListView.Selected.EditCaption;
+  else if (Key = VK_F2) and (TasksListView.Selected <> nil) then
+    TasksListView.Selected.EditCaption;
+end;
+
+procedure TfrmMain.RemindersListViewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) and not RemindersListView.IsEditing then
+    acRemoveReminder.Execute
+  else if (Key = VK_F2) and (RemindersListView.Selected <> nil) then
+    RemindersListView.Selected.EditCaption;
 end;
 
 procedure TfrmMain.TreeViewKeyDown(Sender: TObject; var Key: Word;
@@ -583,74 +661,54 @@ begin
   ShowMessage('ne baca');
 end;
 
-procedure TfrmMain.ListViewDblClick(Sender: TObject);
+procedure TfrmMain.TasksListViewDblClick(Sender: TObject);
 begin
-  if ListView.Selected <> nil then begin
-    if TNamedObject(ListView.Selected.Data) is TTask then
-      acChangeTask.Execute
-    else
-      acChangeReminder.Execute
-  end else
+  if TasksListView.Selected <> nil then
+    acChangeTask.Execute
+  else
     if TreeView.Selected <> nil then
-      if TreeView.Selected.Text = CategoryReminders then
-        acAddReminder.Execute
-      else
-        acAddTask.Execute;
+      acAddTask.Execute;
 end;
 
-procedure TfrmMain.ListViewEdited(Sender: TObject; Item: TListItem;
+procedure TfrmMain.RemindersListViewDblClick(Sender: TObject);
+begin
+  if RemindersListView.Selected <> nil then
+    acChangeReminder.Execute
+  else
+    acAddReminder.Execute;
+end;
+
+procedure TfrmMain.TasksListViewEdited(Sender: TObject; Item: TListItem;
   var S: String);
 begin
   TNamedObject(Item.Data).Name := S;
 end;
 
-procedure TfrmMain.ListViewCustomDrawItem(Sender: TCustomListView;
+procedure TfrmMain.RemindersListViewEdited(Sender: TObject; Item: TListItem;
+  var S: String);
+begin
+  TNamedObject(Item.Data).Name := S;
+end;
+
+procedure TfrmMain.TasksListViewCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 var p, sh : Integer;
 begin
-  if TNamedObject(Item.Data) is TTask then
-    if TTask(Item.Data).Complete then begin
-      Sender.Canvas.Font.Color := $808080;
-      Sender.Canvas.Font.Style := Sender.Canvas.Font.Style + [fsStrikeOut];
+  if TTask(Item.Data).Complete then begin
+    Sender.Canvas.Font.Color := $808080;
+    Sender.Canvas.Font.Style := Sender.Canvas.Font.Style + [fsStrikeOut];
+  end else begin
+    p := TTask(Item.Data).Priority;
+    if p > 10 then p := 10;
+    if p < -10 then p := -10;
+    if p >= 0 then begin
+      sh := $FF - $FF * p div 10;
+      Sender.Canvas.Brush.Color := RGB($FF, sh, sh);
     end else begin
-      p := TTask(Item.Data).Priority;
-      if p > 10 then p := 10;
-      if p < -10 then p := -10;
-      if p >= 0 then begin
-        sh := $FF - $FF * p div 10;
-        Sender.Canvas.Brush.Color := RGB($FF, sh, sh);
-      end else begin
-        sh := $FF * -p div 10;
-        Sender.Canvas.Font.Color := RGB(0, 0, sh)
-      end;
+      sh := $FF * -p div 10;
+      Sender.Canvas.Font.Color := RGB(0, 0, sh)
     end;
-end;
-
-procedure TfrmMain.acAddReminderExecute(Sender: TObject);
-var
-  r : TReminder;
-  vis : Boolean;
-begin
-  r := TReminder.Create;
-  frmReminderProperties.Reminder := r;
-  vis := frmTaskProperties.Visible;
-  frmReminderProperties.Hide;
-  frmReminderProperties.Position := poOwnerFormCenter;
-  if frmReminderProperties.ShowModal = mrOK then begin
-    Selection.Add(r);
-  end else
-    r.Free;
-  if vis then
-    acChangeReminder.Execute;
-end;
-
-procedure TfrmMain.acChangeReminderExecute(Sender: TObject);
-begin
-  if not frmReminderProperties.Visible then begin
-    frmReminderProperties.Left := Left + Width;
-    frmReminderProperties.Top := Top + frmTaskProperties.Height;
   end;
-  frmReminderProperties.Show;
 end;
 
 procedure TfrmMain.pmCategoriesPopup(Sender: TObject);
@@ -659,28 +717,35 @@ begin
   acAddChildCategory.Enabled := TreeView.Selected <> nil;
   acDeleteCategory.Enabled := (TreeView.Selected <> nil)
           and (TreeView.Selected.Text <> CategoryNone)
-          and (TreeView.Selected.Text <> CategoryAll)
-          and (TreeView.Selected.Text <> CategoryReminders);
+          and (TreeView.Selected.Text <> CategoryAll);
 end;
 
 procedure TfrmMain.cbCompleteTasksClick(Sender: TObject);
 begin
   if not cbCompleteTasks.Checked and not cbIncompleteTasks.Checked then
     cbIncompleteTasks.Checked := True;
-  Selection.ShowComplete := cbCompleteTasks.Checked;
+  TaskSelection.ShowComplete := cbCompleteTasks.Checked;
 end;
 
 procedure TfrmMain.cbIncompleteTasksClick(Sender: TObject);
 begin
   if not cbCompleteTasks.Checked and not cbIncompleteTasks.Checked then
     cbCompleteTasks.Checked := True;
-  Selection.ShowIncomplete := cbIncompleteTasks.Checked;
+  TaskSelection.ShowIncomplete := cbIncompleteTasks.Checked;
 end;
 
-procedure TfrmMain.ListViewData(Sender: TObject; Item: TListItem);
+procedure TfrmMain.TasksListViewData(Sender: TObject; Item: TListItem);
 Var o : TNamedObject;
 begin
-  o := Selection.Items[Item.Index];
+  o := TaskSelection.Items[Item.Index];
+  Item.Caption := o.Name;
+  Item.Data := o;
+end;
+
+procedure TfrmMain.RemindersListViewData(Sender: TObject; Item: TListItem);
+Var o : TNamedObject;
+begin
+  o := ReminderSelection.Items[Item.Index];
   Item.Caption := o.Name;
   Item.Data := o;
 end;
@@ -688,8 +753,8 @@ end;
 procedure TfrmMain.acAddToActiveTasksExecute(Sender: TObject);
 var task : TTask;
 begin
-  if (ListView.Selected <> nil) and (TNamedObject(ListView.Selected.Data) is TTask) then begin
-    task := TTask(ListView.Selected.Data);
+  if TasksListView.Selected <> nil then begin
+    task := TTask(TasksListView.Selected.Data);
     frmTaskSwitcher.AddTask(task);
   end;
 end;
@@ -697,19 +762,10 @@ end;
 procedure TfrmMain.acLogEntryExecute(Sender: TObject);
 var task : TTask;
 begin
-  if (ListView.Selected <> nil) and (TNamedObject(ListView.Selected.Data) is TTask) then begin
-    task := TTask(ListView.Selected.Data);
+  if TasksListView.Selected <> nil then begin
+    task := TTask(TasksListView.Selected.Data);
     TfrmLog.LogEntry(task);
   end;
-end;
-
-procedure TfrmMain.SpeedButtonClick(Sender: TObject);
-begin
-  if not frmTaskSwitcher.Visible then begin
-    frmTaskSwitcher.Left := Left;
-    frmTaskSwitcher.Top := Top + Height;
-  end;
-  frmTaskSwitcher.Show;
 end;
 
 procedure TfrmMain.acShowTimelineExecute(Sender: TObject);

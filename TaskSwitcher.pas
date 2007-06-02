@@ -25,9 +25,6 @@ type
     DeactivateandComplete1: TMenuItem;
     acLog: TAction;
     LogEntry1: TMenuItem;
-    procedure FormDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-    procedure FormDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure ListViewCustomDrawItem(Sender: TCustomListView;
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure ListViewDblClick(Sender: TObject);
@@ -165,29 +162,6 @@ begin
   UnregisterHotKey(Handle, HK_SWITCH_TASK_BASE + 9);
 
   UnregisterHotKey(Handle, HK_LOG_ENTRY);
-end;
-
-procedure TfrmTaskSwitcher.FormDragOver(Sender, Source: TObject; X, Y: Integer;
-  State: TDragState; var Accept: Boolean);
-begin
-  Accept :=  (Source = frmMain.ListView)
-         and (frmMain.ListView.Selected <> nil)
-         and (TNamedObject(frmMain.ListView.Selected.Data) is TTask)
-         and not TTask(frmMain.ListView.Selected.Data).Complete;
-end;
-
-procedure TfrmTaskSwitcher.FormDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
-var
-  t : TTask;
-begin
-  if (Source = frmMain.ListView)
-         and (frmMain.ListView.Selected <> nil)
-         and (TNamedObject(frmMain.ListView.Selected.Data) is TTask) then begin
-    t := TTask(frmMain.ListView.Selected.Data);
-    if t.Complete then Exit;
-    AddTask(t);
-  end;
 end;
 
 procedure TfrmTaskSwitcher.ListViewCustomDrawItem(Sender: TCustomListView;

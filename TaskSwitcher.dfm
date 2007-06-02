@@ -14,8 +14,6 @@ object frmTaskSwitcher: TfrmTaskSwitcher
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnDragDrop = FormDragDrop
-  OnDragOver = FormDragOver
   PixelsPerInch = 96
   TextHeight = 13
   object ListView: TListView
@@ -50,8 +48,6 @@ object frmTaskSwitcher: TfrmTaskSwitcher
     OnCustomDrawItem = ListViewCustomDrawItem
     OnData = ListViewData
     OnDblClick = ListViewDblClick
-    OnDragDrop = FormDragDrop
-    OnDragOver = FormDragOver
     OnKeyDown = ListViewKeyDown
     OnSelectItem = ListViewSelectItem
   end
