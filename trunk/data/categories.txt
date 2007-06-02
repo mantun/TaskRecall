@@ -1,6 +1,5 @@
 (none)
 (all)
-(reminders)
 Mine
 	Projects
 		Reminder
