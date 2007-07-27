@@ -1,44 +1,42 @@
-unit TaskSwitcher;
+unit TaskSwitchFrame;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Buttons, Grids, ComCtrls, Tasks, ExtCtrls, ActnList, Menus, TaskSwitch;
+  Dialogs, ActnList, Menus, ExtCtrls, ComCtrls, Tasks, TaskSwitch;
 
 type
   TActiveTasksSelection = class(TObjectsSelection)
     function Belongs(const obj : TNamedObject) : Boolean; override;
   end;
-  TfrmTaskSwitcher = class(TForm)
+  TfrmTaskSwitch = class(TFrame)
     ListView: TListView;
     Timer: TTimer;
     PopupMenu: TPopupMenu;
+    Activate1: TMenuItem;
+    Deactivate1: TMenuItem;
+    askProperties1: TMenuItem;
+    DeactivateandComplete1: TMenuItem;
+    LogEntry1: TMenuItem;
     ActionList: TActionList;
     acActivate: TAction;
     acDeactivate: TAction;
     acProperties: TAction;
-    Activate1: TMenuItem;
-    Deactivate1: TMenuItem;
-    askProperties1: TMenuItem;
     acComplete: TAction;
-    DeactivateandComplete1: TMenuItem;
     acLog: TAction;
-    LogEntry1: TMenuItem;
+    procedure TimerTimer(Sender: TObject);
     procedure ListViewCustomDrawItem(Sender: TCustomListView;
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure ListViewDblClick(Sender: TObject);
-    procedure TimerTimer(Sender: TObject);
     procedure ListViewData(Sender: TObject; Item: TListItem);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure ListViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
     procedure acActivateExecute(Sender: TObject);
     procedure acDeactivateExecute(Sender: TObject);
     procedure acPropertiesExecute(Sender: TObject);
-    procedure ListViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
     procedure acCompleteExecute(Sender: TObject);
     procedure acLogExecute(Sender: TObject);
   private
@@ -54,20 +52,20 @@ type
 
     procedure ShowTaskProperties(const task : TTask);
 
-    procedure RegisterHotKeys;
-    procedure UnregisterHotKeys;
     procedure KeyHookHandler(var msg : TMessage); message WM_HOTKEY;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     property TaskSwitches : TTaskSwitches read FTaskSwitches;
     procedure AddTask(t : TTask);
+    procedure RegisterHotKeys;
+    procedure UnregisterHotKeys;
   end;
-
-var
-  frmTaskSwitcher: TfrmTaskSwitcher;
 
 implementation
 
-uses TaskProp, Logging, Main;
+uses TaskProp, Main, Logging;
 
 {$R *.dfm}
 
@@ -95,7 +93,7 @@ begin
     Result := 0;
 end;
 
-procedure TfrmTaskSwitcher.AddTask(t : TTask);
+procedure TfrmTaskSwitch.AddTask(t : TTask);
 var i, no : Integer;
 begin
   if t.ActiveNo = 0 then begin
@@ -113,7 +111,37 @@ begin
   ListView.Invalidate;
 end;
 
-procedure TfrmTaskSwitcher.KeyHookHandler(var msg : TMessage);
+procedure TfrmTaskSwitch.ShowTaskProperties(const task : TTask);
+begin
+  frmTaskProperties.Task := task;
+  if not frmTaskProperties.Visible then begin
+    frmTaskProperties.Left := frmMain.Left + frmMain.Width;
+    frmTaskProperties.Top := frmMain.Top;
+  end;
+  frmTaskProperties.Show;
+end;
+
+procedure TfrmTaskSwitch.OnItemAdd(Sender : TObject; obj : TNamedObject);
+begin
+  ListView.Items.Count := FActiveTasks.Count;
+  FActiveTask := TTask(obj).ActiveNo;
+  ListView.Invalidate;
+end;
+
+procedure TfrmTaskSwitch.OnItemDelete(Sender : TObject; obj : TNamedObject);
+begin
+  ListView.Items.Count := FActiveTasks.Count - 1;
+  if TTask(obj).ActiveNo = FActiveTask then
+    FActiveTask := 0;
+  ListView.Invalidate;
+end;
+
+procedure TfrmTaskSwitch.OnItemChange(Sender : TObject; obj : TNamedObject);
+begin
+  ListView.Invalidate;
+end;
+
+procedure TfrmTaskSwitch.KeyHookHandler(var msg : TMessage);
 var
   i : Integer;
   task : TTask;
@@ -132,7 +160,7 @@ begin
   end;
 end;
 
-procedure TfrmTaskSwitcher.RegisterHotKeys;
+procedure TfrmTaskSwitch.RegisterHotKeys;
 begin
   RegisterHotKey(Handle, HK_SWITCH_TASK_BASE + 0, MOD_WIN, ord('0'));
   RegisterHotKey(Handle, HK_SWITCH_TASK_BASE + 1, MOD_WIN, ord('1'));
@@ -148,7 +176,7 @@ begin
   RegisterHotKey(Handle, HK_LOG_ENTRY, MOD_WIN, ord('G'));
 end;
 
-procedure TfrmTaskSwitcher.UnregisterHotKeys;
+procedure TfrmTaskSwitch.UnregisterHotKeys;
 begin
   UnregisterHotKey(Handle, HK_SWITCH_TASK_BASE + 0);
   UnregisterHotKey(Handle, HK_SWITCH_TASK_BASE + 1);
@@ -164,19 +192,27 @@ begin
   UnregisterHotKey(Handle, HK_LOG_ENTRY);
 end;
 
-procedure TfrmTaskSwitcher.ListViewCustomDrawItem(Sender: TCustomListView;
-  Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
+constructor TfrmTaskSwitch.Create(AOwner: TComponent);
 begin
-  if TTask(Item.Data).ActiveNo = FActiveTask then
-    ListView.Canvas.Font.Style := [fsBold];
+  inherited;
+  FActiveTasks := TActiveTasksSelection.Create(TaskStorage);
+  FActiveTasks.PermanentSortComparator := CompareItems;
+  FActiveTasks.OnAdd := OnItemAdd;
+  FActiveTasks.OnDelete := OnItemDelete;
+  FActiveTasks.OnItemChange := OnItemChange;
+  LastCheckTime := Now;
+  FTaskSwitches := TTaskSwitches.Create(TaskSwitchFileName);
+  FActiveTasks.ReSelectAll;
+  FActiveTask := 0;
 end;
 
-procedure TfrmTaskSwitcher.ListViewDblClick(Sender: TObject);
+destructor TfrmTaskSwitch.Destroy;
 begin
-  acActivate.Execute;
+  FActiveTasks.Free;
+  inherited;
 end;
 
-procedure TfrmTaskSwitcher.TimerTimer(Sender: TObject);
+procedure TfrmTaskSwitch.TimerTimer(Sender: TObject);
 var
   i : Integer;
   task : TTask;
@@ -196,7 +232,19 @@ begin
   LastCheckTime := Now;
 end;
 
-procedure TfrmTaskSwitcher.ListViewData(Sender: TObject; Item: TListItem);
+procedure TfrmTaskSwitch.ListViewCustomDrawItem(Sender: TCustomListView;
+  Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
+begin
+  if TTask(Item.Data).ActiveNo = FActiveTask then
+    ListView.Canvas.Font.Style := [fsBold];
+end;
+
+procedure TfrmTaskSwitch.ListViewDblClick(Sender: TObject);
+begin
+  acActivate.Execute;
+end;
+
+procedure TfrmTaskSwitch.ListViewData(Sender: TObject; Item: TListItem);
 var task : TTask;
 begin
   task := TTask(FActiveTasks[Item.Index]);
@@ -207,88 +255,14 @@ begin
   Item.SubItems.Add(task.TimeSpentAsString);
 end;
 
-procedure TfrmTaskSwitcher.ShowTaskProperties(const task : TTask);
-begin
-  frmTaskProperties.Task := task;
-  if not frmTaskProperties.Visible then begin
-    frmTaskProperties.Left := frmMain.Left + frmMain.Width;
-    frmTaskProperties.Top := frmMain.Top;
-  end;
-  frmTaskProperties.Show;
-end;
-
-procedure TfrmTaskSwitcher.FormCreate(Sender: TObject);
-begin
-  FActiveTasks := TActiveTasksSelection.Create(TaskStorage);
-  FActiveTasks.PermanentSortComparator := CompareItems;
-  FActiveTasks.OnAdd := OnItemAdd;
-  FActiveTasks.OnDelete := OnItemDelete;
-  FActiveTasks.OnItemChange := OnItemChange;
-  LastCheckTime := Now;
-  FTaskSwitches := TTaskSwitches.Create(TaskSwitchFileName);
-  FActiveTasks.ReSelectAll;
-  FActiveTask := 0;
-  RegisterHotKeys;
-end;
-
-procedure TfrmTaskSwitcher.FormDestroy(Sender: TObject);
-begin
-  UnregisterHotKeys;
-  FActiveTasks.Free;
-end;
-
-procedure TfrmTaskSwitcher.OnItemAdd(Sender : TObject; obj : TNamedObject);
-begin
-  ListView.Items.Count := FActiveTasks.Count;
-  FActiveTask := TTask(obj).ActiveNo;
-  ListView.Invalidate;
-end;
-
-procedure TfrmTaskSwitcher.OnItemDelete(Sender : TObject; obj : TNamedObject);
-begin
-  ListView.Items.Count := FActiveTasks.Count - 1;
-  if TTask(obj).ActiveNo = FActiveTask then
-    FActiveTask := 0;
-  ListView.Invalidate;
-end;
-
-procedure TfrmTaskSwitcher.OnItemChange(Sender : TObject; obj : TNamedObject);
-begin
-  ListView.Invalidate;
-end;
-
-procedure TfrmTaskSwitcher.ListViewKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmTaskSwitch.ListViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_DELETE) and (ListView.Selected <> nil) then
     TTask(ListView.Selected.Data).ActiveNo := 0;
 end;
 
-procedure TfrmTaskSwitcher.acActivateExecute(Sender: TObject);
-begin
-  if ListView.Selected <> nil then begin
-    FActiveTask := TTask(ListView.Selected.Data).ActiveNo;
-    acActivate.Enabled := False;
-    acDeactivate.Enabled := True;
-    ListView.Invalidate;
-  end;
-end;
-
-procedure TfrmTaskSwitcher.acDeactivateExecute(Sender: TObject);
-begin
-  FActiveTask := 0;
-  acActivate.Enabled := ListView.Selected <> nil;
-  acDeactivate.Enabled := False;
-  ListView.Invalidate;
-end;
-
-procedure TfrmTaskSwitcher.acPropertiesExecute(Sender: TObject);
-begin
-  if ListView.Selected <> nil then
-    ShowTaskProperties(TTask(ListView.Selected.Data));
-end;
-
-procedure TfrmTaskSwitcher.ListViewSelectItem(Sender: TObject;
+procedure TfrmTaskSwitch.ListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   acActivate.Enabled := (ListView.Selected <> nil)
@@ -299,7 +273,31 @@ begin
   acComplete.Enabled := ListView.Selected <> nil;
 end;
 
-procedure TfrmTaskSwitcher.acCompleteExecute(Sender: TObject);
+procedure TfrmTaskSwitch.acActivateExecute(Sender: TObject);
+begin
+  if ListView.Selected <> nil then begin
+    FActiveTask := TTask(ListView.Selected.Data).ActiveNo;
+    acActivate.Enabled := False;
+    acDeactivate.Enabled := True;
+    ListView.Invalidate;
+  end;
+end;
+
+procedure TfrmTaskSwitch.acDeactivateExecute(Sender: TObject);
+begin
+  FActiveTask := 0;
+  acActivate.Enabled := ListView.Selected <> nil;
+  acDeactivate.Enabled := False;
+  ListView.Invalidate;
+end;
+
+procedure TfrmTaskSwitch.acPropertiesExecute(Sender: TObject);
+begin
+  if ListView.Selected <> nil then
+    ShowTaskProperties(TTask(ListView.Selected.Data));
+end;
+
+procedure TfrmTaskSwitch.acCompleteExecute(Sender: TObject);
 var t : TTask;
 begin
   if ListView.Selected <> nil then begin
@@ -310,7 +308,7 @@ begin
   end;
 end;
 
-procedure TfrmTaskSwitcher.acLogExecute(Sender: TObject);
+procedure TfrmTaskSwitch.acLogExecute(Sender: TObject);
 begin
   if ListView.Selected <> nil then
     TfrmLog.LogEntry(TTask(ListView.Selected.Data));

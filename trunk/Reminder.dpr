@@ -8,7 +8,6 @@ uses
   Tasks in 'Tasks.pas',
   PopUp in 'PopUp.pas' {frmTaskPopup},
   TaskProp in 'TaskProp.pas' {frmTaskProperties},
-  TaskSwitcher in 'TaskSwitcher.pas' {frmTaskSwitcher},
   ReminderProp in 'ReminderProp.pas' {frmReminderProperties},
   Logging in 'Logging.pas' {frmLog},
   StrMan in 'StrMan.pas',
@@ -16,7 +15,8 @@ uses
   TimelineForm in 'TimelineForm.pas' {frmTimeline},
   TaskSwitch in 'TaskSwitch.pas',
   TimelineData in 'TimelineData.pas',
-  TimeGraph in 'TimeGraph.pas';
+  TimeGraph in 'TimeGraph.pas',
+  TaskSwitchFrame in 'TaskSwitchFrame.pas' {frmTaskSwitch: TFrame};
 
 {$R *.res}
 
@@ -24,7 +24,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TfrmMain, frmMain);
   Application.CreateForm(TfrmTaskProperties, frmTaskProperties);
-  Application.CreateForm(TfrmTaskSwitcher, frmTaskSwitcher);
   Application.CreateForm(TfrmReminderProperties, frmReminderProperties);
   Application.CreateForm(TfrmLog, frmLog);
   Application.Run;

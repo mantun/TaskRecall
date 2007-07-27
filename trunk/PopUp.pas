@@ -54,7 +54,7 @@ var
 
 implementation
 
-uses TaskProp, ReminderProp, TaskSwitcher, Types;
+uses TaskProp, ReminderProp, Types, Main;
 
 {$R *.dfm}
 
@@ -136,7 +136,7 @@ begin
     if task.Complete and (task.EndTime = 0) then
       task.EndTime := Now;
     if cbActive.Checked then
-      frmTaskSwitcher.AddTask(task)
+      frmMain.frmTaskSwitch.AddTask(task)
   end;
   Close;
 end;
