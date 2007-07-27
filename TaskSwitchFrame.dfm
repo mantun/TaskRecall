@@ -1,25 +1,13 @@
-object frmTaskSwitcher: TfrmTaskSwitcher
-  Left = 191
-  Top = 466
-  Width = 440
-  Height = 163
-  BorderStyle = bsSizeToolWin
-  Caption = 'Active Tasks'
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OldCreateOrder = False
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
-  PixelsPerInch = 96
-  TextHeight = 13
+object frmTaskSwitch: TfrmTaskSwitch
+  Left = 0
+  Top = 0
+  Width = 435
+  Height = 129
+  TabOrder = 0
   object ListView: TListView
     Left = 0
     Top = 0
-    Width = 432
+    Width = 435
     Height = 129
     Align = alClient
     Columns = <

@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, StdCtrls, ExtCtrls, ShellAPI, Tasks, AppEvnts, XPMan,
-  ComCtrls, ImgList, Menus, ActnList, Spin, Buttons;
+  ComCtrls, ImgList, Menus, ActnList, Spin, Buttons, TaskSwitchFrame;
 
 const
   WM_TRAYICON = WM_USER + 1;
@@ -73,6 +73,7 @@ type
     Splitter: TSplitter;
     TasksListView: TListView;
     RemindersListView: TListView;
+    frmTaskSwitch: TfrmTaskSwitch;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -153,7 +154,7 @@ var
 
 implementation
 
-uses Math, Parse, TaskProp, PopUp, ReminderProp, TaskSwitcher, Logging,
+uses Math, Parse, TaskProp, PopUp, ReminderProp, Logging,
   TimelineData, TimelineForm;
 
 {$R *.dfm}
@@ -322,6 +323,7 @@ begin
   end;
   Shell_NotifyIcon(NIM_ADD, @TrayIconData);
   RegisterHotKey(Handle, HK_ACTIVATE, MOD_WIN, ord('A'));
+  frmTaskSwitch.RegisterHotKeys;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -332,6 +334,7 @@ begin
   ReminderSelection := nil;
   Shell_NotifyIcon(NIM_DELETE, @TrayIconData);
   UnregisterHotKey(Handle, HK_ACTIVATE);
+  frmTaskSwitch.UnregisterHotKeys;
 end;
 
 procedure TfrmMain.LoadCategories;
@@ -755,7 +758,7 @@ var task : TTask;
 begin
   if TasksListView.Selected <> nil then begin
     task := TTask(TasksListView.Selected.Data);
-    frmTaskSwitcher.AddTask(task);
+    frmTaskSwitch.AddTask(task);
   end;
 end;
 

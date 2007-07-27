@@ -33,7 +33,7 @@ type
 
 implementation
 
-uses Graphics, TaskSwitcher, TimeGraph;
+uses Main, Graphics, TimeGraph;
 
 type
   TTaskSwitch = class(TTimeSpanObject)
@@ -188,7 +188,7 @@ begin
   FSelection.OnDelete := OnDelete;
   FSelection.OnItemChange := OnChangeItem;
   FTimeline := Timeline;
-  frmTaskSwitcher.TaskSwitches.OnChange := OnAddSwitch;
+  frmMain.frmTaskSwitch.TaskSwitches.OnChange := OnAddSwitch;
   LoadAllData;
 end;
 
@@ -197,7 +197,7 @@ begin
   FSelection.OnAdd := nil;
   FSelection.OnDelete := nil;
   FSelection.OnItemChange := nil;
-  frmTaskSwitcher.TaskSwitches.OnChange := nil;
+  frmMain.frmTaskSwitch.TaskSwitches.OnChange := nil;
   ReleaseTrack(FTaskTrack);
   ReleaseTrack(FSwitchTrack);
   ReleaseTrack(FLogTrack);
@@ -231,9 +231,9 @@ end;
 procedure TTimelineDataProvider.AddTaskSwitches(task : TTask);
 var i : Integer;
 begin
-  for i := 0 to frmTaskSwitcher.TaskSwitches.Count - 1 do
-    if frmTaskSwitcher.TaskSwitches[i].TaskID = task.TaskID then
-      FSwitchTrack.AddTimeObject(TTaskSwitch.Create(frmTaskSwitcher.TaskSwitches[i], task));
+  for i := 0 to frmMain.frmTaskSwitch.TaskSwitches.Count - 1 do
+    if frmMain.frmTaskSwitch.TaskSwitches[i].TaskID = task.TaskID then
+      FSwitchTrack.AddTimeObject(TTaskSwitch.Create(frmMain.frmTaskSwitch.TaskSwitches[i], task));
 end;
 
 procedure TTimelineDataProvider.AddTask(task : TTask);

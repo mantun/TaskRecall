@@ -3,6 +3,7 @@ object frmMain: TfrmMain
   Top = 114
   Width = 466
   Height = 348
+  ActiveControl = TasksListView
   Caption = 'All reminders'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -190,6 +191,18 @@ object frmMain: TfrmMain
       Font.Style = []
       ImageIndex = 2
       ParentFont = False
+      inline frmTaskSwitch: TfrmTaskSwitch
+        Left = 0
+        Top = 0
+        Width = 452
+        Height = 276
+        Align = alClient
+        TabOrder = 0
+        inherited ListView: TListView
+          Width = 452
+          Height = 276
+        end
+      end
     end
   end
   object Timer: TTimer
