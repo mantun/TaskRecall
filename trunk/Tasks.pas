@@ -80,25 +80,21 @@ type
 
   TReminder = class(TNamedObject)
   private
-    FDate : String;
-    FTime : String;
+    FTimeStamp : String;
     FSnoozeTime : TDateTime;
     FTask : TTask;
 
     FLastCheckTime : TDateTime;
 
-    procedure SetDate(const value : String);
-    procedure SetTime(const value : String);
+    procedure SetTimeStamp(const value : String);
     procedure SetTask(const value : TTask);
     procedure SetSnoozeTime(const value : TDateTime);
   public
-    property Date : String read FDate write SetDate;
-    property Time : String read FTime write SetTime;
+    property TimeStamp : String read FTimeStamp write SetTimeStamp;
     property SnoozeTime : TDateTime read FSnoozeTime write SetSnoozeTime;
     property Task : TTask read FTask write SetTask;
 
-    procedure ValidateTime(const value : String);
-    procedure ValidateDate(const value : String);
+    procedure ValidateTimeStamp(const value : String);
 
     constructor Create; overload;
     constructor Create(const AName : String); overload;
@@ -512,8 +508,7 @@ end;
 constructor TReminder.Create(const AName : String);
 begin
   inherited;
-  FDate := '';
-  FTime := '';
+  FTimeStamp := '';
   FSnoozeTime := 0;
   FLastCheckTime := 0;
 end;
@@ -525,40 +520,20 @@ begin
   inherited;
 end;
 
-procedure TReminder.ValidateDate(const value : String);
-var r : TResult;
-begin
-  if value = '' then Exit;
-  r := Parser.Evaluate(value);
-  if (r.ResType <> rtBool) and (r.ResType <> rtTime) and ((FTask = nil) or (FTask.StartTime = 0) or (r.ResType <> rtInt)) then
-    raise EParseException.Create('Date expression must be of boolean, date or integer (when task start time is specified) type');
-end;
-
-procedure TReminder.SetDate(const value : String);
-begin
-  ValidateDate(value);
-  if FDate <> value then begin
-    FDate := value;
-    FSnoozeTime := 0;
-    FLastCheckTime := 0;
-    Changed;
-  end;
-end;
-
-procedure TReminder.ValidateTime(const value : String);
+procedure TReminder.ValidateTimeStamp(const value : String);
 var r : TResult;
 begin
   if value = '' then Exit;
   r := Parser.Evaluate(value);
   if (r.ResType <> rtTime) and ((FTask = nil) or (FTask.StartTime = 0) or (r.ResType <> rtInt)) then
-    raise EParseException.Create('Time expression must be of time type or integer type (if task start time is specified)');
+    raise EParseException.Create('Timestamp expression must be of date/time type or integer type (if task start time is specified)');
 end;
 
-procedure TReminder.SetTime(const value : String);
+procedure TReminder.SetTimeStamp(const value : String);
 begin
-  ValidateTime(value);
-  if FTime <> value then begin
-    FTime := value;
+  ValidateTimeStamp(value);
+  if FTimeStamp <> value then begin
+    FTimeStamp := value;
     FSnoozeTime := 0;
     FLastCheckTime := 0;
     Changed;
@@ -582,9 +557,7 @@ begin
 end;
 
 function TReminder.GetFireTime : TDateTime;
-var
-  r : TResult;
-  fireDate : TDateTime;
+var r : TResult;
 begin
   if (FTask <> nil) and FTask.Complete then begin
     Result := 0;
@@ -594,28 +567,15 @@ begin
     Result := FSnoozeTime;
     Exit;
   end;
-  fireDate := 0;
-  if FDate <> '' then
-    r := Parser.Evaluate(FDate)
+  Result := 0;
+  if FTimeStamp <> '' then
+    r := Parser.Evaluate(FTimeStamp)
   else
     r := Parser.Evaluate('+0');
   case r.ResType of
-    rtBool : if r.BoolValue then fireDate := SysUtils.Date;
-    rtTime : fireDate := r.TimeValue;
-    rtInt  : if (FTask <> nil) and (FTask.StartTime <> 0) then fireDate := Trunc(FTask.StartTime) + r.IntValue;
+    rtTime : Result := r.TimeValue;
+    rtInt  : if (FTask <> nil) and (FTask.StartTime <> 0) then Result := FTask.StartTime + r.IntValue / (24 * 60);
     else Assert(False);
-  end;
-  Result := 0;
-  if fireDate <> 0 then begin
-    if FTime <> '' then
-      r := Parser.Evaluate(FTime)
-    else
-      r := Parser.Evaluate('+0');
-    case r.ResType of
-      rtTime : Result := fireDate + r.TimeValue;
-      rtInt  : if (FTask <> nil) and (FTask.StartTime <> 0) then Result := fireDate + Frac(FTask.StartTime) + r.IntValue / (24 * 60);
-      else Assert(False);
-    end;
   end;
 end;
 
@@ -641,19 +601,18 @@ begin
   try
     sl.Text := s;
     FName := Decode(sl[0]);
-    FDate := Decode(sl[1]);
-    FTime := Decode(sl[2]);
-    ss := Decode(sl[3]);
+    FTimeStamp := Decode(sl[1]);
+    ss := Decode(sl[2]);
     if ss <> '' then
       FSnoozeTime := StrToDateTime(ss)
     else
       FSnoozeTime := 0;
-    ss := Decode(sl[4]);
+    ss := Decode(sl[3]);
     if ss <> '' then
       FLastCheckTime := StrToDateTime(ss)
     else
       FLastCheckTime := 0;
-    Resolver.AddPointer(sl[5], @FTask);  
+    Resolver.AddPointer(sl[4], @FTask);  
   finally
     sl.Free;
   end;
@@ -667,8 +626,7 @@ begin
   sl := TStringList.Create;
   try
     sl.Add(Encode(FName));
-    sl.Add(Encode(FDate));
-    sl.Add(Encode(FTime));
+    sl.Add(Encode(FTimeStamp));
     if FSnoozeTime <> 0 then
       ss := DateTimeToStr(FSnoozeTime)
     else

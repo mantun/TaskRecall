@@ -608,7 +608,7 @@ end;
 procedure TfrmMain.RemindersListViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
-  if (TasksListView.Selected <> nil) and (frmReminderProperties <> nil) then
+  if (RemindersListView.Selected <> nil) and (frmReminderProperties <> nil) then
     frmReminderProperties.Reminder := TReminder(RemindersListView.Selected.Data);
 
   acChangeReminder.Enabled := RemindersListView.Selected <> nil;

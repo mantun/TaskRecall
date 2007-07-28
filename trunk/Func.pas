@@ -80,10 +80,22 @@ begin
   Result.TimeValue := Now;
 end;
 
+function fTimeStamp(const params : TResultArray) : TResult;
+begin
+  Result.ResType := rtTime;
+  if Length(params) = 0 then
+    Result.TimeValue := Now
+  else begin
+    if (Length(params) <> 2) or (params[0].ResType <> rtTime) or (params[1].ResType <> rtTime) then
+      Raise EFunctionException.Create('ts requires date and time arguments');
+    Result.TimeValue := Trunc(params[0].TimeValue) + Frac(params[1].TimeValue);
+  end;
+end;
+
 function fTime(const params : TResultArray) : TResult;
 begin
   Result.ResType := rtTime;
-  Result.TimeValue := Time;
+  Result.TimeValue := Frac(getTimeParam(params, Time));
 end;
 
 function fHour(const params : TResultArray) : TResult;
@@ -140,7 +152,7 @@ end;
 function fDate(const params : TResultArray) : TResult;
 begin
   Result.ResType := rtTime;
-  Result.TimeValue := Date;
+  Result.TimeValue := Trunc(getTimeParam(params, Date));
 end;
 
 function fDay(const params : TResultArray) : TResult;
@@ -370,6 +382,7 @@ initialization
   addFunc(@fFalse, 'false');
 
   addFunc(@fNow, 'now');
+  addFunc(@fTimeStamp, 'ts');
   addFunc(@fTime, 'time');
   addFunc(@fHour, 'hour');
   addFunc(@fMinute, 'min');
