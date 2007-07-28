@@ -14,19 +14,21 @@ Grammar:
 (false) = ~                             - const false
 
 (now) = :                               - current time and date
-(time) = :                              - current time
+(ts <:date> <:time>) = :                - make timestamp from given date and time
+
+(time [<:timestamp>]) = :               - extract time/current time
 (hour [<:time>]) = #                    - hour of given/current time
 (min [<:time>]) = #                     - minute of given/current time
 (sec [<:time>]) = #                     - minute of given/current time
-(hms <#hour> <#min> [<#sec>]) = :       - returns the specified time 
+(hms <#hour> <#min> [<#sec>]) = :       - returns the specified time
 
-(date) = :                              - current date
+(date [<:timestamp>]) = :               - extract date/current date
 (day [<:date>]) = #                     - day of given/current date
 (month [<:date>]) = #                   - month of given/current date
 (year [<:date>]) = #                    - year of given/current date
 (dow [<:date>]) = #                     - day of week of given/current date
 (doy [<:date>]) = #                     - day of year of given/current date
-(dmy <#day> <#month> [<#year>]) = :     - returns the specified date 
+(dmy <#day> <#month> [<#year>]) = :     - returns the specified date
 
 (= <value1> [<value2> ...]) = ~         - returns true if all values are equal
 (in <value> [<value1> ...]) = ~         - returns true if 'value' is equal to one of the following values

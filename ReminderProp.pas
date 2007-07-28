@@ -9,7 +9,6 @@ uses
 type
   TfrmReminderProperties = class(TForm)
     eName: TLabeledEdit;
-    eDate: TLabeledEdit;
     eTime: TLabeledEdit;
     btnApply: TSpeedButton;
     btnDelete: TSpeedButton;
@@ -42,14 +41,12 @@ implementation
 procedure TfrmReminderProperties.EnableControls(Enabled : Boolean);
 begin
   eName.Enabled := Enabled and (FReminder.Item <> nil) and (TReminder(FReminder.Item).Task = nil);
-  eDate.Enabled := Enabled;
   eTime.Enabled := Enabled;
 end;
 
 procedure TfrmReminderProperties.OnDelete(Sender : TObject; item : TNamedObject);
 begin
   eName.Text := '';
-  eDate.Text := '';
   eTime.Text := '';
   EnableControls(False);
   btnApply.Enabled := False;
@@ -62,10 +59,8 @@ begin
   Reminder := TReminder(item);
   if not eName.Modified then
     eName.Text := Reminder.Name;
-  if not eDate.Modified then
-    eDate.Text := Reminder.Date;
   if not eTime.Modified then
-    eTime.Text := Reminder.Time;
+    eTime.Text := Reminder.TimeStamp;
   EnableControls(True);
   btnApply.Enabled := False;
   btnDelete.Enabled := True;
@@ -94,18 +89,13 @@ var
 begin
   if FReminder.Item = nil then Exit;
   Reminder := TReminder(FReminder.Item);
-  Reminder.ValidateDate(eDate.Text);
-  Reminder.ValidateTime(eTime.Text);
+  Reminder.ValidateTimeStamp(eTime.Text);
   if eName.Modified then begin
     Reminder.Name := eName.Text;
     eName.Modified := False;
   end;
-  if eDate.Modified then begin
-    Reminder.Date := eDate.Text;
-    eDate.Modified := False;
-  end;
   if eTime.Modified then begin
-    Reminder.Time := eTime.Text;
+    Reminder.TimeStamp := eTime.Text;
     eTime.Modified := False;
   end;
   btnApply.Enabled := False;
