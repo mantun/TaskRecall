@@ -5,7 +5,7 @@ TReminder
 "break"
 "(ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10))"
 ""
-"28.07.2007 22:34:05"
+"28.07.2007 22:52:52"
 00000000
 
 009A327C
@@ -349,7 +349,7 @@ TTask
 142
 "Show hint for tasks on timeline"
 "When task is pointed on the timeline, a hint with whole task name (and possibly more) to be displayed"
--1
+-2
 0
 "Features"
 00000000
@@ -432,7 +432,7 @@ TTask
 TTask
 148
 "Show visually in the task properties whether a task has reminder"
-""
+".. or better yet, make the reminder timestamp string part of the tak properties form."
 -1
 0
 "Features"
