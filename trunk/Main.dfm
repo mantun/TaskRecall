@@ -3,7 +3,7 @@ object frmMain: TfrmMain
   Top = 114
   Width = 466
   Height = 348
-  ActiveControl = RemindersListView
+  ActiveControl = eQuickNewTask
   Caption = 'All reminders'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -27,7 +27,7 @@ object frmMain: TfrmMain
     Top = 0
     Width = 460
     Height = 316
-    ActivePage = tsReminders
+    ActivePage = tsTasks
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
