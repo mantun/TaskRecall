@@ -2,7 +2,7 @@ unit Tasks;
 
 interface
 
-Uses Classes;
+Uses Classes, Graphics;
 
 type
   TNamedObjectsStorage = class;
@@ -105,6 +105,21 @@ type
     function GetFireTime : TDateTime;
     function isFireTime : Boolean;
   end;
+
+{  TCategory = class(TNamedObject)
+  private
+    FParent : TCategory;
+    FColor : TColor;
+
+   procedure SetColor(value : TColor);
+  public
+    property Parent : TCategory read FParent;
+    property Color : TColor read FColor write SetColor;
+
+    constructor Create(const AName : String; AParent : TCategory);
+    constructor FromString(const s : String; const Resolver : TPointerResolver);
+    function ToString : String; override;
+  end;}
 
   TChangedNotify = procedure(Sender : TObject; item : TNamedObject) of object;
   TNamedObjectsStorage = class
