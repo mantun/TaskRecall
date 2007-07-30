@@ -3,12 +3,12 @@
 009A30FC
 TReminder
 "break"
-"(ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10))"
+"(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) false)"
 ""
-"28.07.2007 22:52:52"
+"30.07.2007 18:12:45"
 00000000
 
-009A327C
+009A2014
 TTask
 1
 "Track time"
@@ -22,7 +22,7 @@ TTask
 ""
 ""
 
-009A2014
+009A583C
 TTask
 2
 "Task logging"
@@ -36,12 +36,12 @@ TTask
 ""
 ""
 
-009A5BAC
+009A5EE0
 TTask
 3
 "Multiple categories for task"
 "A task should be able to have multiple categories. The Category property to be replaced by HasCategory, ?Add?Category and ?Delete?Category. The Task properties form to include list, instead of edit box. Should the list be editable?\r\nFull path instead of end node only to be available in the list?"
--2
+0
 0
 "Features"
 00000000
@@ -50,7 +50,7 @@ TTask
 ""
 ""
 
-009A6620
+009A69F0
 TTask
 4
 "Mute option"
@@ -64,7 +64,7 @@ TTask
 ""
 ""
 
-009A6C74
+009A7044
 TTask
 5
 "Parser to allow time lists and range comparison"
@@ -78,7 +78,7 @@ TTask
 ""
 "07.04.2007 14:29:13"
 
-009A7674
+009A7A44
 TTask
 6
 "Quick new task"
@@ -92,7 +92,7 @@ TTask
 ""
 ""
 
-009A3E84
+009A3F88
 TTask
 7
 "Quick search"
@@ -106,7 +106,7 @@ TTask
 ""
 ""
 
-009A3210
+009A20D4
 TTask
 8
 "Sort reminders by their execution time"
@@ -120,7 +120,7 @@ TTask
 ""
 "05.04.2007 12:21:32"
 
-009A308C
+009A2070
 TTask
 10
 "Reminder Time expression sometimes reverts to old value when apply is pressed"
@@ -134,7 +134,7 @@ TTask
 ""
 ""
 
-009A6418
+009A21B8
 TTask
 11
 "Button 'properties' from PopUp for reminder without task displays empty form"
@@ -148,7 +148,7 @@ TTask
 ""
 ""
 
-009A20D4
+009A26E0
 TTask
 15
 "Make TimeSpent real, instead of integer"
@@ -162,7 +162,7 @@ TTask
 ""
 ""
 
-009A21B8
+009A24B0
 TTask
 16
 "Double click on active tasks shall not display task properties"
@@ -176,7 +176,7 @@ TTask
 ""
 ""
 
-009A2804
+009A2740
 TTask
 17
 "Install WinKey hook to activate tasks and log"
@@ -190,7 +190,7 @@ TTask
 ""
 ""
 
-009A80F8
+009A22C0
 TTask
 18
 "Find a way to show/hide Active Tasks form"
@@ -204,7 +204,7 @@ TTask
 ""
 ""
 
-009A8450
+009A237C
 TTask
 19
 "Allow subtasks?"
@@ -218,7 +218,7 @@ TTask
 ""
 ""
 
-009A8750
+009A7CB4
 TTask
 105
 "Allow task activation from PopUp form"
@@ -232,7 +232,7 @@ TTask
 ""
 ""
 
-009A8B04
+009A6BFC
 TTask
 106
 "Enable Log Search and Save with visual clue"
@@ -246,7 +246,7 @@ TTask
 ""
 ""
 
-009A8DC8
+009A6B88
 TTask
 109
 "Track task switches and time along with the total time spent"
@@ -260,7 +260,7 @@ TTask
 ""
 ""
 
-009A927C
+009A3D88
 TTask
 114
 "Remove/rename log file upon deletion of task"
@@ -274,7 +274,7 @@ TTask
 ""
 ""
 
-009A95F0
+009A2A18
 TTask
 117
 "Show task ID everywhere"
@@ -288,7 +288,7 @@ TTask
 ""
 "06.04.2007 10:59:13"
 
-009A98B0
+009A29A4
 TTask
 118
 "Keyboard hook doesn't work"
@@ -302,7 +302,7 @@ TTask
 ""
 ""
 
-009A9DB4
+009A2DB0
 TTask
 122
 "Hierarchical Text"
@@ -316,7 +316,7 @@ TTask
 ""
 ""
 
-009AA294
+009A6AC4
 TTask
 129
 "Display (and edit?) task switches"
@@ -330,7 +330,7 @@ TTask
 ""
 ""
 
-009AA668
+009A2B64
 TTask
 141
 "Show open-ended tasks"
@@ -344,7 +344,7 @@ TTask
 ""
 "05.04.2007 12:19:47"
 
-009AA884
+009A4084
 TTask
 142
 "Show hint for tasks on timeline"
@@ -358,7 +358,7 @@ TTask
 ""
 ""
 
-009AAE8C
+009A2908
 TTask
 143
 "Allow vertical scrolling for timeline"
@@ -372,7 +372,7 @@ TTask
 ""
 ""
 
-009A215C
+009A7B84
 TTask
 144
 "Allow drag&drop editing of timeline"
@@ -386,7 +386,7 @@ TTask
 ""
 ""
 
-009AA020
+009A5A4C
 TTask
 145
 "Ability to create timeline for a single task or a task category only"
@@ -400,7 +400,7 @@ TTask
 ""
 ""
 
-009A9690
+009A71F4
 TTask
 146
 "Show Log entries in the timeline"
@@ -414,12 +414,12 @@ TTask
 ""
 ""
 
-009A9050
+009A2CE8
 TTask
 147
 "Show Tasks in color in the lists?"
-""
--3
+"Add color field for tasks and categories\r\n"
+0
 0
 "Features"
 00000000
@@ -428,7 +428,7 @@ TTask
 ""
 ""
 
-009A3E00
+009A2C80
 TTask
 148
 "Show visually in the task properties whether a task has reminder"
@@ -442,7 +442,7 @@ TTask
 ""
 ""
 
-009AA310
+009A6F2C
 TTask
 149
 "Ability to work with keyboard only"
@@ -456,7 +456,7 @@ TTask
 ""
 ""
 
-009A8C4C
+009A68AC
 TTask
 153
 "Update timeline with new task switches"
@@ -470,7 +470,7 @@ TTask
 ""
 "06.04.2007 10:58:02"
 
-009A92F8
+009A5F2C
 TTask
 159
 "Update timeline when task changes its start time to/from empty"
@@ -484,7 +484,7 @@ TTask
 "17.05.2007 14:00:00"
 "17.05.2007 14:07:59"
 
-009A96F8
+009A2804
 TTask
 179
 "Shoosing 'Make Completed' on task swither, does not set end time"
@@ -498,7 +498,7 @@ TTask
 "10.05.2007 16:37:20"
 "10.05.2007 16:37:24"
 
-009A78D4
+009A7EF4
 TTask
 180
 "Reminder to have timestamp"
