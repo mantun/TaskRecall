@@ -79,7 +79,7 @@ begin
   if not eTaskName.Modified then
     eTaskName.Text := task.Name;
   if not eCategory.Modified then
-    eCategory.Text := task.Category;
+    eCategory.Text := task.Category.Name;
   if not sePriority.Modified then
     sePriority.Value := task.Priority;
   if not mDescription.Modified then
@@ -175,10 +175,10 @@ begin
       task.Name := eTaskName.Text;
       eTaskName.Modified := False;
     end;
-    if eCategory.Modified then begin
+{!C    if eCategory.Modified then begin
       task.Category := eCategory.Text;
       eCategory.Modified := False;
-    end;
+    end;}
     if sePriority.Modified then begin
       task.Priority := sePriority.Value;
       sePriority.Modified := False;

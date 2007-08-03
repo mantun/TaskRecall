@@ -285,7 +285,7 @@ var i : Integer;
 begin
   Result := node = nil;
   Result := Result or (node.Text = CategoryAll);
-  Result := Result or (TTask(obj).Category = node.Text);
+  Result := Result or (TTask(obj).Category.Name = node.Text); // !C
   Result := Result or (node.Text = CategoryNone) and (TTask(obj).Category = '');
   if not Result then
     for i := 0 to TreeView.Items.Count - 1 do
