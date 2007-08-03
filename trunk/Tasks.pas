@@ -26,6 +26,7 @@ type
     procedure EndUpdate;
   end;
 
+  TCategory = class;
   TReminder = class;
   TPointerResolver = class;
   TTask = class(TNamedObject)
@@ -35,7 +36,7 @@ type
     FPriority : Integer;
     FComplete : Boolean;
     FCategories : TStringList;
-    FCategory : String;
+    FCategory : TCategory;
     FReminder : TReminder;
     FActiveNo : Integer;
     FTimeSpent : Double;
@@ -46,7 +47,7 @@ type
     procedure SetDescription(value : String);
     procedure SetPriority(value : Integer);
     procedure SetComplete(value : Boolean);
-    procedure SetCategory(value : String);
+    procedure SetCategory(value : TCategory);
     procedure SetReminder(value : TReminder);
     procedure SetActiveNo(value : Integer);
     procedure SetTimeSpent(value : Double);
@@ -59,7 +60,7 @@ type
     property Description : String read FDescription write SetDescription;
     property Priority : Integer read FPriority write SetPriority;
     property Complete : Boolean read FComplete write SetComplete;
-    property Category : String read FCategory write SetCategory;
+    property Category : TCategory read FCategory write SetCategory;
     property Reminder : TReminder read FReminder write SetReminder;
     property ActiveNo : Integer read FActiveNo write SetActiveNo;
     property StartTime : TDateTime read FStartTime write SetStartTime;
@@ -106,7 +107,7 @@ type
     function isFireTime : Boolean;
   end;
 
-{  TCategory = class(TNamedObject)
+  TCategory = class(TNamedObject)
   private
     FParent : TCategory;
     FColor : TColor;
@@ -119,7 +120,7 @@ type
     constructor Create(const AName : String; AParent : TCategory);
     constructor FromString(const s : String; const Resolver : TPointerResolver);
     function ToString : String; override;
-  end;}
+  end;
 
   TChangedNotify = procedure(Sender : TObject; item : TNamedObject) of object;
   TNamedObjectsStorage = class
@@ -354,7 +355,7 @@ begin
   end;
 end;
 
-procedure TTask.SetCategory(value : String);
+procedure TTask.SetCategory(value : TCategory);
 begin
   if FCategory <> value then begin
     FCategory := value;
@@ -439,7 +440,7 @@ begin
     FDescription := Decode(sl[2]);
     FPriority := StrToInt(sl[3]);
     FComplete := StrToBool(sl[4]);
-    FCategory := Decode(sl[5]);
+    Resolver.AddPointer(sl[5], @FCategory);
     Resolver.AddPointer(sl[6], @FReminder);
     FActiveNo := StrToInt(sl[7]);
     FTimeSpent := StrToFloat(sl[8]);
@@ -470,7 +471,7 @@ begin
     sl.add(Encode(FDescription));
     sl.add(IntToStr(FPriority));
     sl.add(BoolToStr(FComplete));
-    sl.add(Encode(FCategory));
+    sl.add(TPointerResolver.PointerToStr(FCategory));
     sl.add(TPointerResolver.PointerToStr(FReminder));
     sl.add(IntToStr(FActiveNo));
     sl.add(FloatToStr(FTimeSpent));
@@ -552,7 +553,7 @@ begin
     FSnoozeTime := 0;
     FLastCheckTime := 0;
     Changed;
-  end;  
+  end;
 end;
 
 procedure TReminder.SetSnoozeTime(const value : TDateTime);
@@ -627,7 +628,7 @@ begin
       FLastCheckTime := StrToDateTime(ss)
     else
       FLastCheckTime := 0;
-    Resolver.AddPointer(sl[4], @FTask);  
+    Resolver.AddPointer(sl[4], @FTask);
   finally
     sl.Free;
   end;
@@ -653,6 +654,51 @@ begin
       ss := '';
     sl.Add(Encode(ss));
     sl.Add(TPointerResolver.PointerToStr(FTask));
+    Result := sl.Text;
+  finally
+    sl.Free;
+  end;
+end;
+
+{ TCategory }
+
+constructor TCategory.Create(const AName : String; AParent : TCategory);
+begin
+  inherited Create(AName);
+  FParent := AParent;
+  FColor := clSilver; 
+end;
+
+procedure TCategory.SetColor(value : TColor);
+begin
+  if FColor <> value then begin
+    FColor := value;
+    Changed;
+  end;
+end;
+
+constructor TCategory.FromString(const s : String; const Resolver : TPointerResolver);
+var sl : TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    sl.Text := s;
+    FName := Decode(sl[0]);
+    FColor := StrToInt('$' + sl[1]);
+    Resolver.AddPointer(sl[2], @FParent);
+  finally
+    sl.Free;
+  end;
+end;
+
+function TCategory.ToString : String;
+var sl : TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    sl.Add(Encode(FName));
+    sl.Add(IntToHex(FColor, 6));
+    sl.Add(TPointerResolver.PointerToStr(FParent));
     Result := sl.Text;
   finally
     sl.Free;
@@ -775,6 +821,8 @@ begin
         o := TTask.FromString(sl.Text, Resolver)
       else if ClassName = TReminder.ClassName then
         o := TReminder.FromString(sl.Text, Resolver)
+{!C      else if ClassName = TCategory.ClassName then
+        o := TCategory.FromString(sl.Text, Resolver)}
       else begin
         raise Exception.Create('Unknown class');
         o := nil;
