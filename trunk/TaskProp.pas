@@ -9,7 +9,6 @@ uses
 type
   TfrmTaskProperties = class(TForm)
     eTaskName: TLabeledEdit;
-    eCategory: TLabeledEdit;
     sePriority: TSpinEdit;
     lPriority: TLabel;
     mDescription: TMemo;
@@ -61,7 +60,6 @@ uses ReminderProp, Logging;
 procedure TfrmTaskProperties.EnableControls(Enabled : Boolean);
 begin
   eTaskName.Enabled := Enabled;
-  eCategory.Enabled := Enabled;
   sePriority.Enabled := Enabled;
   mDescription.Enabled := Enabled;
   cbComplete.Enabled := Enabled;
@@ -78,8 +76,6 @@ begin
     Caption := 'New Task';
   if not eTaskName.Modified then
     eTaskName.Text := task.Name;
-  if not eCategory.Modified then
-    eCategory.Text := task.Category.Name;
   if not sePriority.Modified then
     sePriority.Value := task.Priority;
   if not mDescription.Modified then
@@ -111,8 +107,6 @@ begin
   Caption := 'Task Properties';
   eTaskName.Text := '';
   eTaskName.Modified := False;
-  eCategory.Text := '';
-  eCategory.Modified := False;
   sePriority.Value := 0;
   sePriority.Modified := False;
   mDescription.Lines.Clear;
