@@ -35,7 +35,7 @@ type
     FDescription : String;
     FPriority : Integer;
     FComplete : Boolean;
-    FCategories : TStringList;
+    FCategories : Array of TCategory;
     FCategory : TCategory;
     FReminder : TReminder;
     FActiveNo : Integer;
@@ -47,7 +47,6 @@ type
     procedure SetDescription(value : String);
     procedure SetPriority(value : Integer);
     procedure SetComplete(value : Boolean);
-    procedure SetCategory(value : TCategory);
     procedure SetReminder(value : TReminder);
     procedure SetActiveNo(value : Integer);
     procedure SetTimeSpent(value : Double);
@@ -60,7 +59,6 @@ type
     property Description : String read FDescription write SetDescription;
     property Priority : Integer read FPriority write SetPriority;
     property Complete : Boolean read FComplete write SetComplete;
-    property Category : TCategory read FCategory write SetCategory;
     property Reminder : TReminder read FReminder write SetReminder;
     property ActiveNo : Integer read FActiveNo write SetActiveNo;
     property StartTime : TDateTime read FStartTime write SetStartTime;
@@ -69,14 +67,13 @@ type
     property TimeSpentAsString : String read GetTimeSpentStr write SetTimeSpentStr;
 
     constructor Create; overload;
-    constructor Create(const AName : String); overload;
     constructor FromString(const s : String; const Resolver : TPointerResolver);
     destructor Destroy; override;
     function ToString : String; override;
 
-    function HasCategory(const Category : String) : Boolean;
-    function AddCategory(const Category : String) : Boolean;
-    function RemoveCategory(const Category : String) : Boolean;
+    function HasCategory(const Category : TCategory) : Boolean;
+    function AddCategory(const Category : TCategory) : Boolean;
+    function RemoveCategory(const Category : TCategory) : Boolean;
   end;
 
   TReminder = class(TNamedObject)
@@ -117,6 +114,7 @@ type
     property Parent : TCategory read FParent;
     property Color : TColor read FColor write SetColor;
 
+    function HasParent(Category : TCategory) : Boolean;
     constructor Create(const AName : String; AParent : TCategory);
     constructor FromString(const s : String; const Resolver : TPointerResolver);
     function ToString : String; override;
@@ -307,16 +305,8 @@ begin
   Create('');
 end;
 
-constructor TTask.Create(const AName : String);
-begin
-  inherited;
-  FCategories := TStringList.Create;
-end;
-
 destructor TTask.Destroy;
 begin
-  FCategories.Free;
-  FCategories := nil;
   if FReminder <> nil then
     FReminder.FTask := nil;
   inherited;
@@ -351,14 +341,6 @@ begin
     FComplete := value;
     if FComplete then
       FActiveNo := 0;
-    Changed;
-  end;
-end;
-
-procedure TTask.SetCategory(value : TCategory);
-begin
-  if FCategory <> value then begin
-    FCategory := value;
     Changed;
   end;
 end;
@@ -491,27 +473,39 @@ begin
   end;
 end;
 
-function TTask.HasCategory(const Category : String) : Boolean;
-begin
-  Result := FCategories.IndexOf(Category) >= 0;
-end;
-
-function TTask.AddCategory(const Category : String) : Boolean;
+function TTask.HasCategory(const Category : TCategory) : Boolean;
 var i : Integer;
 begin
-  i := FCategories.IndexOf(Category);
-  Result := i >= 0;
-  if not Result then
-    FCategories.Add(Category);
+  Result := False;
+  for i := 0 To High(FCategories) do begin
+    Result := FCategories[i].HasParent(Category);
+    if Result then Exit;
+  end;
 end;
 
-function TTask.RemoveCategory(const Category : String) : Boolean;
+function TTask.AddCategory(const Category : TCategory) : Boolean;
 var i : Integer;
 begin
-  i := FCategories.IndexOf(Category);
-  Result := i >= 0;
-  if Result then
-    FCategories.Delete(i);
+  Result := False;
+  for i := 0 To High(FCategories) do
+    if FCategories[i] = Category then Exit;
+  SetLength(FCategories, Length(FCategories) + 1);
+  FCategories[High(FCategories)] := Category;
+  Result := True;
+end;
+
+function TTask.RemoveCategory(const Category : TCategory) : Boolean;
+var i : Integer;
+begin
+  for i := 0 To High(FCategories) do
+    if FCategories[i] = Category then begin
+      if i < High(FCategories) then
+        Move(FCategories[i + 1], FCategories[i], (High(FCategories) - i) * SizeOf(FCategories[i]));
+      SetLength(FCategories, Length(FCategories) - 1);
+      Result := True;
+      Exit;
+    end;
+  Result := False;
 end;
 
 { TReminder }
@@ -666,7 +660,7 @@ constructor TCategory.Create(const AName : String; AParent : TCategory);
 begin
   inherited Create(AName);
   FParent := AParent;
-  FColor := clSilver; 
+  FColor := clSilver;
 end;
 
 procedure TCategory.SetColor(value : TColor);
@@ -675,6 +669,20 @@ begin
     FColor := value;
     Changed;
   end;
+end;
+
+function TCategory.HasParent(Category : TCategory) : Boolean;
+var own : TCategory;
+begin
+  own := Self;
+  while own <> nil do begin
+    if own = Category then begin
+      Result := True;
+      Exit;
+    end;
+    own := own.Parent;
+  end;
+  Result := False;
 end;
 
 constructor TCategory.FromString(const s : String; const Resolver : TPointerResolver);

@@ -183,18 +183,6 @@ object frmTaskProperties: TfrmTaskProperties
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
   end
-  object eCategory: TLabeledEdit
-    Left = 8
-    Top = 56
-    Width = 121
-    Height = 21
-    EditLabel.Width = 45
-    EditLabel.Height = 13
-    EditLabel.Caption = '&Category:'
-    TabOrder = 2
-    OnChange = TaskChange
-    OnKeyPress = EditKeyPress
-  end
   object sePriority: TSpinEdit
     Left = 8
     Top = 96
@@ -202,7 +190,7 @@ object frmTaskProperties: TfrmTaskProperties
     Height = 22
     MaxValue = 10
     MinValue = -10
-    TabOrder = 3
+    TabOrder = 2
     Value = 0
     OnChange = sePriorityChange
     OnKeyPress = EditKeyPress
@@ -223,7 +211,7 @@ object frmTaskProperties: TfrmTaskProperties
     Width = 65
     Height = 17
     Caption = 'Complete'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = cbCompleteClick
     OnKeyPress = EditKeyPress
   end
@@ -235,7 +223,7 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Width = 58
     EditLabel.Height = 13
     EditLabel.Caption = 'Time spent: '
-    TabOrder = 5
+    TabOrder = 4
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
   end
@@ -247,7 +235,7 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Width = 79
     EditLabel.Height = 13
     EditLabel.Caption = 'Start Date/Time:'
-    TabOrder = 6
+    TabOrder = 5
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
   end
@@ -259,7 +247,7 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Width = 76
     EditLabel.Height = 13
     EditLabel.Caption = 'End Date/Time:'
-    TabOrder = 7
+    TabOrder = 6
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
   end

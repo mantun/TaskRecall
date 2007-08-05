@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 192
-  Top = 114
+  Left = 469
+  Top = 361
   Width = 466
   Height = 348
   ActiveControl = eQuickNewTask
