@@ -5,27 +5,33 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, StdCtrls, ExtCtrls, ShellAPI, Tasks, AppEvnts, XPMan,
-  ComCtrls, ImgList, Menus, ActnList, Spin, Buttons, TaskSwitchFrame;
+  ComCtrls, ImgList, Menus, ActnList, Spin, Buttons, TaskSwitchFrame,
+  VirtualTrees;
 
 const
   WM_TRAYICON = WM_USER + 1;
 
 type
-  TCategorySelection = class(TObjectsSelection)
+  IDataObject = interface end;
+  TCategoryTaskSelection = class(TObjectsSelection)
   private
-    FNode : TTreeNode;
+    FCategory : TCategory;
     FComplete : Boolean;
     FIncomplete : Boolean;
-    procedure SetCategory(const value : TTreeNode);
+    procedure SetCategory(const value : TCategory);
     procedure SetComplete(const value : Boolean);
     procedure SetIncomplete(const value : Boolean);
+    function MatchCategory(const obj : TNamedObject) : Boolean;
   public
-    property Category : TTreeNode read FNode write SetCategory;
+    property Category : TCategory read FCategory write SetCategory;
     property ShowComplete : Boolean read FComplete write SetComplete;
     property ShowIncomplete : Boolean read FIncomplete write SetIncomplete;
     function Belongs(const obj : TNamedObject) : Boolean; override;
   end;
   TReminderSelection = class(TObjectsSelection)
+    function Belongs(const obj : TNamedObject) : Boolean; override;
+  end;
+  TCategorySelection = class(TObjectsSelection)
     function Belongs(const obj : TNamedObject) : Boolean; override;
   end;
 
@@ -69,11 +75,11 @@ type
     eSearch: TLabeledEdit;
     cbCompleteTasks: TCheckBox;
     cbIncompleteTasks: TCheckBox;
-    TreeView: TTreeView;
     Splitter: TSplitter;
     TasksListView: TListView;
     RemindersListView: TListView;
     frmTaskSwitch: TfrmTaskSwitch;
+    CategoryTree: TVirtualStringTree;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -81,12 +87,9 @@ type
     procedure ApplicationEventsMinimize(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure acAddTaskExecute(Sender: TObject);
-    procedure acAddCategoryExecute(Sender: TObject);
-    procedure acAddChildCategoryExecute(Sender: TObject);
-    procedure acDeleteCategoryExecute(Sender: TObject);
-    procedure TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
+{    procedure TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure TreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
+      State: TDragState; var Accept: Boolean);}
     procedure TasksListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure RemindersListViewSelectItem(Sender: TObject; Item: TListItem;
@@ -94,13 +97,10 @@ type
     procedure acChangeTaskExecute(Sender: TObject);
     procedure acRemoveTaskExecute(Sender: TObject);
     procedure acRemoveReminderExecute(Sender: TObject);
-    procedure TreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure eQuickNewTaskKeyPress(Sender: TObject; var Key: Char);
     procedure TasksListViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure RemindersListViewKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure TreeViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure eSearchChange(Sender: TObject);
     procedure TasksListViewDblClick(Sender: TObject);
@@ -113,27 +113,35 @@ type
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure acAddReminderExecute(Sender: TObject);
     procedure acChangeReminderExecute(Sender: TObject);
-    procedure pmCategoriesPopup(Sender: TObject);
     procedure cbCompleteTasksClick(Sender: TObject);
     procedure cbIncompleteTasksClick(Sender: TObject);
     procedure TasksListViewData(Sender: TObject; Item: TListItem);
     procedure RemindersListViewData(Sender: TObject; Item: TListItem);
-    procedure TreeViewEdited(Sender: TObject; Node: TTreeNode;
-      var S: String);
     procedure TreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
     procedure acAddToActiveTasksExecute(Sender: TObject);
     procedure acLogEntryExecute(Sender: TObject);
     procedure acShowTimelineExecute(Sender: TObject);
+    procedure CategoryTreeGetText(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
+      var CellText: WideString);
+    procedure CategoryTreeEditing(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
+    procedure CategoryTreeNewText(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex; NewText: WideString);
+    procedure CategoryTreeDragOver(Sender: TBaseVirtualTree;
+      Source: TObject; Shift: TShiftState; State: TDragState; Pt: TPoint;
+      Mode: TDropMode; var Effect: Integer; var Accept: Boolean);
+    procedure CategoryTreeDragDrop(Sender: TBaseVirtualTree;
+      Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
+      Shift: TShiftState; Pt: TPoint; var Effect: Integer;
+      Mode: TDropMode);
   private
     TrayIconData : TNotifyIconData;
 
-    TaskSelection : TCategorySelection;
+    TaskSelection : TCategoryTaskSelection;
     ReminderSelection : TReminderSelection;
-
-    procedure LoadCategories;
-    procedure AddCategory(const CatName : String);
-    function MatchCategory(const node : TTreeNode; const obj : TNamedObject) : Boolean;
+    CategorySelection : TCategorySelection;
 
     procedure TrayMessage(var Msg : TMessage); message WM_TRAYICON;
     procedure KeyHookHandler(var msg : TMessage); message WM_HOTKEY;
@@ -144,8 +152,9 @@ type
     procedure OnReminderAdd(Sender : TObject; obj : TNamedObject);
     procedure OnReminderDelete(Sender : TObject; obj : TNamedObject);
     procedure OnReminderChange(Sender : TObject; obj : TNamedObject);
-
-    procedure SaveCategories;
+    procedure OnCategoryAdd(Sender : TObject; obj : TNamedObject);
+    procedure OnCategoryDelete(Sender : TObject; obj : TNamedObject);
+    procedure OnCategoryChange(Sender : TObject; obj : TNamedObject);
 
   end;
 
@@ -154,33 +163,43 @@ var
 
 implementation
 
-uses Math, Parse, TaskProp, PopUp, ReminderProp, Logging,
+uses ActiveX, Math, Parse, TaskProp, PopUp, ReminderProp, Logging,
   TimelineData, TimelineForm;
 
 {$R *.dfm}
 
 const
   HK_ACTIVATE = 1;
-  CategoriesFileName = 'data\categories.txt';
 
   CategoryAll = '(all)';
   CategoryNone = '(none)';
 
-function TCategorySelection.Belongs(const obj : TNamedObject) : Boolean;
+type
+  PCategory = ^TCategory;  
+
+function TCategoryTaskSelection.Belongs(const obj : TNamedObject) : Boolean;
 begin
   Result := (obj is TTask) and (TTask(obj).Complete and FComplete or not TTask(obj).Complete and FIncomplete);
-  Result := Result and frmMain.MatchCategory(FNode, obj);
+  Result := Result and MatchCategory(obj);
 end;
 
-procedure TCategorySelection.SetCategory(const value : TTreeNode);
+function TCategoryTaskSelection.MatchCategory(const obj : TNamedObject) : Boolean;
 begin
-  if FNode <> value then begin
-    FNode := value;
+  Result := (FCategory = nil)
+         or (FCategory.Name = CategoryAll)
+         or TTask(obj).HasCategory(FCategory)
+         or (FCategory.Name = CategoryNone) and not TTask(obj).HasCategory;
+end;
+
+procedure TCategoryTaskSelection.SetCategory(const value : TCategory);
+begin
+  if FCategory <> value then begin
+    FCategory := value;
     ReSelectAll;
   end;
 end;
 
-procedure TCategorySelection.SetComplete(const value : Boolean);
+procedure TCategoryTaskSelection.SetComplete(const value : Boolean);
 begin
   if FComplete <> value then begin
     FComplete := value;
@@ -188,7 +207,7 @@ begin
   end;
 end;
 
-procedure TCategorySelection.SetIncomplete(const value : Boolean);
+procedure TCategoryTaskSelection.SetIncomplete(const value : Boolean);
 begin
   if FIncomplete <> value then begin
     FIncomplete := value;
@@ -201,42 +220,63 @@ begin
   Result := (obj is TReminder) and (TReminder(obj).Task = nil);
 end;
 
-function CompareItems(Item1, Item2: Pointer) : Integer;
-var
-  o1, o2 : TNamedObject;
-  t1, t2 : TTask;
+function TCategorySelection.Belongs(const obj : TNamedObject) : Boolean;
+begin
+  Result := obj is TCategory;
+end;
+
+function CompareTasks(Item1, Item2: Pointer) : Integer;
+var t1, t2 : TTask;
+begin
+  t1 := TTask(Item1);
+  t2 := TTask(Item2);
+  if t1.Complete > t2.Complete then
+    Result := 1
+  else if t1.Complete < t2.Complete then
+    Result := -1
+  else if t1.Priority < t2.Priority then
+    Result := 1
+  else if t1.Priority > t2.Priority then
+    Result := -1
+  else if t1.Name > t2.Name then
+    Result := 1
+  else if t1.Name < t2.Name then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function CompareReminders(Item1, Item2: Pointer) : Integer;
+var o1, o2 : TNamedObject;
 begin
   o1 := TNamedObject(Item1);
   o2 := TNamedObject(Item2);
-  if (o1 is TReminder) and (o2 is TTask) then
-    Result := -1
-  else if (o1 is TTask) and (o2 is TReminder) then
+  if o1.Name > o2.Name then
     Result := 1
-  else if (o1 is TTask) and (o2 is TTask) then begin
-    t1 := TTask(o1);
-    t2 := TTask(o2);
-    if t1.Complete > t2.Complete then
-      Result := 1
-    else if t1.Complete < t2.Complete then
-      Result := -1
-    else if t1.Priority < t2.Priority then
-      Result := 1
-    else if t1.Priority > t2.Priority then
-      Result := -1
-    else if t1.Name > t2.Name then
-      Result := 1
-    else if t1.Name < t2.Name then
-      Result := -1
-    else
-      Result := 0;
-  end else if (o1 is TReminder) and (o2 is TReminder) then begin
-    if o1.Name > o2.Name then
-      Result := 1
-    else if o1.Name < o2.Name then
-      Result := -1
-    else
-      Result := 0;
-  end else
+  else if o1.Name < o2.Name then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function CompareCategories(Item1, Item2: Pointer) : Integer;
+var c1, c2 : TTask;
+begin
+  c1 := TCategory(Item1);
+  c2 := TCategory(Item2);
+  if c1.Complete > t2.Complete then
+    Result := 1
+  else if t1.Complete < t2.Complete then
+    Result := -1
+  else if t1.Priority < t2.Priority then
+    Result := 1
+  else if t1.Priority > t2.Priority then
+    Result := -1
+  else if t1.Name > t2.Name then
+    Result := 1
+  else if t1.Name < t2.Name then
+    Result := -1
+  else
     Result := 0;
 end;
 
@@ -280,19 +320,44 @@ begin
   RemindersListView.Invalidate;
 end;
 
-function TfrmMain.MatchCategory(const node : TTreeNode; const obj : TNamedObject) : Boolean;
-var i : Integer;
+function AddCategoryToTree(CategoryTree : TVirtualStringTree; category : TCategory) : PVirtualNode;
+var pnode : PVirtualNode;
 begin
-  Result := node = nil;
-  Result := Result or (node.Text = CategoryAll);
-  Result := Result or (TTask(obj).Category.Name = node.Text); // !C
-  Result := Result or (node.Text = CategoryNone) and (TTask(obj).Category = '');
-  if not Result then
-    for i := 0 to TreeView.Items.Count - 1 do
-      if TreeView.Items[i].Parent = node then begin
-        Result := MatchCategory(TreeView.Items[i], obj);
-        if Result then Exit;
-      end;
+  Result := nil;
+  if category = nil then Exit;
+  if category.Parent <> nil then begin
+    pnode := CategoryTree.GetFirst;
+    while (pnode <> nil) and (PCategory(CategoryTree.GetNodeData(pnode))^ <> category.Parent) do begin
+      pnode := CategoryTree.GetNext(pnode);
+    end;
+    if pnode = nil then
+      pnode := AddCategoryToTree(CategoryTree, category.Parent);
+  end else
+    pnode := nil;
+  Result := CategoryTree.AddChild(pnode, category);
+end;
+
+procedure TfrmMain.OnCategoryAdd(Sender : TObject; obj : TNamedObject);
+begin
+  AddCategoryToTree(CategoryTree, TCategory(obj));
+end;
+
+procedure TfrmMain.OnCategoryDelete(Sender : TObject; obj : TNamedObject);
+var pnode : PVirtualNode;
+begin
+  pnode := CategoryTree.GetFirst;
+  while (pnode <> nil) and (PCategory(CategoryTree.GetNodeData(pnode))^ <> obj) do begin
+    pnode := CategoryTree.GetNext(pnode);
+  end;
+  if pnode <> nil then begin
+    CategoryTree.DeleteChildren(pnode);
+    CategoryTree.DeleteNode(pnode);
+  end;
+end;
+
+procedure TfrmMain.OnCategoryChange(Sender : TObject; obj : TNamedObject);
+begin
+  CategoryTree.Invalidate;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -301,16 +366,20 @@ begin
   ReminderSelection.OnAdd := OnReminderAdd;
   ReminderSelection.OnItemChange := OnReminderChange;
   ReminderSelection.OnDelete := OnReminderDelete;
-  ReminderSelection.PermanentSortComparator := CompareItems;
+  ReminderSelection.PermanentSortComparator := CompareReminders;
   ReminderSelection.ReSelectAll;
-  TaskSelection := TCategorySelection.Create(TaskStorage);
+  TaskSelection := TCategoryTaskSelection.Create(TaskStorage);
   TaskSelection.OnAdd := OnTaskAdd;
   TaskSelection.OnItemChange := OnTaskChange;
   TaskSelection.OnDelete := OnTaskDelete;
-  TaskSelection.PermanentSortComparator := CompareItems;
+  TaskSelection.PermanentSortComparator := CompareTasks;
   TaskSelection.ShowIncomplete := True;
-  LoadCategories;
-  TreeView.Selected := TreeView.Items[0];
+  CategorySelection := TCategorySelection.Create(TaskStorage);
+  CategorySelection.OnAdd := OnCategoryAdd;
+  CategorySelection.OnItemChange := OnCategoryChange;
+  CategorySelection.OnDelete := OnCategoryDelete;
+  CategorySelection.ReSelectAll;
+  CategoryTree.FocusedNode := CategoryTree.GetFirst;
 
   with TrayIconData do begin
     cbSize := SizeOf(TrayIconData);
@@ -337,32 +406,6 @@ begin
   frmTaskSwitch.UnregisterHotKeys;
 end;
 
-procedure TfrmMain.LoadCategories;
-var i : Integer;
-begin
-  if FileExists(CategoriesFileName) then
-    TreeView.LoadFromFile(CategoriesFileName);
-  AddCategory(CategoryNone);
-  AddCategory(CategoryAll);
-  for i := 0 to TaskStorage.Count - 1 do
-    if (TaskStorage[i] is TTask) and (TTask(TaskStorage[i]).Category <> '') then
-      AddCategory(TTask(TaskStorage[i]).Category);
-end;
-
-procedure TfrmMain.AddCategory(const CatName : String);
-Var i : Integer;
-begin
-  for i := 0 to TreeView.Items.Count - 1 do
-    if TreeView.Items[i].Text = CatName then
-      Exit;
-  TreeView.Items.Add(nil, CatName);
-end;
-
-procedure TfrmMain.SaveCategories;
-begin
-  TreeView.SaveToFile(CategoriesFileName);
-end;
-
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := MessageDlg('Exit?', mtConfirmation, [mbYes, mbNo], 0) = mrYes;
@@ -370,7 +413,6 @@ end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  SaveCategories;
   TaskStorage.SaveToFile(TasksFileName);
 end;
 
@@ -417,11 +459,14 @@ procedure TfrmMain.acAddTaskExecute(Sender: TObject);
 var
   t : TTask;
   vis : Boolean;
+  catname : String;
 begin
   t := TTask.Create;
-  if (TreeView.Selected <> nil) and (TreeView.Selected.Text <> CategoryAll)
-          and (TreeView.Selected.Text <> CategoryNone) Then
-    t.Category := TreeView.Selected.Text;
+  if (CategoryTree.FocusedNode <> nil) then begin
+    catname := TCategory(CategoryTree.GetNodeData(CategoryTree.FocusedNode)).Name;
+    if (catname <> CategoryAll) and (catname <> CategoryNone) Then
+      t.AddCategory(TCategory(CategoryTree.GetNodeData(CategoryTree.FocusedNode)));
+  end;
   frmTaskProperties.Task := t;
   vis := frmTaskProperties.Visible;
   frmTaskProperties.Hide;
@@ -490,64 +535,12 @@ begin
   end;
 end;
 
-procedure TfrmMain.acAddCategoryExecute(Sender: TObject);
-var t : TTreeNode;
-begin
-  t := TreeView.Items.Add(nil, 'New Category');
-  TreeView.Selected := t;
-  if not t.EditText then
-    TreeView.Items.Delete(t);
-  SaveCategories;
-end;
-
-procedure TfrmMain.acAddChildCategoryExecute(Sender: TObject);
-var t : TTreeNode;
-begin
-  if TreeView.Selected <> nil then begin
-    t := TreeView.Items.AddChild(TreeView.Selected, 'New Subcategory');
-    TreeView.Selected := t;
-    if not t.EditText then
-      TreeView.Items.Delete(t);
-    SaveCategories;
-  end;
-end;
-
-procedure TfrmMain.acDeleteCategoryExecute(Sender: TObject);
-var i : Integer;
-begin
-  if (TreeView.Selected <> nil)
-        and (TreeView.Selected.Text <> CategoryNone)
-        and (TreeView.Selected.Text <> CategoryAll)
-        and (MessageDlg('Delete category "' + TreeView.Selected.Text + '"?',
-                mtConfirmation, [mbYes, mbNo], 0) = mrYes) then begin
-    for i := 0 to TaskStorage.Count - 1 do
-      if (TaskStorage[i] is TTask) and (TreeView.Selected.Text = TTask(TaskStorage[i]).Category) then
-        TTask(TaskStorage[i]).Category := '';
-    TreeView.Items.Delete(TreeView.Selected);
-    SaveCategories;
-  end;
-end;
-
-procedure TfrmMain.TreeViewEdited(Sender: TObject; Node: TTreeNode;
-  var S: String);
-var
-  i : Integer;
-begin
-  for i := 0 to TaskStorage.Count - 1 do
-    if (TaskStorage[i] is TTask) and (TTask(TaskStorage[i]).Category = Node.Text) then 
-      TTask(TaskStorage[i]).Category := s;
-  Node.Text := s;
-  TaskSelection.ReSelectAll;
-end;
-
 procedure TfrmMain.TreeViewEditing(Sender: TObject; Node: TTreeNode;
   var AllowEdit: Boolean);
 begin
-  AllowEdit := (Node.Text <> CategoryAll)
-           and (Node.Text <> CategoryNone);
 end;
 
-procedure TfrmMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
+{procedure TfrmMain.TreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
   AnItem : TTreeNode;
   AttachMode : TNodeAttachMode;
@@ -592,7 +585,7 @@ begin
              and (target.Text <> CategoryAll)
              and (TasksListView.Selected <> nil);
 end;
-
+}
 procedure TfrmMain.TasksListViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
@@ -615,18 +608,12 @@ begin
   acRemoveReminder.Enabled := acChangeReminder.Enabled;
 end;
 
-procedure TfrmMain.TreeViewChange(Sender: TObject; Node: TTreeNode);
-begin
-  TaskSelection.Category := Node;
-end;
-
 procedure TfrmMain.eQuickNewTaskKeyPress(Sender: TObject; var Key: Char);
 var t : TTask;
 begin
   if (Key = #13) and (eQuickNewTask.Text <> '') then begin
     t := TTask.Create;
     t.Name := eQuickNewTask.Text;
-    t.Category := TaskSelection.Category.Text;
     TaskSelection.Add(t);
     eQuickNewTask.Text := '';
   end;
@@ -650,15 +637,6 @@ begin
     RemindersListView.Selected.EditCaption;
 end;
 
-procedure TfrmMain.TreeViewKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_DELETE) and not TreeView.IsEditing then
-    acDeleteCategory.Execute
-  else if (Key = VK_F2) and (TreeView.Selected <> nil) then
-    TreeView.Selected.EditText;
-end;
-
 procedure TfrmMain.eSearchChange(Sender: TObject);
 begin
   ShowMessage('ne baca');
@@ -669,7 +647,7 @@ begin
   if TasksListView.Selected <> nil then
     acChangeTask.Execute
   else
-    if TreeView.Selected <> nil then
+    if CategoryTree.FocusedNode <> nil then
       acAddTask.Execute;
 end;
 
@@ -712,15 +690,6 @@ begin
       Sender.Canvas.Font.Color := RGB(0, 0, sh)
     end;
   end;
-end;
-
-procedure TfrmMain.pmCategoriesPopup(Sender: TObject);
-begin
-  acAddCategory.Enabled := TreeView.Selected <> nil;
-  acAddChildCategory.Enabled := TreeView.Selected <> nil;
-  acDeleteCategory.Enabled := (TreeView.Selected <> nil)
-          and (TreeView.Selected.Text <> CategoryNone)
-          and (TreeView.Selected.Text <> CategoryAll);
 end;
 
 procedure TfrmMain.cbCompleteTasksClick(Sender: TObject);
@@ -777,6 +746,57 @@ begin
   s := TTaskSelection.Create(TaskStorage);
   s.ReSelectAll;
   TfrmTimeline.Create(Application, s).Show;
+end;
+
+procedure TfrmMain.CategoryTreeGetText(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
+  var CellText: WideString);
+begin
+  CellText := PCategory(CategoryTree.GetNodeData(Node))^.Name + ' (' + inttostr(CategoryTree.GetNodeLevel(Node)) + ' ' + inttostr(node.Index) + ')';
+end;
+
+procedure TfrmMain.CategoryTreeEditing(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
+var name : String;
+begin
+  name := PCategory(CategoryTree.GetNodeData(Node))^.Name;
+  Allowed := (name <> CategoryAll) and (name <> CategoryNone);
+end;
+
+procedure TfrmMain.CategoryTreeNewText(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex; NewText: WideString);
+begin
+  PCategory(CategoryTree.GetNodeData(Node))^.Name := NewText;
+end;
+
+procedure TfrmMain.CategoryTreeDragOver(Sender: TBaseVirtualTree;
+  Source: TObject; Shift: TShiftState; State: TDragState; Pt: TPoint;
+  Mode: TDropMode; var Effect: Integer; var Accept: Boolean);
+var target : PVirtualNode;
+begin
+  target := CategoryTree.GetNodeAt(pt.X, pt.Y);
+  Accept := (Source = CategoryTree)
+         or (Source = TasksListView)
+             and (target <> nil)
+             and (PCategory(CategoryTree.GetNodeData(target))^.Name <> CategoryAll)
+             and (TasksListView.Selected <> nil);
+end;
+
+procedure TfrmMain.CategoryTreeDragDrop(Sender: TBaseVirtualTree;
+  Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
+  Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode: TDropMode);
+var Attachmode: TVTNodeAttachMode;
+begin
+  if Source = CategoryTree then begin
+    Effect := DROPEFFECT_MOVE;
+    case Mode of
+      dmAbove  : AttachMode := amInsertBefore;
+      dmOnNode : AttachMode := amAddChildLast;
+      dmBelow  : AttachMode := amInsertAfter;
+      else exit;
+    end;
+    CategoryTree.MoveTo(CategoryTree.FocusedNode, Sender.DropTargetNode, AttachMode, False);
+  end;
 end;
 
 end.

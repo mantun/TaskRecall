@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 469
-  Top = 361
+  Left = 193
+  Top = 115
   Width = 466
   Height = 348
   ActiveControl = eQuickNewTask
@@ -107,25 +107,6 @@ object frmMain: TfrmMain
           OnClick = cbIncompleteTasksClick
         end
       end
-      object TreeView: TTreeView
-        Left = 0
-        Top = 36
-        Width = 121
-        Height = 240
-        Align = alLeft
-        DragMode = dmAutomatic
-        HideSelection = False
-        HotTrack = True
-        Indent = 19
-        PopupMenu = pmCategories
-        TabOrder = 1
-        OnChange = TreeViewChange
-        OnDragDrop = TreeViewDragDrop
-        OnDragOver = TreeViewDragOver
-        OnEdited = TreeViewEdited
-        OnEditing = TreeViewEditing
-        OnKeyDown = TreeViewKeyDown
-      end
       object TasksListView: TListView
         Left = 127
         Top = 36
@@ -143,7 +124,7 @@ object frmMain: TfrmMain
         RowSelect = True
         PopupMenu = pmTasks
         SortType = stData
-        TabOrder = 2
+        TabOrder = 1
         ViewStyle = vsList
         OnCustomDrawItem = TasksListViewCustomDrawItem
         OnData = TasksListViewData
@@ -151,6 +132,32 @@ object frmMain: TfrmMain
         OnEdited = TasksListViewEdited
         OnKeyDown = TasksListViewKeyDown
         OnSelectItem = TasksListViewSelectItem
+      end
+      object CategoryTree: TVirtualStringTree
+        Left = 0
+        Top = 36
+        Width = 121
+        Height = 240
+        Align = alLeft
+        DragMode = dmAutomatic
+        DragType = dtVCL
+        Header.AutoSizeIndex = 0
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'MS Sans Serif'
+        Header.Font.Style = []
+        Header.MainColumn = -1
+        Header.Options = [hoColumnResize, hoDrag]
+        NodeDataSize = 4
+        TabOrder = 2
+        TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+        OnDragOver = CategoryTreeDragOver
+        OnDragDrop = CategoryTreeDragDrop
+        OnEditing = CategoryTreeEditing
+        OnGetText = CategoryTreeGetText
+        OnNewText = CategoryTreeNewText
+        Columns = <>
       end
     end
     object tsReminders: TTabSheet
@@ -240,17 +247,14 @@ object frmMain: TfrmMain
     object acAddCategory: TAction
       Category = 'Categories'
       Caption = '&New Category'
-      OnExecute = acAddCategoryExecute
     end
     object acDeleteCategory: TAction
       Category = 'Categories'
       Caption = '&Delete Category...'
-      OnExecute = acDeleteCategoryExecute
     end
     object acAddChildCategory: TAction
       Category = 'Categories'
       Caption = 'New &Subcategory'
-      OnExecute = acAddChildCategoryExecute
     end
     object acAddReminder: TAction
       Category = 'Reminders'
@@ -305,7 +309,6 @@ object frmMain: TfrmMain
     end
   end
   object pmCategories: TPopupMenu
-    OnPopup = pmCategoriesPopup
     Left = 168
     Top = 144
     object NewCategory1: TMenuItem

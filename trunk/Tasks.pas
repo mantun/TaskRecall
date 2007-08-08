@@ -36,7 +36,6 @@ type
     FPriority : Integer;
     FComplete : Boolean;
     FCategories : Array of TCategory;
-    FCategory : TCategory;
     FReminder : TReminder;
     FActiveNo : Integer;
     FTimeSpent : Double;
@@ -71,7 +70,8 @@ type
     destructor Destroy; override;
     function ToString : String; override;
 
-    function HasCategory(const Category : TCategory) : Boolean;
+    function HasCategory(const Category : TCategory) : Boolean; overload;
+    function HasCategory : Boolean; overload;
     function AddCategory(const Category : TCategory) : Boolean;
     function RemoveCategory(const Category : TCategory) : Boolean;
   end;
@@ -422,16 +422,15 @@ begin
     FDescription := Decode(sl[2]);
     FPriority := StrToInt(sl[3]);
     FComplete := StrToBool(sl[4]);
-    Resolver.AddPointer(sl[5], @FCategory);
-    Resolver.AddPointer(sl[6], @FReminder);
-    FActiveNo := StrToInt(sl[7]);
-    FTimeSpent := StrToFloat(sl[8]);
-    ss := Decode(sl[9]);
+    Resolver.AddPointer(sl[5], @FReminder);
+    FActiveNo := StrToInt(sl[6]);
+    FTimeSpent := StrToFloat(sl[7]);
+    ss := Decode(sl[8]);
     if ss <> '' then
       FStartTime := StrToDateTime(ss)
     else
       FStartTime := 0;
-    ss := Decode(sl[10]);
+    ss := Decode(sl[9]);
     if ss <> '' then
       FEndTime := StrToDateTime(ss)
     else
@@ -453,7 +452,6 @@ begin
     sl.add(Encode(FDescription));
     sl.add(IntToStr(FPriority));
     sl.add(BoolToStr(FComplete));
-    sl.add(TPointerResolver.PointerToStr(FCategory));
     sl.add(TPointerResolver.PointerToStr(FReminder));
     sl.add(IntToStr(FActiveNo));
     sl.add(FloatToStr(FTimeSpent));
@@ -481,6 +479,11 @@ begin
     Result := FCategories[i].HasParent(Category);
     if Result then Exit;
   end;
+end;
+
+function TTask.HasCategory : Boolean;
+begin
+  Result := Length(FCategories) > 0;
 end;
 
 function TTask.AddCategory(const Category : TCategory) : Boolean;
@@ -829,8 +832,8 @@ begin
         o := TTask.FromString(sl.Text, Resolver)
       else if ClassName = TReminder.ClassName then
         o := TReminder.FromString(sl.Text, Resolver)
-{!C      else if ClassName = TCategory.ClassName then
-        o := TCategory.FromString(sl.Text, Resolver)}
+      else if ClassName = TCategory.ClassName then
+        o := TCategory.FromString(sl.Text, Resolver)
       else begin
         raise Exception.Create('Unknown class');
         o := nil;
