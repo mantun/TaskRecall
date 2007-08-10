@@ -139,7 +139,7 @@ object frmMain: TfrmMain
         Width = 121
         Height = 240
         Align = alLeft
-        DragMode = dmAutomatic
+        DragOperations = [doMove]
         DragType = dtVCL
         Header.AutoSizeIndex = 0
         Header.Font.Charset = DEFAULT_CHARSET
@@ -150,11 +150,15 @@ object frmMain: TfrmMain
         Header.MainColumn = -1
         Header.Options = [hoColumnResize, hoDrag]
         NodeDataSize = 4
+        PopupMenu = pmCategories
         TabOrder = 2
         TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+        TreeOptions.SelectionOptions = [toRightClickSelect]
+        OnDragAllowed = CategoryTreeDragAllowed
         OnDragOver = CategoryTreeDragOver
         OnDragDrop = CategoryTreeDragDrop
         OnEditing = CategoryTreeEditing
+        OnFocusChanged = CategoryTreeFocusChanged
         OnGetText = CategoryTreeGetText
         OnNewText = CategoryTreeNewText
         Columns = <>
@@ -247,6 +251,7 @@ object frmMain: TfrmMain
     object acAddCategory: TAction
       Category = 'Categories'
       Caption = '&New Category'
+      OnExecute = acAddCategoryExecute
     end
     object acDeleteCategory: TAction
       Category = 'Categories'

@@ -74,6 +74,7 @@ type
     function HasCategory : Boolean; overload;
     function AddCategory(const Category : TCategory) : Boolean;
     function RemoveCategory(const Category : TCategory) : Boolean;
+    procedure ClearCategories;
   end;
 
   TReminder = class(TNamedObject)
@@ -108,11 +109,15 @@ type
   private
     FParent : TCategory;
     FColor : TColor;
+    FIndex : Integer;
 
-   procedure SetColor(value : TColor);
+    procedure SetColor(value : TColor);
+    procedure SetParent(value : TCategory);
+    procedure SetIndex(value : Integer);
   public
-    property Parent : TCategory read FParent;
+    property Parent : TCategory read FParent write SetParent;
     property Color : TColor read FColor write SetColor;
+    property Index : Integer read FIndex write SetIndex;
 
     function HasParent(Category : TCategory) : Boolean;
     constructor Create(const AName : String; AParent : TCategory);
@@ -413,6 +418,7 @@ constructor TTask.FromString(const s : String; const Resolver : TPointerResolver
 var
   sl : TStringList;
   ss : String;
+  i : Integer;
 begin
   sl := TStringList.Create;
   try
@@ -435,6 +441,9 @@ begin
       FEndTime := StrToDateTime(ss)
     else
       FEndTime := 0;
+    SetLength(FCategories, StrToInt(sl[10]));
+    for i := 0 to High(FCategories) do
+      Resolver.AddPointer(sl[11 + i], @FCategories[i]);
   finally
     sl.Free;
   end;
@@ -444,6 +453,7 @@ function TTask.ToString : String;
 var
   sl : TStringList;
   ss : String;
+  i : Integer;
 begin
   sl := TStringList.Create;
   try
@@ -465,6 +475,9 @@ begin
     else
       ss := '';
     sl.add(Encode(ss));
+    sl.add(IntToStr(Length(FCategories)));
+    for i := 0 to High(FCategories) do
+      sl.add(TPointerResolver.PointerToStr(FCategories[i]));
     Result := sl.Text;
   finally
     sl.Free;
@@ -494,6 +507,7 @@ begin
     if FCategories[i] = Category then Exit;
   SetLength(FCategories, Length(FCategories) + 1);
   FCategories[High(FCategories)] := Category;
+  Changed;
   Result := True;
 end;
 
@@ -509,6 +523,14 @@ begin
       Exit;
     end;
   Result := False;
+end;
+
+procedure TTask.ClearCategories;
+begin
+  if Length(FCategories) > 0 then begin
+    SetLength(FCategories, 0);
+    Changed;
+  end;
 end;
 
 { TReminder }
@@ -674,6 +696,24 @@ begin
   end;
 end;
 
+procedure TCategory.SetParent(value : TCategory);
+begin
+  if FParent.HasParent(self) then
+    raise Exception.Create('Circular parent references are not allowed');
+  if FParent <> value then begin
+    FParent := value;
+    Changed;
+  end;
+end;
+
+procedure TCategory.SetIndex(value : Integer);
+begin
+  if FIndex <> value then begin
+    FIndex := value;
+    Changed;
+  end;
+end;
+
 function TCategory.HasParent(Category : TCategory) : Boolean;
 var own : TCategory;
 begin
@@ -696,7 +736,8 @@ begin
     sl.Text := s;
     FName := Decode(sl[0]);
     FColor := StrToInt('$' + sl[1]);
-    Resolver.AddPointer(sl[2], @FParent);
+    FIndex := StrToInt(sl[2]);
+    Resolver.AddPointer(sl[3], @FParent);
   finally
     sl.Free;
   end;
@@ -709,6 +750,7 @@ begin
   try
     sl.Add(Encode(FName));
     sl.Add(IntToHex(FColor, 6));
+    sl.Add(IntToStr(FIndex));
     sl.Add(TPointerResolver.PointerToStr(FParent));
     Result := sl.Text;
   finally
