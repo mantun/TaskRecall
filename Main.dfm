@@ -157,6 +157,7 @@ object frmMain: TfrmMain
         OnDragAllowed = CategoryTreeDragAllowed
         OnDragOver = CategoryTreeDragOver
         OnDragDrop = CategoryTreeDragDrop
+        OnEdited = CategoryTreeEdited
         OnEditing = CategoryTreeEditing
         OnFocusChanged = CategoryTreeFocusChanged
         OnGetText = CategoryTreeGetText
@@ -256,10 +257,12 @@ object frmMain: TfrmMain
     object acDeleteCategory: TAction
       Category = 'Categories'
       Caption = '&Delete Category...'
+      OnExecute = acDeleteCategoryExecute
     end
     object acAddChildCategory: TAction
       Category = 'Categories'
       Caption = 'New &Subcategory'
+      OnExecute = acAddChildCategoryExecute
     end
     object acAddReminder: TAction
       Category = 'Reminders'

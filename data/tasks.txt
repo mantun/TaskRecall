@@ -1,14 +1,14 @@
 181
 
-00A53258
+00A530FC
 TReminder
 "break"
 "(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) false)"
 ""
-"10.08.2007 14:54:48"
+"13.08.2007 12:57:42"
 00000000
 
-00A5214C
+00A52014
 TTask
 1
 "Track time"
@@ -22,7 +22,7 @@ TTask
 ""
 0
 
-00A55954
+00A557F8
 TTask
 2
 "Task logging"
@@ -36,7 +36,7 @@ TTask
 ""
 0
 
-00A55FE8
+00A55E8C
 TTask
 3
 "Multiple categories for task"
@@ -48,10 +48,9 @@ TTask
 0
 ""
 ""
-1
-00A56198
+0
 
-00A56B40
+00A56A54
 TTask
 4
 "Mute option"
@@ -65,7 +64,7 @@ TTask
 ""
 0
 
-00A57148
+00A57078
 TTask
 5
 "Parser to allow time lists and range comparison"
@@ -79,7 +78,7 @@ TTask
 "07.04.2007 14:29:13"
 0
 
-00A57B3C
+00A57A48
 TTask
 6
 "Quick new task"
@@ -93,7 +92,7 @@ TTask
 ""
 0
 
-00A57F58
+00A58340
 TTask
 7
 "Quick search"
@@ -107,7 +106,7 @@ TTask
 ""
 0
 
-00A561EC
+00A58924
 TTask
 8
 "Sort reminders by their execution time"
@@ -121,7 +120,7 @@ TTask
 "05.04.2007 12:21:32"
 0
 
-00A521A8
+00A58D78
 TTask
 10
 "Reminder Time expression sometimes reverts to old value when apply is pressed"
@@ -135,7 +134,7 @@ TTask
 ""
 0
 
-00A5338C
+00A590EC
 TTask
 11
 "Button 'properties' from PopUp for reminder without task displays empty form"
@@ -149,7 +148,7 @@ TTask
 ""
 0
 
-00A52370
+00A594FC
 TTask
 15
 "Make TimeSpent real, instead of integer"
@@ -163,7 +162,7 @@ TTask
 ""
 0
 
-00A522F0
+00A598E4
 TTask
 16
 "Double click on active tasks shall not display task properties"
@@ -177,7 +176,7 @@ TTask
 ""
 0
 
-00A5293C
+00A59C68
 TTask
 17
 "Install WinKey hook to activate tasks and log"
@@ -191,7 +190,7 @@ TTask
 ""
 0
 
-00A533F8
+00A59FE8
 TTask
 18
 "Find a way to show/hide Active Tasks form"
@@ -205,7 +204,7 @@ TTask
 ""
 0
 
-00A523F8
+00A5A328
 TTask
 19
 "Allow subtasks?"
@@ -219,7 +218,7 @@ TTask
 ""
 0
 
-00A52A08
+00A5A614
 TTask
 105
 "Allow task activation from PopUp form"
@@ -233,7 +232,7 @@ TTask
 ""
 0
 
-00A52B48
+00A5A94C
 TTask
 106
 "Enable Log Search and Save with visual clue"
@@ -247,7 +246,7 @@ TTask
 ""
 0
 
-00A52ADC
+00A5AD24
 TTask
 109
 "Track task switches and time along with the total time spent"
@@ -261,7 +260,7 @@ TTask
 ""
 0
 
-00A57D24
+00A53F3C
 TTask
 114
 "Remove/rename log file upon deletion of task"
@@ -275,7 +274,7 @@ TTask
 ""
 0
 
-00A53ED8
+00A54234
 TTask
 117
 "Show task ID everywhere"
@@ -289,7 +288,7 @@ TTask
 "06.04.2007 10:59:13"
 0
 
-00A57D70
+00A560BC
 TTask
 118
 "Keyboard hook doesn't work"
@@ -303,7 +302,7 @@ TTask
 ""
 0
 
-00A55B9C
+00A52070
 TTask
 122
 "Hierarchical Text"
@@ -317,7 +316,7 @@ TTask
 ""
 0
 
-00A543A4
+00A54280
 TTask
 129
 "Display (and edit?) task switches"
@@ -331,7 +330,7 @@ TTask
 ""
 0
 
-00A52A54
+00A53230
 TTask
 141
 "Show open-ended tasks"
@@ -345,7 +344,7 @@ TTask
 "05.04.2007 12:19:47"
 0
 
-00A52EE8
+00A59CE4
 TTask
 142
 "Show hint for tasks on timeline"
@@ -359,7 +358,7 @@ TTask
 ""
 0
 
-00A55B10
+00A5329C
 TTask
 143
 "Allow vertical scrolling for timeline"
@@ -373,7 +372,7 @@ TTask
 ""
 0
 
-00A56254
+00A58608
 TTask
 144
 "Allow drag&drop editing of timeline"
@@ -387,7 +386,7 @@ TTask
 ""
 0
 
-00A52C9C
+00A5A034
 TTask
 145
 "Ability to create timeline for a single task or a task category only"
@@ -401,7 +400,7 @@ TTask
 ""
 0
 
-00A540EC
+00A59548
 TTask
 146
 "Show Log entries in the timeline"
@@ -415,7 +414,7 @@ TTask
 ""
 0
 
-00A54138
+00A53FB8
 TTask
 147
 "Show Tasks in color in the lists?"
@@ -429,7 +428,7 @@ TTask
 ""
 0
 
-00A527BC
+00A52238
 TTask
 148
 "Show visually in the task properties whether a task has reminder"
@@ -443,7 +442,7 @@ TTask
 ""
 0
 
-00A57E74
+00A59080
 TTask
 149
 "Ability to work with keyboard only"
@@ -457,7 +456,7 @@ TTask
 ""
 0
 
-00A570F8
+00A53084
 TTask
 153
 "Update timeline with new task switches"
@@ -471,7 +470,7 @@ TTask
 "06.04.2007 10:58:02"
 0
 
-00A56F98
+00A52144
 TTask
 159
 "Update timeline when task changes its start time to/from empty"
@@ -485,7 +484,7 @@ TTask
 "17.05.2007 14:07:59"
 0
 
-00A57194
+00A58744
 TTask
 179
 "Shoosing 'Make Completed' on task swither, does not set end time"
@@ -499,7 +498,7 @@ TTask
 "10.05.2007 16:37:24"
 0
 
-00A568B0
+00A529A4
 TTask
 180
 "Reminder to have timestamp"
@@ -513,73 +512,31 @@ TTask
 ""
 0
 
-00A542CC
+00A523E0
 TCategory
 "Reminder"
 C0C0C0
 8
 00000000
 
-00A56FE4
+00A530D0
 TCategory
 "test2"
 C0C0C0
 7
 00000000
 
-00A56198
-TCategory
-"Features"
-C0C0C0
-9
-00A542CC
-
-00A52294
+00A58790
 TCategory
 "(none)"
 C0C0C0
 6
 00000000
 
-00A5725C
+00A5989C
 TCategory
 "(all)"
 C0C0C0
 0
 00000000
-
-00A532C4
-TCategory
-"asd"
-C0C0C0
-10
-00000000
-
-00A57BDC
-TCategory
-"qwe"
-C0C0C0
-4
-00A532C4
-
-00A57A64
-TCategory
-"New Category"
-C0C0C0
-5
-00A57BDC
-
-00A57ABC
-TCategory
-"New Category"
-C0C0C0
-3
-00A532C4
-
-00A57A88
-TCategory
-"New Category"
-C0C0C0
-2
-00A532C4
 
