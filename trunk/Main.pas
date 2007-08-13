@@ -136,6 +136,10 @@ type
     procedure CategoryTreeDragAllowed(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
     procedure acAddCategoryExecute(Sender: TObject);
+    procedure acAddChildCategoryExecute(Sender: TObject);
+    procedure CategoryTreeEdited(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex);
+    procedure acDeleteCategoryExecute(Sender: TObject);
   private
     TrayIconData : TNotifyIconData;
 
@@ -157,6 +161,7 @@ type
     procedure OnCategoryChange(Sender : TObject; obj : TNamedObject);
 
     function cat(pnode : PVirtualNode) : TCategory;
+    function FindNode(category : TCategory) : PVirtualNode;
     function AddCategoryToTree(CategoryTree : TVirtualStringTree; category : TCategory) : PVirtualNode;
     procedure AddSpecialCategories;
   end;
@@ -316,16 +321,20 @@ begin
   else Result := PCategory(CategoryTree.GetNodeData(pnode))^;
 end;
 
+function TfrmMain.FindNode(category : TCategory) : PVirtualNode;
+begin
+  Result := CategoryTree.GetFirst;
+  while (Result <> nil) and (cat(Result) <> category) do
+    Result := CategoryTree.GetNext(Result);
+end;
+
 function TfrmMain.AddCategoryToTree(CategoryTree : TVirtualStringTree; category : TCategory) : PVirtualNode;
 var pnode : PVirtualNode;
 begin
   Result := nil;
   if category = nil then Exit;
   if category.Parent <> nil then begin
-    pnode := CategoryTree.GetFirst;
-    while (pnode <> nil) and (cat(pnode) <> category.Parent) do begin
-      pnode := CategoryTree.GetNext(pnode);
-    end;
+    pnode := FindNode(category.Parent);
     if pnode = nil then
       pnode := AddCategoryToTree(CategoryTree, category.Parent);
   end else
@@ -339,14 +348,18 @@ begin
 end;
 
 procedure TfrmMain.OnCategoryDelete(Sender : TObject; obj : TNamedObject);
-var pnode : PVirtualNode;
+var
+  pnode : PVirtualNode;
+  i : Integer;
 begin
-  pnode := CategoryTree.GetFirst;
-  while (pnode <> nil) and (cat(pnode) <> obj) do begin
-    pnode := CategoryTree.GetNext(pnode);
-  end;
+  pnode := FindNode(TCategory(obj));
   if pnode <> nil then begin
-    CategoryTree.DeleteChildren(pnode);
+    i := 0;
+    while i < CategorySelection.Count do
+      if TCategory(CategorySelection[i]).Parent = obj then
+        CategorySelection.Delete(CategorySelection[i])
+      else
+        inc(i);
     CategoryTree.DeleteNode(pnode);
   end;
 end;
@@ -813,8 +826,39 @@ begin
 end;
 
 procedure TfrmMain.acAddCategoryExecute(Sender: TObject);
+var c : TCategory;
 begin
-  CategorySelection.Add(TCategory.Create('New Category', cat(CategoryTree.FocusedNode).Parent));
+  c := TCategory.Create('New Category', cat(CategoryTree.FocusedNode).Parent);
+  CategorySelection.Add(c);
+  CategoryTree.EditNode(FindNode(c), -1);
+end;
+
+procedure TfrmMain.acAddChildCategoryExecute(Sender: TObject);
+var c : TCategory;
+begin
+  c := TCategory.Create('New Category', cat(CategoryTree.FocusedNode));
+  CategorySelection.Add(c);
+  CategoryTree.EditNode(FindNode(c), -1);
+end;
+
+procedure TfrmMain.CategoryTreeEdited(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex);
+begin
+  CategoryTree.Selected[node] := True;
+end;
+
+procedure TfrmMain.acDeleteCategoryExecute(Sender: TObject);
+var
+  c : TCategory;
+  i : Integer;
+begin
+  c := cat(CategoryTree.FocusedNode);
+  if MessageDlg('Delete category "' + c.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
+    for i := 0 to TaskStorage.Count - 1 do
+      if TaskStorage[i] is TTask then
+        TTask(TaskStorage[i]).RemoveCategory(c); 
+    CategorySelection.Delete(c);
+  end;
 end;
 
 end.
