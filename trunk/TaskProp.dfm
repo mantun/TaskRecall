@@ -171,6 +171,14 @@ object frmTaskProperties: TfrmTaskProperties
       ECF2DDEAF0DBE8EEBBD5E1E9EFF3FCFCFCFFFFFFFFFFFFFFFFFF}
     OnClick = btnLogClick
   end
+  object Label1: TLabel
+    Left = 8
+    Top = 40
+    Width = 27
+    Height = 13
+    Caption = '&Color:'
+    FocusControl = cbColor
+  end
   object eTaskName: TLabeledEdit
     Left = 8
     Top = 16
@@ -190,7 +198,7 @@ object frmTaskProperties: TfrmTaskProperties
     Height = 22
     MaxValue = 10
     MinValue = -10
-    TabOrder = 2
+    TabOrder = 3
     Value = 0
     OnChange = sePriorityChange
     OnKeyPress = EditKeyPress
@@ -210,8 +218,8 @@ object frmTaskProperties: TfrmTaskProperties
     Top = 99
     Width = 65
     Height = 17
-    Caption = 'Complete'
-    TabOrder = 3
+    Caption = 'Com&plete'
+    TabOrder = 4
     OnClick = cbCompleteClick
     OnKeyPress = EditKeyPress
   end
@@ -223,7 +231,7 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Width = 58
     EditLabel.Height = 13
     EditLabel.Caption = 'Time spent: '
-    TabOrder = 4
+    TabOrder = 5
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
   end
@@ -235,7 +243,7 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Width = 79
     EditLabel.Height = 13
     EditLabel.Caption = 'Start Date/Time:'
-    TabOrder = 5
+    TabOrder = 6
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
   end
@@ -247,8 +255,19 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Width = 76
     EditLabel.Height = 13
     EditLabel.Caption = 'End Date/Time:'
-    TabOrder = 6
+    TabOrder = 7
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
+  end
+  object cbColor: TColorBox
+    Left = 8
+    Top = 56
+    Width = 121
+    Height = 22
+    DefaultColorColor = clGray
+    Style = [cbStandardColors, cbExtendedColors, cbIncludeNone, cbCustomColor, cbPrettyNames]
+    ItemHeight = 16
+    TabOrder = 2
+    OnChange = cbColorChange
   end
 end

@@ -21,6 +21,8 @@ type
     btnLog: TSpeedButton;
     eStartTime: TLabeledEdit;
     eEndTime: TLabeledEdit;
+    cbColor: TColorBox;
+    Label1: TLabel;
     procedure TaskChange(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure EditKeyPress(Sender: TObject; var Key: Char);
@@ -33,8 +35,10 @@ type
     procedure cbCompleteClick(Sender: TObject);
     procedure sePriorityChange(Sender: TObject);
     procedure btnLogClick(Sender: TObject);
+    procedure cbColorChange(Sender: TObject);
   private
     FCompleteModified : Boolean;
+    FColorModified : Boolean;
     FTask : TSingletonSelection;
     procedure SetTask(const value : TTask);
     function GetTask : TTask;
@@ -78,6 +82,8 @@ begin
     eTaskName.Text := task.Name;
   if not sePriority.Modified then
     sePriority.Value := task.Priority;
+  if not FColorModified then
+    cbColor.Selected := task.Color;
   if not mDescription.Modified then
     mDescription.Lines.Text := task.Description;
   if not mDescription.Modified then
@@ -109,6 +115,8 @@ begin
   eTaskName.Modified := False;
   sePriority.Value := 0;
   sePriority.Modified := False;
+  cbColor.Selected := clGray;
+  FColorModified := False;
   mDescription.Lines.Clear;
   mDescription.Modified := False;
   cbComplete.Checked := False;
@@ -169,13 +177,13 @@ begin
       task.Name := eTaskName.Text;
       eTaskName.Modified := False;
     end;
-{!C    if eCategory.Modified then begin
-      task.Category := eCategory.Text;
-      eCategory.Modified := False;
-    end;}
     if sePriority.Modified then begin
       task.Priority := sePriority.Value;
       sePriority.Modified := False;
+    end;
+    if FColorModified then begin
+      task.Color := cbColor.Selected;
+      FColorModified := False;
     end;
     if mDescription.Modified then begin
       task.Description := mDescription.Lines.Text;
@@ -286,6 +294,12 @@ procedure TfrmTaskProperties.btnLogClick(Sender: TObject);
 begin
   if FTask.Item <> nil then
     TfrmLog.LogEntry(TTask(FTask.Item));
+end;
+
+procedure TfrmTaskProperties.cbColorChange(Sender: TObject);
+begin
+  FColorModified := True;
+  TaskChange(Sender);
 end;
 
 end.

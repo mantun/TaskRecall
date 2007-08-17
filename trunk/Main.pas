@@ -5,14 +5,13 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, StdCtrls, ExtCtrls, ShellAPI, Tasks, AppEvnts, XPMan,
-  ComCtrls, ImgList, Menus, ActnList, Spin, Buttons, TaskSwitchFrame,
+  ComCtrls, ActiveX, ImgList, Menus, ActnList, Spin, Buttons, TaskSwitchFrame,
   VirtualTrees;
 
 const
   WM_TRAYICON = WM_USER + 1;
 
 type
-  IDataObject = interface end;
   TCategoryTaskSelection = class(TObjectsSelection)
   private
     FCategory : TCategory;
@@ -76,10 +75,10 @@ type
     cbCompleteTasks: TCheckBox;
     cbIncompleteTasks: TCheckBox;
     Splitter: TSplitter;
-    TasksListView: TListView;
     RemindersListView: TListView;
     frmTaskSwitch: TfrmTaskSwitch;
     CategoryTree: TVirtualStringTree;
+    TasksView: TVirtualStringTree;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -87,32 +86,20 @@ type
     procedure ApplicationEventsMinimize(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure acAddTaskExecute(Sender: TObject);
-    procedure TasksListViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
     procedure RemindersListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure acChangeTaskExecute(Sender: TObject);
     procedure acRemoveTaskExecute(Sender: TObject);
     procedure acRemoveReminderExecute(Sender: TObject);
     procedure eQuickNewTaskKeyPress(Sender: TObject; var Key: Char);
-    procedure TasksListViewKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure RemindersListViewKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure eSearchChange(Sender: TObject);
-    procedure TasksListViewDblClick(Sender: TObject);
     procedure RemindersListViewDblClick(Sender: TObject);
-    procedure TasksListViewEdited(Sender: TObject; Item: TListItem;
-      var S: String);
     procedure RemindersListViewEdited(Sender: TObject; Item: TListItem;
       var S: String);
-    procedure TasksListViewCustomDrawItem(Sender: TCustomListView;
-      Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure acAddReminderExecute(Sender: TObject);
     procedure acChangeReminderExecute(Sender: TObject);
     procedure cbCompleteTasksClick(Sender: TObject);
     procedure cbIncompleteTasksClick(Sender: TObject);
-    procedure TasksListViewData(Sender: TObject; Item: TListItem);
     procedure RemindersListViewData(Sender: TObject; Item: TListItem);
     procedure acAddToActiveTasksExecute(Sender: TObject);
     procedure acLogEntryExecute(Sender: TObject);
@@ -140,6 +127,22 @@ type
     procedure CategoryTreeEdited(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex);
     procedure acDeleteCategoryExecute(Sender: TObject);
+    procedure TasksViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TasksViewDblClick(Sender: TObject);
+    procedure TasksViewFocusChanged(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex);
+    procedure TasksViewNewText(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex; NewText: WideString);
+    procedure TasksViewBeforeCellPaint(Sender: TBaseVirtualTree;
+      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+      CellRect: TRect);
+    procedure TasksViewGetText(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
+      var CellText: WideString);
+    procedure TasksViewPaintText(Sender: TBaseVirtualTree;
+      const TargetCanvas: TCanvas; Node: PVirtualNode;
+      Column: TColumnIndex; TextType: TVSTTextType);
   private
     TrayIconData : TNotifyIconData;
 
@@ -161,9 +164,12 @@ type
     procedure OnCategoryChange(Sender : TObject; obj : TNamedObject);
 
     function cat(pnode : PVirtualNode) : TCategory;
-    function FindNode(category : TCategory) : PVirtualNode;
+    function FindCatNode(category : TCategory) : PVirtualNode;
     function AddCategoryToTree(CategoryTree : TVirtualStringTree; category : TCategory) : PVirtualNode;
     procedure AddSpecialCategories;
+
+    function tsk(pnode : PVirtualNode) : TTask;
+    function FindTaskNode(task : TTask) : PVirtualNode;
   end;
 
 var
@@ -171,7 +177,7 @@ var
 
 implementation
 
-uses ActiveX, Math, Parse, TaskProp, PopUp, ReminderProp, Logging,
+uses Math, Parse, TaskProp, PopUp, ReminderProp, Logging,
   TimelineData, TimelineForm;
 
 {$R *.dfm}
@@ -183,7 +189,8 @@ const
   CategoryNone = '(none)';
 
 type
-  PCategory = ^TCategory;  
+  PCategory = ^TCategory;
+  PTask = ^TTask;  
 
 function TCategoryTaskSelection.Belongs(const obj : TNamedObject) : Boolean;
 begin
@@ -275,16 +282,27 @@ begin
   Result := sign(c1.Index - c2.Index);
 end;
 
+function TfrmMain.tsk(pnode : PVirtualNode) : TTask;
+begin
+  if pnode = nil then Result := nil
+  else Result := PTask(TasksView.GetNodeData(pnode))^;
+end;
+
+function TfrmMain.FindTaskNode(task : TTask) : PVirtualNode;
+begin
+  Result := TasksView.GetFirst;
+  while (Result <> nil) and (tsk(Result) <> task) do
+    Result := TasksView.GetNext(Result);
+end;
+
 procedure TfrmMain.OnTaskAdd(Sender : TObject; obj : TNamedObject);
 begin
-  TasksListView.Items.Count := TaskSelection.Count;
-  TasksListView.Invalidate;
+  TasksView.AddChild(nil, obj);
 end;
 
 procedure TfrmMain.OnTaskDelete(Sender : TObject; obj : TNamedObject);
 begin
-  TasksListView.Items.Count := TaskSelection.Count - 1;
-  TasksListView.Invalidate;
+  TasksView.DeleteNode(FindTaskNode(TTask(obj)));
   acChangeTask.Enabled := TaskSelection.Count > 1;
   acLogEntry.Enabled := TaskSelection.Count > 1;
   acAddToActiveTasks.Enabled := TaskSelection.Count > 1;
@@ -293,7 +311,7 @@ end;
 
 procedure TfrmMain.OnTaskChange(Sender : TObject; obj : TNamedObject);
 begin
-  TasksListView.Invalidate;
+  TasksView.Invalidate;
 end;
 
 procedure TfrmMain.OnReminderAdd(Sender : TObject; obj : TNamedObject);
@@ -321,7 +339,7 @@ begin
   else Result := PCategory(CategoryTree.GetNodeData(pnode))^;
 end;
 
-function TfrmMain.FindNode(category : TCategory) : PVirtualNode;
+function TfrmMain.FindCatNode(category : TCategory) : PVirtualNode;
 begin
   Result := CategoryTree.GetFirst;
   while (Result <> nil) and (cat(Result) <> category) do
@@ -334,7 +352,7 @@ begin
   Result := nil;
   if category = nil then Exit;
   if category.Parent <> nil then begin
-    pnode := FindNode(category.Parent);
+    pnode := FindCatNode(category.Parent);
     if pnode = nil then
       pnode := AddCategoryToTree(CategoryTree, category.Parent);
   end else
@@ -352,7 +370,7 @@ var
   pnode : PVirtualNode;
   i : Integer;
 begin
-  pnode := FindNode(TCategory(obj));
+  pnode := FindCatNode(TCategory(obj));
   if pnode <> nil then begin
     i := 0;
     while i < CategorySelection.Count do
@@ -519,8 +537,8 @@ end;
 procedure TfrmMain.acRemoveTaskExecute(Sender: TObject);
 var t : TNamedObject;
 begin
-  if TasksListView.Selected <> nil then begin
-    t := TNamedObject(TasksListView.Selected.Data);
+  if TasksView.FocusedNode <> nil then begin
+    t := tsk(TasksView.FocusedNode);
     if MessageDlg('Delete "' + t.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       TaskSelection.Delete(t);
   end;
@@ -563,18 +581,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.TasksListViewSelectItem(Sender: TObject; Item: TListItem;
-  Selected: Boolean);
-begin
-  if (TasksListView.Selected <> nil) and (frmTaskProperties <> nil) then
-    frmTaskProperties.Task := TTask(TasksListView.Selected.Data);
-
-  acChangeTask.Enabled := TasksListView.Selected <> nil;
-  acRemoveTask.Enabled := acChangeTask.Enabled;
-  acAddToActiveTasks.Enabled := acChangeTask.Enabled and not TTask(TasksListView.Selected.Data).Complete;
-  acLogEntry.Enabled := acChangeTask.Enabled;
-end;
-
 procedure TfrmMain.RemindersListViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
@@ -596,36 +602,9 @@ begin
   end;
 end;
 
-procedure TfrmMain.TasksListViewKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_DELETE) and not TasksListView.IsEditing then
-    acRemoveTask.Execute
-  else if (Key = VK_F2) and (TasksListView.Selected <> nil) then
-    TasksListView.Selected.EditCaption;
-end;
-
-procedure TfrmMain.RemindersListViewKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_DELETE) and not RemindersListView.IsEditing then
-    acRemoveReminder.Execute
-  else if (Key = VK_F2) and (RemindersListView.Selected <> nil) then
-    RemindersListView.Selected.EditCaption;
-end;
-
 procedure TfrmMain.eSearchChange(Sender: TObject);
 begin
   ShowMessage('ne baca');
-end;
-
-procedure TfrmMain.TasksListViewDblClick(Sender: TObject);
-begin
-  if TasksListView.Selected <> nil then
-    acChangeTask.Execute
-  else
-    if CategoryTree.FocusedNode <> nil then
-      acAddTask.Execute;
 end;
 
 procedure TfrmMain.RemindersListViewDblClick(Sender: TObject);
@@ -636,37 +615,10 @@ begin
     acAddReminder.Execute;
 end;
 
-procedure TfrmMain.TasksListViewEdited(Sender: TObject; Item: TListItem;
-  var S: String);
-begin
-  TNamedObject(Item.Data).Name := S;
-end;
-
 procedure TfrmMain.RemindersListViewEdited(Sender: TObject; Item: TListItem;
   var S: String);
 begin
   TNamedObject(Item.Data).Name := S;
-end;
-
-procedure TfrmMain.TasksListViewCustomDrawItem(Sender: TCustomListView;
-  Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
-var p, sh : Integer;
-begin
-  if TTask(Item.Data).Complete then begin
-    Sender.Canvas.Font.Color := $808080;
-    Sender.Canvas.Font.Style := Sender.Canvas.Font.Style + [fsStrikeOut];
-  end else begin
-    p := TTask(Item.Data).Priority;
-    if p > 10 then p := 10;
-    if p < -10 then p := -10;
-    if p >= 0 then begin
-      sh := $FF - $FF * p div 10;
-      Sender.Canvas.Brush.Color := RGB($FF, sh, sh);
-    end else begin
-      sh := $FF * -p div 10;
-      Sender.Canvas.Font.Color := RGB(0, 0, sh)
-    end;
-  end;
 end;
 
 procedure TfrmMain.cbCompleteTasksClick(Sender: TObject);
@@ -683,14 +635,6 @@ begin
   TaskSelection.ShowIncomplete := cbIncompleteTasks.Checked;
 end;
 
-procedure TfrmMain.TasksListViewData(Sender: TObject; Item: TListItem);
-Var o : TNamedObject;
-begin
-  o := TaskSelection.Items[Item.Index];
-  Item.Caption := o.Name;
-  Item.Data := o;
-end;
-
 procedure TfrmMain.RemindersListViewData(Sender: TObject; Item: TListItem);
 Var o : TNamedObject;
 begin
@@ -702,8 +646,8 @@ end;
 procedure TfrmMain.acAddToActiveTasksExecute(Sender: TObject);
 var task : TTask;
 begin
-  if TasksListView.Selected <> nil then begin
-    task := TTask(TasksListView.Selected.Data);
+  if TasksView.FocusedNode <> nil then begin
+    task := tsk(TasksView.FocusedNode);
     frmTaskSwitch.AddTask(task);
   end;
 end;
@@ -711,8 +655,8 @@ end;
 procedure TfrmMain.acLogEntryExecute(Sender: TObject);
 var task : TTask;
 begin
-  if TasksListView.Selected <> nil then begin
-    task := TTask(TasksListView.Selected.Data);
+  if TasksView.FocusedNode <> nil then begin
+    task := tsk(TasksView.FocusedNode);
     TfrmLog.LogEntry(task);
   end;
 end;
@@ -756,10 +700,10 @@ begin
              and (category <> nil)
              and (category.Name <> CategoryAll)
              and (category.Name <> CategoryNone)
-         or (Source = TasksListView)
+         or (Source = TasksView)
              and (category <> nil)
              and (category.Name <> CategoryAll)
-             and (TasksListView.Selected <> nil);
+             and (TasksView.FocusedNode <> nil);
 end;
 
 procedure TfrmMain.CategoryTreeDragAllowed(Sender: TBaseVirtualTree;
@@ -807,15 +751,15 @@ begin
       pn := CategoryTree.GetNext(pn);
       Inc(i);
     end;
-  end else if Source = TasksListView then begin
-    if TasksListView.Selected = nil then Exit;
+  end else if Source = TasksView then begin
+    if TasksView.FocusedNode = nil then Exit;
     if Mode <> dmOnNode then Exit;
     name := cat(Sender.DropTargetNode).Name;
     if name = CategoryAll then Exit;
     if name = CategoryNone then
-      TTask(TasksListView.Selected.Data).ClearCategories
+      tsk(TasksView.FocusedNode).ClearCategories
     else
-      TTask(TasksListView.Selected.Data).AddCategory(cat(Sender.DropTargetNode));
+      tsk(TasksView.FocusedNode).AddCategory(cat(Sender.DropTargetNode));
   end;
 end;
 
@@ -830,7 +774,7 @@ var c : TCategory;
 begin
   c := TCategory.Create('New Category', cat(CategoryTree.FocusedNode).Parent);
   CategorySelection.Add(c);
-  CategoryTree.EditNode(FindNode(c), -1);
+  CategoryTree.EditNode(FindCatNode(c), -1);
 end;
 
 procedure TfrmMain.acAddChildCategoryExecute(Sender: TObject);
@@ -838,7 +782,7 @@ var c : TCategory;
 begin
   c := TCategory.Create('New Category', cat(CategoryTree.FocusedNode));
   CategorySelection.Add(c);
-  CategoryTree.EditNode(FindNode(c), -1);
+  CategoryTree.EditNode(FindCatNode(c), -1);
 end;
 
 procedure TfrmMain.CategoryTreeEdited(Sender: TBaseVirtualTree;
@@ -858,6 +802,98 @@ begin
       if TaskStorage[i] is TTask then
         TTask(TaskStorage[i]).RemoveCategory(c); 
     CategorySelection.Delete(c);
+  end;
+end;
+
+procedure TfrmMain.TasksViewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) and not TasksView.IsEditing then
+    acRemoveTask.Execute
+  else {if (Key = VK_F2) and (TasksView.FocusedNode <> nil) then
+    TasksView.EditNode(TasksView.FocusedNode, -1); }
+end;
+
+procedure TfrmMain.TasksViewDblClick(Sender: TObject);
+begin
+  if TasksView.FocusedNode <> nil then
+    acChangeTask.Execute
+  else
+    if CategoryTree.FocusedNode <> nil then
+      acAddTask.Execute;
+end;
+
+procedure TfrmMain.TasksViewFocusChanged(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex);
+begin
+  if (TasksView.FocusedNode <> nil) and (frmTaskProperties <> nil) then
+    frmTaskProperties.Task := tsk(TasksView.FocusedNode);
+
+  acChangeTask.Enabled := TasksView.FocusedNode <> nil;
+  acRemoveTask.Enabled := acChangeTask.Enabled;
+  acAddToActiveTasks.Enabled := acChangeTask.Enabled and not tsk(TasksView.FocusedNode).Complete;
+  acLogEntry.Enabled := acChangeTask.Enabled;
+end;
+
+procedure TfrmMain.TasksViewNewText(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex; NewText: WideString);
+begin
+  case Column of
+    1 : tsk(node).Name := NewText;
+  end;
+end;
+
+procedure TfrmMain.TasksViewBeforeCellPaint(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  CellRect: TRect);
+var p, sh : Integer;
+begin
+  if tsk(Node).Complete then begin
+    TargetCanvas.Font.Color := $808080;
+    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
+  end else begin
+    p := tsk(Node).Priority;
+    if p > 10 then p := 10;
+    if p < -10 then p := -10;
+    if p >= 0 then begin
+      sh := $FF - $FF * p div 10;
+      TargetCanvas.Brush.Color := RGB($FF, sh, sh);
+    end else begin
+      sh := $FF * -p div 10;
+      TargetCanvas.Font.Color := RGB(0, 0, sh)
+    end;
+  end;
+end;
+
+procedure TfrmMain.TasksViewGetText(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
+  var CellText: WideString);
+begin
+  case Column of
+    0 : CellText := IntToStr(Node.Index);
+    1 : CellText := tsk(Node).Name;
+  end;
+end;
+
+procedure TfrmMain.TasksViewPaintText(Sender: TBaseVirtualTree;
+  const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  TextType: TVSTTextType);
+var p, sh : Integer;
+begin
+  if tsk(Node).Complete then begin
+    TargetCanvas.Font.Color := $808080;
+    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
+  end else begin
+    p := tsk(Node).Priority;
+    if p > 10 then p := 10;
+    if p < -10 then p := -10;
+    if p >= 0 then begin
+      sh := $FF - $FF * p div 10;
+      TargetCanvas.Brush.Color := RGB($FF, sh, sh);
+    end else begin
+      sh := $FF * -p div 10;
+      TargetCanvas.Font.Color := RGB(0, 0, sh)
+    end;
   end;
 end;
 

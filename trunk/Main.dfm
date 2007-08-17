@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
   Left = 193
   Top = 115
-  Width = 466
+  Width = 424
   Height = 348
   ActiveControl = eQuickNewTask
   Caption = 'All reminders'
@@ -18,14 +18,14 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    458
+    416
     314)
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl: TPageControl
     Left = 0
     Top = 0
-    Width = 460
+    Width = 418
     Height = 316
     ActivePage = tsTasks
     Anchors = [akLeft, akTop, akRight, akBottom]
@@ -55,7 +55,7 @@ object frmMain: TfrmMain
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 452
+        Width = 410
         Height = 36
         Align = alTop
         BevelOuter = bvNone
@@ -107,32 +107,6 @@ object frmMain: TfrmMain
           OnClick = cbIncompleteTasksClick
         end
       end
-      object TasksListView: TListView
-        Left = 127
-        Top = 36
-        Width = 325
-        Height = 240
-        Align = alClient
-        Columns = <
-          item
-            Caption = 'Task'
-            Width = 164
-          end>
-        DragMode = dmAutomatic
-        HideSelection = False
-        OwnerData = True
-        RowSelect = True
-        PopupMenu = pmTasks
-        SortType = stData
-        TabOrder = 1
-        ViewStyle = vsList
-        OnCustomDrawItem = TasksListViewCustomDrawItem
-        OnData = TasksListViewData
-        OnDblClick = TasksListViewDblClick
-        OnEdited = TasksListViewEdited
-        OnKeyDown = TasksListViewKeyDown
-        OnSelectItem = TasksListViewSelectItem
-      end
       object CategoryTree: TVirtualStringTree
         Left = 0
         Top = 36
@@ -151,7 +125,7 @@ object frmMain: TfrmMain
         Header.Options = [hoColumnResize, hoDrag]
         NodeDataSize = 4
         PopupMenu = pmCategories
-        TabOrder = 2
+        TabOrder = 1
         TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
         TreeOptions.SelectionOptions = [toRightClickSelect]
         OnDragAllowed = CategoryTreeDragAllowed
@@ -163,6 +137,44 @@ object frmMain: TfrmMain
         OnGetText = CategoryTreeGetText
         OnNewText = CategoryTreeNewText
         Columns = <>
+      end
+      object TasksView: TVirtualStringTree
+        Left = 127
+        Top = 36
+        Width = 283
+        Height = 240
+        Align = alClient
+        Header.AutoSizeIndex = 1
+        Header.Font.Charset = DEFAULT_CHARSET
+        Header.Font.Color = clWindowText
+        Header.Font.Height = -11
+        Header.Font.Name = 'MS Sans Serif'
+        Header.Font.Style = []
+        Header.MainColumn = 1
+        Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoVisible]
+        Header.Style = hsXPStyle
+        NodeDataSize = 4
+        TabOrder = 2
+        TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
+        TreeOptions.PaintOptions = [toShowDropmark, toThemeAware, toUseBlendedImages]
+        OnBeforeCellPaint = TasksViewBeforeCellPaint
+        OnDblClick = TasksViewDblClick
+        OnFocusChanged = TasksViewFocusChanged
+        OnGetText = TasksViewGetText
+        OnPaintText = TasksViewPaintText
+        OnKeyDown = TasksViewKeyDown
+        OnNewText = TasksViewNewText
+        Columns = <
+          item
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coFixed]
+            Position = 0
+            WideText = 'No'
+          end
+          item
+            Position = 1
+            Width = 229
+            WideText = 'Name'
+          end>
       end
     end
     object tsReminders: TTabSheet
@@ -177,7 +189,7 @@ object frmMain: TfrmMain
       object RemindersListView: TListView
         Left = 0
         Top = 0
-        Width = 452
+        Width = 410
         Height = 276
         Align = alClient
         Columns = <>
@@ -190,7 +202,6 @@ object frmMain: TfrmMain
         OnData = RemindersListViewData
         OnDblClick = RemindersListViewDblClick
         OnEdited = RemindersListViewEdited
-        OnKeyDown = RemindersListViewKeyDown
         OnSelectItem = RemindersListViewSelectItem
       end
     end
@@ -206,12 +217,12 @@ object frmMain: TfrmMain
       inline frmTaskSwitch: TfrmTaskSwitch
         Left = 0
         Top = 0
-        Width = 452
+        Width = 410
         Height = 276
         Align = alClient
         TabOrder = 0
         inherited ListView: TListView
-          Width = 452
+          Width = 410
           Height = 276
         end
       end
