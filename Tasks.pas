@@ -34,6 +34,7 @@ type
     FTaskID : Integer;
     FDescription : String;
     FPriority : Integer;
+    FColor : TColor;
     FComplete : Boolean;
     FCategories : Array of TCategory;
     FReminder : TReminder;
@@ -45,6 +46,7 @@ type
     procedure SetName(const value : String); override;
     procedure SetDescription(value : String);
     procedure SetPriority(value : Integer);
+    procedure SetColor(value : TColor);
     procedure SetComplete(value : Boolean);
     procedure SetReminder(value : TReminder);
     procedure SetActiveNo(value : Integer);
@@ -57,6 +59,7 @@ type
     property TaskID : Integer read FTaskID;
     property Description : String read FDescription write SetDescription;
     property Priority : Integer read FPriority write SetPriority;
+    property Color : TColor read FColor write SetColor;
     property Complete : Boolean read FComplete write SetComplete;
     property Reminder : TReminder read FReminder write SetReminder;
     property ActiveNo : Integer read FActiveNo write SetActiveNo;
@@ -336,6 +339,14 @@ procedure TTask.SetPriority(value : Integer);
 begin
   if FPriority <> value then begin
     FPriority := value;
+    Changed;
+  end;
+end;
+
+procedure TTask.SetColor(value : TColor);
+begin
+  if FColor <> value then begin
+    FColor := value;
     Changed;
   end;
 end;
