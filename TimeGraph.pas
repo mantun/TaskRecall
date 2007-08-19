@@ -29,6 +29,7 @@ var
   clBackground : TColor;
 
 function BlendColor(c1, c2 : TColor; alpha : Double) : TColor;
+function GetContrastColor(c : TColor) : TColor;
 procedure DrawSpanObject(Canvas : TCanvas; x1, x2, y : Integer; color : TColor; text : String);
 procedure DrawTimeObject(Canvas : TCanvas; x, y : Integer; color : TColor; text : String);
 
@@ -49,6 +50,20 @@ begin
   Result := Round(r1 * (1 - alpha) + r2 * alpha)
          or Round(g1 * (1 - alpha) + g2 * alpha) shl 8
          or Round(b1 * (1 - alpha) + b2 * alpha) shl 16;
+end;
+
+function GetContrastColor(c : TColor) : TColor;
+var
+  r, g, b, len : Double;
+begin
+  r := c and $FF / $FF;
+  g := (c shr 8) and $FF / $FF;
+  b := (c shr 16) and $FF / $FF;
+  len := sqrt(r * r + g * g + b * b);
+  if len <= 1 then
+    Result := clWhite
+  else
+    Result := clBlack;
 end;
 
 function GetGradient(c1, c2 : TColor) : TBitmap;
@@ -104,7 +119,7 @@ begin
   Canvas.Brush.Style := bsSolid;
   Canvas.RoundRect(x1, y, x2 + 1, y + TimeObjectHeight, 10, 10);
   if text <> '' then begin
-    Canvas.Font.Color := clTimeObjectText;
+    Canvas.Font.Color := GetContrastColor(color);
     Canvas.Brush.Style := bsClear;
     Canvas.TextOut(x1 + 2, y + 1, text);
   end;
@@ -118,7 +133,7 @@ begin
   Canvas.Rectangle(x - 1, y, x + 2, y + TimeObjectHeight);
   if text <> '' then begin
     Canvas.Brush.Style := bsClear;
-    Canvas.Font.Color := clTimeObjectText;
+    Canvas.Font.Color := GetContrastColor(color);
     Canvas.TextOut(x + 3, y + 1, text);
   end;
 end;

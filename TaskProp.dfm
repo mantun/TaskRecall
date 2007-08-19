@@ -1,8 +1,8 @@
 object frmTaskProperties: TfrmTaskProperties
   Left = 571
-  Top = 114
+  Top = 115
   Width = 378
-  Height = 309
+  Height = 348
   BorderStyle = bsSizeToolWin
   Caption = 'Task Properties'
   Color = clBtnFace
@@ -19,7 +19,7 @@ object frmTaskProperties: TfrmTaskProperties
   OnKeyPress = FormKeyPress
   DesignSize = (
     370
-    275)
+    314)
   PixelsPerInch = 96
   TextHeight = 13
   object lPriority: TLabel
@@ -39,8 +39,8 @@ object frmTaskProperties: TfrmTaskProperties
     FocusControl = mDescription
   end
   object btnApply: TSpeedButton
-    Left = 8
-    Top = 245
+    Left = 336
+    Top = 292
     Width = 25
     Height = 22
     Anchors = [akLeft, akBottom]
@@ -61,8 +61,8 @@ object frmTaskProperties: TfrmTaskProperties
     OnClick = btnApplyClick
   end
   object btnReminder: TSpeedButton
-    Left = 40
-    Top = 245
+    Left = 280
+    Top = 276
     Width = 25
     Height = 22
     Hint = 'Reminder for this task...'
@@ -99,8 +99,8 @@ object frmTaskProperties: TfrmTaskProperties
     OnClick = btnReminderClick
   end
   object btnDelete: TSpeedButton
-    Left = 72
-    Top = 245
+    Left = 336
+    Top = 268
     Width = 23
     Height = 22
     Hint = 'Delete Task...'
@@ -136,8 +136,8 @@ object frmTaskProperties: TfrmTaskProperties
     OnClick = btnDeleteClick
   end
   object btnLog: TSpeedButton
-    Left = 104
-    Top = 245
+    Left = 336
+    Top = 244
     Width = 23
     Height = 22
     Hint = 'New log entry...'
@@ -179,6 +179,13 @@ object frmTaskProperties: TfrmTaskProperties
     Caption = '&Color:'
     FocusControl = cbColor
   end
+  object Label2: TLabel
+    Left = 8
+    Top = 240
+    Width = 32
+    Height = 13
+    Caption = 'Label2'
+  end
   object eTaskName: TLabeledEdit
     Left = 8
     Top = 16
@@ -207,7 +214,7 @@ object frmTaskProperties: TfrmTaskProperties
     Left = 136
     Top = 16
     Width = 225
-    Height = 254
+    Height = 221
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 1
     OnChange = TaskChange
@@ -269,5 +276,15 @@ object frmTaskProperties: TfrmTaskProperties
     ItemHeight = 16
     TabOrder = 2
     OnChange = cbColorChange
+    OnKeyPress = EditKeyPress
+  end
+  object Memo1: TMemo
+    Left = 8
+    Top = 256
+    Width = 313
+    Height = 49
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 8
   end
 end

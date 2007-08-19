@@ -177,7 +177,7 @@ var
 
 implementation
 
-uses Math, Parse, TaskProp, PopUp, ReminderProp, Logging,
+uses Math, Parse, TaskProp, PopUp, ReminderProp, Logging, TimeGraph,
   TimelineData, TimelineForm;
 
 {$R *.dfm}
@@ -509,9 +509,9 @@ var
 begin
   t := TTask.Create;
   if (CategoryTree.FocusedNode <> nil) then begin
-    catname := TCategory(CategoryTree.GetNodeData(CategoryTree.FocusedNode)).Name;
+    catname := cat(CategoryTree.FocusedNode).Name;
     if (catname <> CategoryAll) and (catname <> CategoryNone) Then
-      t.AddCategory(TCategory(CategoryTree.GetNodeData(CategoryTree.FocusedNode)));
+      t.AddCategory(cat(CategoryTree.FocusedNode));
   end;
   frmTaskProperties.Task := t;
   vis := frmTaskProperties.Visible;
@@ -810,8 +810,8 @@ procedure TfrmMain.TasksViewKeyDown(Sender: TObject; var Key: Word;
 begin
   if (Key = VK_DELETE) and not TasksView.IsEditing then
     acRemoveTask.Execute
-  else {if (Key = VK_F2) and (TasksView.FocusedNode <> nil) then
-    TasksView.EditNode(TasksView.FocusedNode, -1); }
+  else if (Key = VK_F2) and (TasksView.FocusedNode <> nil) then
+    TasksView.EditNode(TasksView.FocusedNode, -1);
 end;
 
 procedure TfrmMain.TasksViewDblClick(Sender: TObject);
@@ -848,20 +848,22 @@ procedure TfrmMain.TasksViewBeforeCellPaint(Sender: TBaseVirtualTree;
   CellRect: TRect);
 var p, sh : Integer;
 begin
-  if tsk(Node).Complete then begin
-    TargetCanvas.Font.Color := $808080;
-    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
-  end else begin
-    p := tsk(Node).Priority;
-    if p > 10 then p := 10;
-    if p < -10 then p := -10;
-    if p >= 0 then begin
-      sh := $FF - $FF * p div 10;
-      TargetCanvas.Brush.Color := RGB($FF, sh, sh);
-    end else begin
-      sh := $FF * -p div 10;
-      TargetCanvas.Font.Color := RGB(0, 0, sh)
-    end;
+  case Column of
+    1 : begin
+          p := tsk(Node).Priority;
+          if p > 10 then p := 10;
+          if p < -10 then p := -10;
+          sh := $FF - $FF * abs(p) div 10;
+          if p >= 0 then
+            TargetCanvas.Brush.Color := RGB($FF, sh, sh)
+          else
+            TargetCanvas.Brush.Color := RGB(sh, $FF, sh);
+          TargetCanvas.FillRect(CellRect);
+        end;
+    0 : begin
+          TargetCanvas.Brush.Color := tsk(Node).Color;
+          TargetCanvas.FillRect(CellRect);
+        end;
   end;
 end;
 
@@ -870,30 +872,22 @@ procedure TfrmMain.TasksViewGetText(Sender: TBaseVirtualTree;
   var CellText: WideString);
 begin
   case Column of
-    0 : CellText := IntToStr(Node.Index);
-    1 : CellText := tsk(Node).Name;
+    0 : CellText := IntToStr(tsk(Node).TaskID);
+    1 : CellText := IntToStr(tsk(Node).Priority);
+    2 : CellText := tsk(Node).Name;
   end;
 end;
 
 procedure TfrmMain.TasksViewPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
-var p, sh : Integer;
 begin
-  if tsk(Node).Complete then begin
-    TargetCanvas.Font.Color := $808080;
-    TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
-  end else begin
-    p := tsk(Node).Priority;
-    if p > 10 then p := 10;
-    if p < -10 then p := -10;
-    if p >= 0 then begin
-      sh := $FF - $FF * p div 10;
-      TargetCanvas.Brush.Color := RGB($FF, sh, sh);
-    end else begin
-      sh := $FF * -p div 10;
-      TargetCanvas.Font.Color := RGB(0, 0, sh)
-    end;
+  case Column of
+    0 : TargetCanvas.Font.Color := GetContrastColor(tsk(Node).Color);
+    2 : if tsk(Node).Complete then begin
+          TargetCanvas.Font.Color := $808080;
+          TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
+        end;
   end;
 end;
 

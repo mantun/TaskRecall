@@ -1,11 +1,11 @@
-181
+188
 
-00A63258
+00A632F8
 TReminder
 "break"
-"(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) false)"
+"(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) (false))"
 ""
-"16.08.2007 17:00:43"
+"19.08.2007 14:07:03"
 00000000
 
 00A6214C
@@ -14,6 +14,7 @@ TTask
 "Track time"
 "Task to be able to be added to 'active tasks' list. This list to be saved to file. One of these tasks is the 'current' or 'active' task. Time spent on the 'current' task to be tracked automatically. 'Time spent' should be added in the task properties (form, class, save/load).\r\n'Current' task to be selected using key win+number, double click.\r\nOn the tasks popup 'send to active tasks' option to be added.\r\nEditing and deleting the list to allow drag&drop of task, delete key."
 -2
+000000
 -1
 00000000
 0
@@ -22,12 +23,13 @@ TTask
 ""
 0
 
-00A65954
+00A659E8
 TTask
 2
 "Task logging"
 "The user should be able to log various comments for each task. This must be very easy (especially for the active task). Log comments should have date and time. Should they have also file attachments?"
 -2
+000000
 -1
 00000000
 0
@@ -36,26 +38,28 @@ TTask
 ""
 0
 
-00A65FC8
+00A66110
 TTask
 3
 "Multiple categories for task"
 "A task should be able to have multiple categories. The Category property to be replaced by HasCategory, ?Add?Category and ?Delete?Category. The Task properties form to include list, instead of edit box. Should the list be editable?\r\nFull path instead of end node only to be available in the list?"
 0
-0
+000000
+-1
 00000000
 0
 0
 ""
-""
+"18.08.2007 19:53:38"
 0
 
-00A66A78
+00A66B0C
 TTask
 4
 "Mute option"
 "A 'mute' mode to be available, to disallow popping of anything. A tray popup menu to be included? To be available by keystroke win+something?"
 -2
+000000
 0
 00000000
 0
@@ -64,12 +68,13 @@ TTask
 ""
 0
 
-00A67080
+00A672A0
 TTask
 5
 "Parser to allow time lists and range comparison"
 "In date/time (or both) expressions a new kind of list to be available - list of dates to popup and list of times to popup. TBD exactly.\r\nA 'between' function for range comparison to be added also.\r\n"
 -2
+000000
 -1
 00000000
 0
@@ -78,12 +83,13 @@ TTask
 "07.04.2007 14:29:13"
 0
 
-00A67A74
+00A67C68
 TTask
 6
 "Quick new task"
 "Creation of quick new task to be allowed via the edit box. The task should have entered name and no category. Creation of anonimous task via keystroke win+something?\r\nCreated task to be added to 'active tasks' and made the 'current' task."
 -2
+000000
 0
 00000000
 0
@@ -92,222 +98,13 @@ TTask
 ""
 0
 
-00A68390
+00A64218
 TTask
 7
 "Quick search"
 "Quick filtering of visible tasks to be allowed via the search edit box. The entered substring to be searched in name, description and ?log entries?"
 -1
-0
-00000000
-0
-0
-""
-""
-0
-
-00A68934
-TTask
-8
-"Sort reminders by their execution time"
-"This involves some method to determine when is the next execution.\r\nShow timeline for tasks? Calendar?"
--5
--1
-00000000
-0
-0
-""
-"05.04.2007 12:21:32"
-0
-
-00A68DD8
-TTask
-10
-"Reminder Time expression sometimes reverts to old value when apply is pressed"
-""
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A691D8
-TTask
-11
-"Button 'properties' from PopUp for reminder without task displays empty form"
-""
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A695E8
-TTask
-15
-"Make TimeSpent real, instead of integer"
-""
-0
--1
-00000000
-0
-0
-""
-""
-0
-
-00A6993C
-TTask
-16
-"Double click on active tasks shall not display task properties"
-""
-0
--1
-00000000
-0
-0
-""
-""
-0
-
-00A69D40
-TTask
-17
-"Install WinKey hook to activate tasks and log"
-""
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A6A05C
-TTask
-18
-"Find a way to show/hide Active Tasks form"
-""
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A6A338
-TTask
-19
-"Allow subtasks?"
-""
--3
-0
-00000000
-0
-0
-""
-""
-0
-
-00A6A55C
-TTask
-105
-"Allow task activation from PopUp form"
-""
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A6A894
-TTask
-106
-"Enable Log Search and Save with visual clue"
-""
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A6AC08
-TTask
-109
-"Track task switches and time along with the total time spent"
-"more specifically, at be able to see how much time is spent each day"
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A6AFDC
-TTask
-114
-"Remove/rename log file upon deletion of task"
-""
--3
-0
-00000000
-0
-0
-""
-""
-0
-
-00A641D0
-TTask
-117
-"Show task ID everywhere"
-""
--1
--1
-00000000
-0
-0
-""
-"06.04.2007 10:59:13"
-0
-
-00A6AE24
-TTask
-118
-"Keyboard hook doesn't work"
-"i want also hotkey for log enrty of active task and for quick task and for unnamed quick task"
--1
--1
-00000000
-0
-0
-""
-""
-0
-
-00A64364
-TTask
-122
-"Hierarchical Text"
-"Investigate the possibility to create a hierarchical text structure with decent search and side-by-side compare functions."
--5
+000000
 0
 00000000
 0
@@ -318,10 +115,26 @@ TTask
 
 00A621A8
 TTask
-129
-"Display (and edit?) task switches"
-"Editing in task 144"
+8
+"Sort reminders by their execution time"
+"This involves some method to determine when is the next execution.\r\nShow timeline for tasks? Calendar?"
+-5
+000000
 -1
+00000000
+0
+0
+""
+"05.04.2007 12:21:32"
+0
+
+00A644AC
+TTask
+10
+"Reminder Time expression sometimes reverts to old value when apply is pressed"
+""
+-1
+000000
 -1
 00000000
 0
@@ -330,12 +143,223 @@ TTask
 ""
 0
 
-00A642C0
+00A6342C
+TTask
+11
+"Button 'properties' from PopUp for reminder without task displays empty form"
+""
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A6220C
+TTask
+15
+"Make TimeSpent real, instead of integer"
+""
+0
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A6227C
+TTask
+16
+"Double click on active tasks shall not display task properties"
+""
+0
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A62754
+TTask
+17
+"Install WinKey hook to activate tasks and log"
+""
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A62388
+TTask
+18
+"Find a way to show/hide Active Tasks form"
+""
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A62518
+TTask
+19
+"Allow subtasks?"
+""
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+0
+
+00A63498
+TTask
+105
+"Allow task activation from PopUp form"
+""
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A628B0
+TTask
+106
+"Enable Log Search and Save with visual clue"
+""
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A62A5C
+TTask
+109
+"Track task switches and time along with the total time spent"
+"more specifically, at be able to see how much time is spent each day"
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A62A08
+TTask
+114
+"Remove/rename log file upon deletion of task"
+""
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+0
+
+00A64438
+TTask
+117
+"Show task ID everywhere"
+""
+-1
+000000
+-1
+00000000
+0
+0
+""
+"06.04.2007 10:59:13"
+0
+
+00A62CD8
+TTask
+118
+"Keyboard hook doesn't work"
+"i want also hotkey for log enrty of active task and for quick task and for unnamed quick task"
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A62994
+TTask
+122
+"Hierarchical Text"
+"Investigate the possibility to create a hierarchical text structure with decent search and side-by-side compare functions."
+-5
+000000
+0
+00000000
+0
+0
+""
+""
+0
+
+00A6634C
+TTask
+129
+"Display (and edit?) task switches"
+"Editing in task 144"
+-1
+000000
+-1
+00000000
+0
+0
+""
+""
+0
+
+00A66424
 TTask
 141
 "Show open-ended tasks"
 "Task with start date and no end date to be shown as gradient"
 -1
+000000
 -1
 00000000
 0
@@ -344,12 +368,13 @@ TTask
 "05.04.2007 12:19:47"
 0
 
-00A6A384
+00A62D24
 TTask
 142
 "Show hint for tasks on timeline"
 "When task is pointed on the timeline, a hint with whole task name (and possibly more) to be displayed"
 -2
+000000
 0
 00000000
 0
@@ -358,12 +383,13 @@ TTask
 ""
 0
 
-00A6A8E0
+00A67F64
 TTask
 143
 "Allow vertical scrolling for timeline"
 "When tasks cannot fit in the visible height, a scrollbar should appear"
 -3
+000000
 0
 00000000
 0
@@ -372,12 +398,13 @@ TTask
 ""
 0
 
-00A633F8
+00A62B38
 TTask
 144
 "Allow drag&drop editing of timeline"
 "Tasks should be moved and resized with mouse on the timeline.\r\nAbility to open task properties.\r\nAbility to merge task switches?\r\n"
 -1
+000000
 0
 00000000
 0
@@ -386,12 +413,13 @@ TTask
 ""
 0
 
-00A6A138
+00A65BB8
 TTask
 145
 "Ability to create timeline for a single task or a task category only"
 ""
 -1
+000000
 0
 00000000
 0
@@ -400,12 +428,13 @@ TTask
 ""
 0
 
-00A623F8
+00A62658
 TTask
 146
 "Show Log entries in the timeline"
 ""
 -2
+000000
 0
 00000000
 0
@@ -414,26 +443,28 @@ TTask
 ""
 0
 
-00A62370
+00A62E7C
 TTask
 147
 "Show Tasks in color in the lists?"
 "Add color field for tasks and categories\r\n"
 0
-0
+000000
+-1
 00000000
 0
 0
 ""
-""
+"18.08.2007 19:53:48"
 0
 
-00A69E20
+00A642E8
 TTask
 148
 "Show visually in the task properties whether a task has reminder"
 ".. or better yet, make the reminder timestamp string part of the tak properties form. And make the edit multiline."
 0
+800080
 0
 00000000
 0
@@ -442,12 +473,13 @@ TTask
 ""
 0
 
-00A62708
+00A656C4
 TTask
 149
 "Ability to work with keyboard only"
 ""
 -3
+000000
 0
 00000000
 0
@@ -456,12 +488,13 @@ TTask
 ""
 0
 
-00A64254
+00A65794
 TTask
 153
 "Update timeline with new task switches"
 "when active task is changed, the new active task is not loaded in the timeline\r\n"
 0
+000000
 -1
 00000000
 0
@@ -470,12 +503,13 @@ TTask
 "06.04.2007 10:58:02"
 0
 
-00A69A64
+00A62D88
 TTask
 159
 "Update timeline when task changes its start time to/from empty"
 ""
 0
+000000
 -1
 00000000
 0
@@ -484,12 +518,13 @@ TTask
 "17.05.2007 14:07:59"
 0
 
-00A627BC
+00A64264
 TTask
 179
 "Shoosing 'Make Completed' on task swither, does not set end time"
 ""
 0
+000000
 -1
 00000000
 0
@@ -498,12 +533,13 @@ TTask
 "10.05.2007 16:37:24"
 0
 
-00A68604
+00A65938
 TTask
 180
 "Reminder to have timestamp"
 "Instead of date and time, a reminder will have a single field - timestamp. A new type will be introduced (timestamp) with methods for creating and decomposition - ts, dt, tm. The field will support sequences of several expressions. ?A define expression will also be included. ?What about Lambda definition?"
 -2
+000000
 0
 00000000
 0
@@ -512,31 +548,69 @@ TTask
 ""
 0
 
-00A69AB0
+00A63230
 TCategory
 "Reminder"
 C0C0C0
-8
+2
 00000000
 
-00A64070
-TCategory
-"test2"
-C0C0C0
-7
-00000000
-
-00A66CF8
+00A661B0
 TCategory
 "(none)"
 C0C0C0
-6
+1
 00000000
 
-00A62110
+00A67230
 TCategory
 "(all)"
 C0C0C0
 0
 00000000
+
+00A65864
+TTask
+184
+"1234"
+""
+0
+000000
+-1
+00000000
+0
+0
+""
+"18.08.2007 10:04:35"
+0
+
+00A7A5A8
+TTask
+186
+"Time spent reports"
+""
+-2
+000000
+0
+00000000
+0
+0
+""
+""
+0
+
+00A7628C
+TTask
+187
+"'Task due to' report"
+"today, tomorrow, this week, this month...\r\n"
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+0
 
