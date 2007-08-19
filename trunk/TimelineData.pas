@@ -138,7 +138,7 @@ end;
 
 function TTaskSwitch.GetColor : TColor;
 begin
-  Result := TaskIDToColor(FData.TaskID);
+  Result := FTask.Color;
 end;
 
 { TTaskTimeObject }
@@ -176,7 +176,7 @@ end;
 
 function TTaskTimeObject.GetColor : TColor;
 begin
-  Result := TaskIDToColor(FTask.TaskID);
+  Result := FTask.Color;
 end;
 
 { TTimelineDataProvider }

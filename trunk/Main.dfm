@@ -144,16 +144,18 @@ object frmMain: TfrmMain
         Width = 283
         Height = 240
         Align = alClient
-        Header.AutoSizeIndex = 1
+        DragMode = dmAutomatic
+        Header.AutoSizeIndex = 2
         Header.Font.Charset = DEFAULT_CHARSET
         Header.Font.Color = clWindowText
         Header.Font.Height = -11
         Header.Font.Name = 'MS Sans Serif'
         Header.Font.Style = []
-        Header.MainColumn = 1
+        Header.MainColumn = 2
         Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoVisible]
         Header.Style = hsXPStyle
         NodeDataSize = 4
+        PopupMenu = pmTasks
         TabOrder = 2
         TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
         TreeOptions.PaintOptions = [toShowDropmark, toThemeAware, toUseBlendedImages]
@@ -166,13 +168,20 @@ object frmMain: TfrmMain
         OnNewText = TasksViewNewText
         Columns = <
           item
+            Alignment = taRightJustify
             Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coFixed]
             Position = 0
-            WideText = 'No'
+            WideText = 'ID'
           end
           item
+            Alignment = taRightJustify
+            Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coFixed]
             Position = 1
-            Width = 229
+            WideText = 'Priority'
+          end
+          item
+            Position = 2
+            Width = 179
             WideText = 'Name'
           end>
       end

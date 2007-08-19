@@ -46,6 +46,7 @@ type
     procedure SetName(const value : String); override;
     procedure SetDescription(value : String);
     procedure SetPriority(value : Integer);
+    function GetColor : TColor;
     procedure SetColor(value : TColor);
     procedure SetComplete(value : Boolean);
     procedure SetReminder(value : TReminder);
@@ -59,7 +60,7 @@ type
     property TaskID : Integer read FTaskID;
     property Description : String read FDescription write SetDescription;
     property Priority : Integer read FPriority write SetPriority;
-    property Color : TColor read FColor write SetColor;
+    property Color : TColor read GetColor write SetColor;
     property Complete : Boolean read FComplete write SetComplete;
     property Reminder : TReminder read FReminder write SetReminder;
     property ActiveNo : Integer read FActiveNo write SetActiveNo;
@@ -114,12 +115,13 @@ type
     FColor : TColor;
     FIndex : Integer;
 
+    function GetColor : TColor;
     procedure SetColor(value : TColor);
     procedure SetParent(value : TCategory);
     procedure SetIndex(value : Integer);
   public
     property Parent : TCategory read FParent write SetParent;
-    property Color : TColor read FColor write SetColor;
+    property Color : TColor read GetColor write SetColor;
     property Index : Integer read FIndex write SetIndex;
 
     function HasParent(Category : TCategory) : Boolean;
@@ -343,6 +345,14 @@ begin
   end;
 end;
 
+function TTask.GetColor : TColor;
+begin
+  if (FColor = clBlack) and (Length(FCategories) > 0) then
+    Result := FCategories[0].Color
+  else
+    Result := FColor;
+end;
+
 procedure TTask.SetColor(value : TColor);
 begin
   if FColor <> value then begin
@@ -438,23 +448,24 @@ begin
     FName := Decode(sl[1]);
     FDescription := Decode(sl[2]);
     FPriority := StrToInt(sl[3]);
-    FComplete := StrToBool(sl[4]);
-    Resolver.AddPointer(sl[5], @FReminder);
-    FActiveNo := StrToInt(sl[6]);
-    FTimeSpent := StrToFloat(sl[7]);
-    ss := Decode(sl[8]);
+    FColor := StrToInt('$' + sl[4]);
+    FComplete := StrToBool(sl[5]);
+    Resolver.AddPointer(sl[6], @FReminder);
+    FActiveNo := StrToInt(sl[7]);
+    FTimeSpent := StrToFloat(sl[8]);
+    ss := Decode(sl[9]);
     if ss <> '' then
       FStartTime := StrToDateTime(ss)
     else
       FStartTime := 0;
-    ss := Decode(sl[9]);
+    ss := Decode(sl[10]);
     if ss <> '' then
       FEndTime := StrToDateTime(ss)
     else
       FEndTime := 0;
-    SetLength(FCategories, StrToInt(sl[10]));
+    SetLength(FCategories, StrToInt(sl[11]));
     for i := 0 to High(FCategories) do
-      Resolver.AddPointer(sl[11 + i], @FCategories[i]);
+      Resolver.AddPointer(sl[12 + i], @FCategories[i]);
   finally
     sl.Free;
   end;
@@ -472,6 +483,7 @@ begin
     sl.add(Encode(FName));
     sl.add(Encode(FDescription));
     sl.add(IntToStr(FPriority));
+    sl.add(IntToHex(FColor, 6));
     sl.add(BoolToStr(FComplete));
     sl.add(TPointerResolver.PointerToStr(FReminder));
     sl.add(IntToStr(FActiveNo));
@@ -621,6 +633,7 @@ begin
   case r.ResType of
     rtTime : Result := r.TimeValue;
     rtInt  : if (FTask <> nil) and (FTask.StartTime <> 0) then Result := FTask.StartTime + r.IntValue / (24 * 60);
+    rtBool : Result := 0;
     else Assert(False);
   end;
 end;
@@ -697,6 +710,14 @@ begin
   inherited Create(AName);
   FParent := AParent;
   FColor := clSilver;
+end;
+
+function TCategory.GetColor : TColor;
+begin
+  if (FColor = clBlack) and (FParent <> nil) then
+    Result := FParent.Color
+  else
+    Result := FColor;
 end;
 
 procedure TCategory.SetColor(value : TColor);

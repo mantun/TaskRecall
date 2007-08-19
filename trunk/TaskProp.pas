@@ -23,6 +23,8 @@ type
     eEndTime: TLabeledEdit;
     cbColor: TColorBox;
     Label1: TLabel;
+    Memo1: TMemo;
+    Label2: TLabel;
     procedure TaskChange(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure EditKeyPress(Sender: TObject; var Key: Char);
@@ -60,6 +62,32 @@ implementation
 uses ReminderProp, Logging;
 
 {$R *.dfm}
+
+function GetTimeFromUserString(const s : string; BaseTime : TDateTime) : TDateTime;
+var i, c : integer;
+begin
+  if s = '' then
+    Result := 0
+  else if (s[1] = '+') or (s[1] = '-') then begin
+    i := 2;
+    while (i <= Length(s)) and (s[i] in ['0'..'9']) do Inc(i);
+    c := StrToInt(Copy(s, 1, i - 1));
+    if (i > Length(s)) or (s[i] = 'm') then
+      Result := BaseTime + c / (60 * 24)
+    else if s[i] = 'h' then
+      Result := BaseTime + c / 24
+    else if s[i] = 'd' then
+      Result := BaseTime + c
+    else if s[i] = ':' then
+      Result := BaseTime + StrToTime(Copy(s, 2, Length(s) - 1))
+    else
+      Result := BaseTime;
+  end else begin
+    Result := StrToDateTime(s);
+    if Trunc(Result) = 0 then
+      Result := Trunc(BaseTime) + Result;
+  end;
+end;
 
 procedure TfrmTaskProperties.EnableControls(Enabled : Boolean);
 begin
@@ -194,17 +222,14 @@ begin
       eTaskName.Modified := False;
     end;
     if eStartTime.Modified then begin
-      if eStartTime.Text = '' then
-        task.StartTime := 0
-      else
-        task.StartTime := StrToDateTime(eStartTime.Text);
+      task.StartTime := GetTimeFromUserString(eStartTime.Text, Now);
       eStartTime.Modified := False;
     end;
     if eEndTime.Modified then begin
-      if eEndTime.Text = '' then
-        task.EndTime := 0
+      if task.StartTime <> 0 then
+        task.EndTime := GetTimeFromUserString(eEndTime.Text, task.StartTime)
       else
-        task.EndTime := StrToDateTime(eEndTime.Text);
+        task.EndTime := GetTimeFromUserString(eEndTime.Text, Now);
       eEndTime.Modified := False;
     end;
     if FCompleteModified then begin
