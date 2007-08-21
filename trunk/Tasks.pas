@@ -542,6 +542,7 @@ begin
       if i < High(FCategories) then
         Move(FCategories[i + 1], FCategories[i], (High(FCategories) - i) * SizeOf(FCategories[i]));
       SetLength(FCategories, Length(FCategories) - 1);
+      Changed;
       Result := True;
       Exit;
     end;
