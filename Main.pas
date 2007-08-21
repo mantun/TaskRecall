@@ -41,7 +41,7 @@ type
     ActionList: TActionList;
     acAddTask: TAction;
     acChangeTask: TAction;
-    acRemoveTask: TAction;
+    acRemoveTaskFromView: TAction;
     pmTasks: TPopupMenu;
     NewTask1: TMenuItem;
     EditTask1: TMenuItem;
@@ -79,6 +79,7 @@ type
     frmTaskSwitch: TfrmTaskSwitch;
     CategoryTree: TVirtualStringTree;
     TasksView: TVirtualStringTree;
+    acDeleteTask: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -89,7 +90,7 @@ type
     procedure RemindersListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure acChangeTaskExecute(Sender: TObject);
-    procedure acRemoveTaskExecute(Sender: TObject);
+    procedure acRemoveTaskFromViewExecute(Sender: TObject);
     procedure acRemoveReminderExecute(Sender: TObject);
     procedure eQuickNewTaskKeyPress(Sender: TObject; var Key: Char);
     procedure eSearchChange(Sender: TObject);
@@ -143,6 +144,7 @@ type
     procedure TasksViewPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType);
+    procedure acDeleteTaskExecute(Sender: TObject);
   private
     TrayIconData : TNotifyIconData;
 
@@ -306,7 +308,7 @@ begin
   acChangeTask.Enabled := TaskSelection.Count > 1;
   acLogEntry.Enabled := TaskSelection.Count > 1;
   acAddToActiveTasks.Enabled := TaskSelection.Count > 1;
-  acRemoveTask.Enabled := TaskSelection.Count > 1;
+  acRemoveTaskFromView.Enabled := TaskSelection.Count > 1;
 end;
 
 procedure TfrmMain.OnTaskChange(Sender : TObject; obj : TNamedObject);
@@ -534,12 +536,25 @@ begin
   frmTaskProperties.Show;
 end;
 
-procedure TfrmMain.acRemoveTaskExecute(Sender: TObject);
-var t : TNamedObject;
+procedure TfrmMain.acRemoveTaskFromViewExecute(Sender: TObject);
+var t : TTask;
 begin
   if TasksView.FocusedNode <> nil then begin
     t := tsk(TasksView.FocusedNode);
-    if MessageDlg('Delete "' + t.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if t.HasCategory then
+      t.RemoveCategory(cat(CategoryTree.FocusedNode))
+    else
+      if MessageDlg('Delete task "' + t.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        TaskSelection.Delete(t);
+  end;
+end;
+
+procedure TfrmMain.acDeleteTaskExecute(Sender: TObject);
+var t : TTask;
+begin
+  if TasksView.FocusedNode <> nil then begin
+    t := tsk(TasksView.FocusedNode);
+    if MessageDlg('Delete task "' + t.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       TaskSelection.Delete(t);
   end;
 end;
@@ -722,6 +737,7 @@ var
   pn : PVirtualNode;
   i : Integer;
   movedcat, parent : TCategory;
+  name : String;
 begin
   if Source = CategoryTree then begin
     Effect := DROPEFFECT_MOVE;
@@ -759,7 +775,13 @@ begin
     if name = CategoryNone then
       tsk(TasksView.FocusedNode).ClearCategories
     else
-      tsk(TasksView.FocusedNode).AddCategory(cat(Sender.DropTargetNode));
+      case Effect of
+        DROPEFFECT_MOVE : begin
+          tsk(TasksView.FocusedNode).RemoveCategory(cat(Sender.FocusedNode));
+          tsk(TasksView.FocusedNode).AddCategory(cat(Sender.DropTargetNode));
+        end;
+        DROPEFFECT_COPY : tsk(TasksView.FocusedNode).AddCategory(cat(Sender.DropTargetNode));
+      end;
   end;
 end;
 
@@ -809,7 +831,10 @@ procedure TfrmMain.TasksViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_DELETE) and not TasksView.IsEditing then
-    acRemoveTask.Execute
+    if ssCtrl in Shift then
+      acDeleteTask.Execute
+    else
+      acRemoveTaskFromView.Execute
   else if (Key = VK_F2) and (TasksView.FocusedNode <> nil) then
     TasksView.EditNode(TasksView.FocusedNode, -1);
 end;
@@ -830,7 +855,7 @@ begin
     frmTaskProperties.Task := tsk(TasksView.FocusedNode);
 
   acChangeTask.Enabled := TasksView.FocusedNode <> nil;
-  acRemoveTask.Enabled := acChangeTask.Enabled;
+  acRemoveTaskFromView.Enabled := acChangeTask.Enabled;
   acAddToActiveTasks.Enabled := acChangeTask.Enabled and not tsk(TasksView.FocusedNode).Complete;
   acLogEntry.Enabled := acChangeTask.Enabled;
 end;

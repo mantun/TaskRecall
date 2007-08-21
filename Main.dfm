@@ -264,10 +264,10 @@ object frmMain: TfrmMain
       Caption = '&Task Details...'
       OnExecute = acChangeTaskExecute
     end
-    object acRemoveTask: TAction
+    object acRemoveTaskFromView: TAction
       Category = 'Tasks'
-      Caption = '&Delete Task...'
-      OnExecute = acRemoveTaskExecute
+      Caption = '&Remove Task from view'
+      OnExecute = acRemoveTaskFromViewExecute
     end
     object acAddCategory: TAction
       Category = 'Categories'
@@ -316,6 +316,11 @@ object frmMain: TfrmMain
       ShortCut = 16468
       OnExecute = acShowTimelineExecute
     end
+    object acDeleteTask: TAction
+      Category = 'Tasks'
+      Caption = 'Delete Task...'
+      OnExecute = acDeleteTaskExecute
+    end
   end
   object pmTasks: TPopupMenu
     Left = 136
@@ -324,7 +329,7 @@ object frmMain: TfrmMain
       Action = acAddTask
     end
     object DeleteTask1: TMenuItem
-      Action = acRemoveTask
+      Action = acRemoveTaskFromView
     end
     object EditTask1: TMenuItem
       Action = acChangeTask
