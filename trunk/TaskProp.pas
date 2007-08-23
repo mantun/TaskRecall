@@ -23,13 +23,11 @@ type
     eEndTime: TLabeledEdit;
     cbColor: TColorBox;
     Label1: TLabel;
-    Memo1: TMemo;
+    mRemninderTimestamp: TMemo;
     Label2: TLabel;
     procedure TaskChange(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure EditKeyPress(Sender: TObject; var Key: Char);
-    procedure mDescriptionKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
     procedure btnReminderClick(Sender: TObject);
@@ -38,6 +36,8 @@ type
     procedure sePriorityChange(Sender: TObject);
     procedure btnLogClick(Sender: TObject);
     procedure cbColorChange(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FCompleteModified : Boolean;
     FColorModified : Boolean;
@@ -94,7 +94,9 @@ begin
   eTaskName.Enabled := Enabled;
   sePriority.Enabled := Enabled;
   mDescription.Enabled := Enabled;
+  mRemninderTimestamp.Enabled := Enabled;
   cbComplete.Enabled := Enabled;
+  cbColor.Enabled := Enabled;
   eTimeSpent.Enabled := Enabled;
   eStartTime.Enabled := Enabled;
   eEndTime.Enabled := Enabled;
@@ -132,6 +134,9 @@ begin
     else
       eEndTime.Text := DateTimeToStr(task.EndTime);
   end;
+  if not mRemninderTimestamp.Modified then
+    if task.Reminder <> nil then
+      mRemninderTimestamp.Text := task.Reminder.TimeStamp;
   btnReminder.Enabled := task.Name <> '';
   btnLog.Enabled := task.TaskID <> 0;
 end;
@@ -155,6 +160,8 @@ begin
   eStartTime.Modified := False;
   eEndTime.Text := '';
   eEndTime.Modified := False;
+  mRemninderTimestamp.Text := '';
+  mRemninderTimestamp.Modified := false;
   EnableControls(False);
   btnApply.Enabled := False;
   btnDelete.Enabled := False;
@@ -238,6 +245,16 @@ begin
       task.Complete := cbComplete.Checked;
       FCompleteModified := False;
     end;
+    if mRemninderTimestamp.Modified then begin
+      if Trim(mRemninderTimestamp.Text) <> '' then begin
+        if task.Reminder = nil then
+          task.Reminder := TReminder.Create;
+        task.Reminder.TimeStamp := mRemninderTimestamp.Text;
+      end else
+        if task.Reminder <> nil then
+          TaskStorage.Delete(task.Reminder);
+      mRemninderTimestamp.Modified := false;
+    end;
   finally
     task.EndUpdate;
   end;
@@ -253,18 +270,18 @@ begin
     btnApply.Click;
 end;
 
-procedure TfrmTaskProperties.mDescriptionKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
+procedure TfrmTaskProperties.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #27 then Close;
+end;
+
+procedure TfrmTaskProperties.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
   if (Key = VK_RETURN) and (Shift = [ssCtrl]) and btnApply.Enabled then begin
     btnApply.Click;
     Key := 0;
   end;
-end;
-
-procedure TfrmTaskProperties.FormKeyPress(Sender: TObject; var Key: Char);
-begin
-  if Key = #27 then Close;
 end;
 
 procedure TfrmTaskProperties.FormCreate(Sender: TObject);

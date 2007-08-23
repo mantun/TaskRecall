@@ -16,6 +16,7 @@ object frmTaskProperties: TfrmTaskProperties
   KeyPreview = True
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
   DesignSize = (
     370
@@ -35,7 +36,7 @@ object frmTaskProperties: TfrmTaskProperties
     Top = 0
     Width = 56
     Height = 13
-    Caption = 'De&scription:'
+    Caption = '&Description:'
     FocusControl = mDescription
   end
   object btnApply: TSpeedButton
@@ -182,9 +183,10 @@ object frmTaskProperties: TfrmTaskProperties
   object Label2: TLabel
     Left = 8
     Top = 240
-    Width = 32
+    Width = 48
     Height = 13
-    Caption = 'Label2'
+    Caption = '&Reminder:'
+    FocusControl = mRemninderTimestamp
   end
   object eTaskName: TLabeledEdit
     Left = 8
@@ -216,16 +218,16 @@ object frmTaskProperties: TfrmTaskProperties
     Width = 225
     Height = 221
     Anchors = [akLeft, akTop, akRight, akBottom]
+    ScrollBars = ssVertical
     TabOrder = 1
     OnChange = TaskChange
-    OnKeyDown = mDescriptionKeyDown
   end
   object cbComplete: TCheckBox
     Left = 64
     Top = 99
     Width = 65
     Height = 17
-    Caption = 'Com&plete'
+    Caption = 'C&omplete'
     TabOrder = 4
     OnClick = cbCompleteClick
     OnKeyPress = EditKeyPress
@@ -237,7 +239,7 @@ object frmTaskProperties: TfrmTaskProperties
     Height = 21
     EditLabel.Width = 58
     EditLabel.Height = 13
-    EditLabel.Caption = 'Time spent: '
+    EditLabel.Caption = '&Time spent: '
     TabOrder = 5
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
@@ -249,7 +251,7 @@ object frmTaskProperties: TfrmTaskProperties
     Height = 21
     EditLabel.Width = 79
     EditLabel.Height = 13
-    EditLabel.Caption = 'Start Date/Time:'
+    EditLabel.Caption = '&Start Date/Time:'
     TabOrder = 6
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
@@ -261,7 +263,7 @@ object frmTaskProperties: TfrmTaskProperties
     Height = 21
     EditLabel.Width = 76
     EditLabel.Height = 13
-    EditLabel.Caption = 'End Date/Time:'
+    EditLabel.Caption = '&End Date/Time:'
     TabOrder = 7
     OnChange = TaskChange
     OnKeyPress = EditKeyPress
@@ -278,13 +280,20 @@ object frmTaskProperties: TfrmTaskProperties
     OnChange = cbColorChange
     OnKeyPress = EditKeyPress
   end
-  object Memo1: TMemo
+  object mRemninderTimestamp: TMemo
     Left = 8
     Top = 256
     Width = 313
-    Height = 49
-    Lines.Strings = (
-      'Memo1')
+    Height = 57
+    Anchors = [akLeft, akRight, akBottom]
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Lucida Console'
+    Font.Style = []
+    ParentFont = False
+    ScrollBars = ssVertical
     TabOrder = 8
+    OnChange = TaskChange
   end
 end

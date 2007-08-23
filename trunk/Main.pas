@@ -17,14 +17,18 @@ type
     FCategory : TCategory;
     FComplete : Boolean;
     FIncomplete : Boolean;
+    FFilter : String;
     procedure SetCategory(const value : TCategory);
     procedure SetComplete(const value : Boolean);
     procedure SetIncomplete(const value : Boolean);
-    function MatchCategory(const obj : TNamedObject) : Boolean;
+    procedure SetFilter (const value : String);
+    function MatchFilter(const task : TTask) : Boolean;
+    function MatchCategory(const task : TTask) : Boolean;
   public
     property Category : TCategory read FCategory write SetCategory;
     property ShowComplete : Boolean read FComplete write SetComplete;
     property ShowIncomplete : Boolean read FIncomplete write SetIncomplete;
+    property FilterString : String read FFilter write SetFilter;
     function Belongs(const obj : TNamedObject) : Boolean; override;
   end;
   TReminderSelection = class(TObjectsSelection)
@@ -80,6 +84,9 @@ type
     CategoryTree: TVirtualStringTree;
     TasksView: TVirtualStringTree;
     acDeleteTask: TAction;
+    acCategoryColor: TAction;
+    ColorDialog: TColorDialog;
+    SetColor1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -145,6 +152,9 @@ type
       const TargetCanvas: TCanvas; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType);
     procedure acDeleteTaskExecute(Sender: TObject);
+    procedure TasksViewCompareNodes(Sender: TBaseVirtualTree; Node1,
+      Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+    procedure acCategoryColorExecute(Sender: TObject);
   private
     TrayIconData : TNotifyIconData;
 
@@ -169,6 +179,7 @@ type
     function FindCatNode(category : TCategory) : PVirtualNode;
     function AddCategoryToTree(CategoryTree : TVirtualStringTree; category : TCategory) : PVirtualNode;
     procedure AddSpecialCategories;
+    procedure ReindexCategories;
 
     function tsk(pnode : PVirtualNode) : TTask;
     function FindTaskNode(task : TTask) : PVirtualNode;
@@ -197,15 +208,23 @@ type
 function TCategoryTaskSelection.Belongs(const obj : TNamedObject) : Boolean;
 begin
   Result := (obj is TTask) and (TTask(obj).Complete and FComplete or not TTask(obj).Complete and FIncomplete);
-  Result := Result and MatchCategory(obj);
+  Result := Result and MatchCategory(TTask(obj)) and MatchFilter(TTask(obj));
 end;
 
-function TCategoryTaskSelection.MatchCategory(const obj : TNamedObject) : Boolean;
+function TCategoryTaskSelection.MatchFilter(const task : TTask) : Boolean;
+begin
+  Result := (FFilter = '')
+         or (Pos(FFilter, task.Name) > 0)
+         or (Pos(FFilter, task.Description) > 0)
+         or (StrToIntDef(FFilter, 0) = task.TaskID);
+end;
+
+function TCategoryTaskSelection.MatchCategory(const task : TTask) : Boolean;
 begin
   Result := (FCategory = nil)
          or (FCategory.Name = CategoryAll)
-         or TTask(obj).HasCategory(FCategory)
-         or (FCategory.Name = CategoryNone) and not TTask(obj).HasCategory;
+         or task.HasCategory(FCategory)
+         or (FCategory.Name = CategoryNone) and not task.HasCategory;
 end;
 
 procedure TCategoryTaskSelection.SetCategory(const value : TCategory);
@@ -228,6 +247,14 @@ procedure TCategoryTaskSelection.SetIncomplete(const value : Boolean);
 begin
   if FIncomplete <> value then begin
     FIncomplete := value;
+    ReSelectAll;
+  end;
+end;
+
+procedure TCategoryTaskSelection.SetFilter(const value : String);
+begin
+  if FFilter <> value then begin
+    FFilter := value;
     ReSelectAll;
   end;
 end;
@@ -313,6 +340,7 @@ end;
 
 procedure TfrmMain.OnTaskChange(Sender : TObject; obj : TNamedObject);
 begin
+  TasksView.Sort(nil, 1, sdAscending, True);
   TasksView.Invalidate;
 end;
 
@@ -619,7 +647,7 @@ end;
 
 procedure TfrmMain.eSearchChange(Sender: TObject);
 begin
-  ShowMessage('ne baca');
+  TaskSelection.FilterString := eSearch.Text;
 end;
 
 procedure TfrmMain.RemindersListViewDblClick(Sender: TObject);
@@ -677,10 +705,13 @@ begin
 end;
 
 procedure TfrmMain.acShowTimelineExecute(Sender: TObject);
-var s : TTaskSelection;
+var
+  s : TManualSelection;
+  i : Integer;
 begin
-  s := TTaskSelection.Create(TaskStorage);
-  s.ReSelectAll;
+  s := TManualSelection.Create(TaskStorage);
+  for i := 0 to TaskSelection.Count - 1 do
+    s.add(TaskSelection[i]);
   TfrmTimeline.Create(Application, s).Show;
 end;
 
@@ -729,14 +760,27 @@ begin
   Allowed := (name <> CategoryAll) and (name <> CategoryNone);
 end;
 
+procedure TfrmMain.ReindexCategories;
+var
+  pn : PVirtualNode;
+  i : Integer;
+begin
+  pn := CategoryTree.GetFirst;
+  i := 0;
+  while pn <> nil do begin
+    cat(pn).Index := i;
+    pn := CategoryTree.GetNext(pn);
+    Inc(i);
+  end;
+end;
+
 procedure TfrmMain.CategoryTreeDragDrop(Sender: TBaseVirtualTree;
   Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
   Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode: TDropMode);
 var
   AttachMode: TVTNodeAttachMode;
-  pn : PVirtualNode;
-  i : Integer;
   movedcat, parent : TCategory;
+  task : TTask;
   name : String;
 begin
   if Source = CategoryTree then begin
@@ -760,13 +804,7 @@ begin
     movedcat := cat(CategoryTree.FocusedNode);
     CategoryTree.MoveTo(CategoryTree.FocusedNode, Sender.DropTargetNode, AttachMode, False);
     movedcat.Parent := parent;
-    pn := CategoryTree.GetFirst;
-    i := 0;
-    while pn <> nil do begin
-      cat(pn).Index := i;
-      pn := CategoryTree.GetNext(pn);
-      Inc(i);
-    end;
+    ReindexCategories;
   end else if Source = TasksView then begin
     if TasksView.FocusedNode = nil then Exit;
     if Mode <> dmOnNode then Exit;
@@ -777,8 +815,10 @@ begin
     else
       case Effect of
         DROPEFFECT_MOVE : begin
-          tsk(TasksView.FocusedNode).RemoveCategory(cat(Sender.FocusedNode));
-          tsk(TasksView.FocusedNode).AddCategory(cat(Sender.DropTargetNode));
+          task := tsk(TasksView.FocusedNode);
+          task.AddCategory(cat(Sender.DropTargetNode));
+          task.RemoveCategory(cat(Sender.FocusedNode));
+          Effect := DROPEFFECT_COPY;
         end;
         DROPEFFECT_COPY : tsk(TasksView.FocusedNode).AddCategory(cat(Sender.DropTargetNode));
       end;
@@ -796,6 +836,7 @@ var c : TCategory;
 begin
   c := TCategory.Create('New Category', cat(CategoryTree.FocusedNode).Parent);
   CategorySelection.Add(c);
+  ReindexCategories;
   CategoryTree.EditNode(FindCatNode(c), -1);
 end;
 
@@ -914,6 +955,21 @@ begin
           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
         end;
   end;
+end;
+
+procedure TfrmMain.TasksViewCompareNodes(Sender: TBaseVirtualTree; Node1,
+  Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+begin
+  Result := CompareTasks(tsk(Node1), tsk(Node2));
+end;
+
+procedure TfrmMain.acCategoryColorExecute(Sender: TObject);
+begin
+  if CategoryTree.FocusedNode <> nil then
+    if ColorDialog.Execute then begin
+      cat(CategoryTree.FocusedNode).Color := ColorDialog.Color;
+      TasksView.Invalidate;
+    end;
 end;
 
 end.

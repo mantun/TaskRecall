@@ -118,13 +118,13 @@ begin
   SetLength(Result, 0);
   i := 1;
   while i <= Length(s) do begin
-    while (i <= Length(s)) and (s[i] = ' ') do inc(i);
+    while (i <= Length(s)) and (s[i] in [' ', #9, #13, #10]) do inc(i);
     if (i <= Length(s)) and (s[i] in ['(', ')']) then begin
       t := s[i];
       inc(i);
     end else begin
       t := '';
-      while (i <= Length(s)) and not (s[i] in [' ', '(', ')']) do begin
+      while (i <= Length(s)) and not (s[i] in [' ', #9, #13, #10, '(', ')']) do begin
         t := t + s[i];
         inc(i);
       end;

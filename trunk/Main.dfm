@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
   Left = 193
   Top = 115
-  Width = 424
+  Width = 612
   Height = 348
   ActiveControl = eQuickNewTask
   Caption = 'All reminders'
@@ -18,14 +18,14 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    416
+    604
     314)
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl: TPageControl
     Left = 0
     Top = 0
-    Width = 418
+    Width = 606
     Height = 316
     ActivePage = tsTasks
     Anchors = [akLeft, akTop, akRight, akBottom]
@@ -55,7 +55,7 @@ object frmMain: TfrmMain
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 410
+        Width = 598
         Height = 36
         Align = alTop
         BevelOuter = bvNone
@@ -141,7 +141,7 @@ object frmMain: TfrmMain
       object TasksView: TVirtualStringTree
         Left = 127
         Top = 36
-        Width = 283
+        Width = 471
         Height = 240
         Align = alClient
         DragMode = dmAutomatic
@@ -152,7 +152,8 @@ object frmMain: TfrmMain
         Header.Font.Name = 'MS Sans Serif'
         Header.Font.Style = []
         Header.MainColumn = 2
-        Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoVisible]
+        Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
+        Header.SortColumn = 1
         Header.Style = hsXPStyle
         NodeDataSize = 4
         PopupMenu = pmTasks
@@ -160,6 +161,7 @@ object frmMain: TfrmMain
         TreeOptions.MiscOptions = [toAcceptOLEDrop, toEditable, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning]
         TreeOptions.PaintOptions = [toShowDropmark, toThemeAware, toUseBlendedImages]
         OnBeforeCellPaint = TasksViewBeforeCellPaint
+        OnCompareNodes = TasksViewCompareNodes
         OnDblClick = TasksViewDblClick
         OnFocusChanged = TasksViewFocusChanged
         OnGetText = TasksViewGetText
@@ -181,7 +183,7 @@ object frmMain: TfrmMain
           end
           item
             Position = 2
-            Width = 179
+            Width = 367
             WideText = 'Name'
           end>
       end
@@ -198,7 +200,7 @@ object frmMain: TfrmMain
       object RemindersListView: TListView
         Left = 0
         Top = 0
-        Width = 410
+        Width = 598
         Height = 276
         Align = alClient
         Columns = <>
@@ -226,12 +228,12 @@ object frmMain: TfrmMain
       inline frmTaskSwitch: TfrmTaskSwitch
         Left = 0
         Top = 0
-        Width = 410
+        Width = 598
         Height = 276
         Align = alClient
         TabOrder = 0
         inherited ListView: TListView
-          Width = 410
+          Width = 598
           Height = 276
         end
       end
@@ -321,6 +323,11 @@ object frmMain: TfrmMain
       Caption = 'Delete Task...'
       OnExecute = acDeleteTaskExecute
     end
+    object acCategoryColor: TAction
+      Category = 'Categories'
+      Caption = 'Set &Color...'
+      OnExecute = acCategoryColorExecute
+    end
   end
   object pmTasks: TPopupMenu
     Left = 136
@@ -353,6 +360,9 @@ object frmMain: TfrmMain
     object DeleteTask2: TMenuItem
       Action = acDeleteCategory
     end
+    object SetColor1: TMenuItem
+      Action = acCategoryColor
+    end
   end
   object pmReminders: TPopupMenu
     Left = 200
@@ -366,5 +376,9 @@ object frmMain: TfrmMain
     object ReminderDetails1: TMenuItem
       Action = acChangeReminder
     end
+  end
+  object ColorDialog: TColorDialog
+    Left = 232
+    Top = 144
   end
 end

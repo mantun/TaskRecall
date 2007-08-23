@@ -9,9 +9,10 @@ uses
 type
   TfrmReminderProperties = class(TForm)
     eName: TLabeledEdit;
-    eTime: TLabeledEdit;
     btnApply: TSpeedButton;
     btnDelete: TSpeedButton;
+    mTimeStamp: TMemo;
+    Label1: TLabel;
     procedure ReminderChange(Sender: TObject);
     procedure EditKeyPress(Sender: TObject; var Key: Char);
     procedure btnApplyClick(Sender: TObject);
@@ -41,13 +42,13 @@ implementation
 procedure TfrmReminderProperties.EnableControls(Enabled : Boolean);
 begin
   eName.Enabled := Enabled and (FReminder.Item <> nil) and (TReminder(FReminder.Item).Task = nil);
-  eTime.Enabled := Enabled;
+  mTimeStamp.Enabled := Enabled;
 end;
 
 procedure TfrmReminderProperties.OnDelete(Sender : TObject; item : TNamedObject);
 begin
   eName.Text := '';
-  eTime.Text := '';
+  mTimeStamp.Text := '';
   EnableControls(False);
   btnApply.Enabled := False;
   btnDelete.Enabled := False;
@@ -59,8 +60,8 @@ begin
   Reminder := TReminder(item);
   if not eName.Modified then
     eName.Text := Reminder.Name;
-  if not eTime.Modified then
-    eTime.Text := Reminder.TimeStamp;
+  if not mTimeStamp.Modified then
+    mTimeStamp.Text := Reminder.TimeStamp;
   EnableControls(True);
   btnApply.Enabled := False;
   btnDelete.Enabled := True;
@@ -89,14 +90,14 @@ var
 begin
   if FReminder.Item = nil then Exit;
   Reminder := TReminder(FReminder.Item);
-  Reminder.ValidateTimeStamp(eTime.Text);
+  Reminder.ValidateTimeStamp(mTimeStamp.Text);
   if eName.Modified then begin
     Reminder.Name := eName.Text;
     eName.Modified := False;
   end;
-  if eTime.Modified then begin
-    Reminder.TimeStamp := eTime.Text;
-    eTime.Modified := False;
+  if mTimeStamp.Modified then begin
+    Reminder.TimeStamp := mTimeStamp.Text;
+    mTimeStamp.Modified := False;
   end;
   btnApply.Enabled := False;
   ModalResult := mrOK;
