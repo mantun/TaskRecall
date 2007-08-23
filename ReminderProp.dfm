@@ -2,7 +2,7 @@ object frmReminderProperties: TfrmReminderProperties
   Left = 570
   Top = 305
   Width = 378
-  Height = 120
+  Height = 183
   BorderStyle = bsSizeToolWin
   Caption = 'Reminder Properties'
   Color = clBtnFace
@@ -19,7 +19,7 @@ object frmReminderProperties: TfrmReminderProperties
   OnKeyPress = FormKeyPress
   DesignSize = (
     370
-    86)
+    149)
   PixelsPerInch = 96
   TextHeight = 13
   object btnApply: TSpeedButton
@@ -81,6 +81,14 @@ object frmReminderProperties: TfrmReminderProperties
     ShowHint = True
     OnClick = btnDeleteClick
   end
+  object Label1: TLabel
+    Left = 8
+    Top = 40
+    Width = 80
+    Height = 13
+    Caption = '&Time Expression:'
+    FocusControl = mTimeStamp
+  end
   object eName: TLabeledEdit
     Left = 8
     Top = 16
@@ -94,17 +102,18 @@ object frmReminderProperties: TfrmReminderProperties
     OnChange = ReminderChange
     OnKeyPress = EditKeyPress
   end
-  object eTime: TLabeledEdit
+  object mTimeStamp: TMemo
     Left = 8
     Top = 56
     Width = 353
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    EditLabel.Width = 77
-    EditLabel.Height = 13
-    EditLabel.Caption = '&Time Expression'
+    Height = 89
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Lucida Console'
+    Font.Style = []
+    ParentFont = False
+    ScrollBars = ssVertical
     TabOrder = 1
-    OnChange = ReminderChange
-    OnKeyPress = EditKeyPress
   end
 end
