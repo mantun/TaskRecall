@@ -115,5 +115,6 @@ object frmReminderProperties: TfrmReminderProperties
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
+    OnChange = ReminderChange
   end
 end
