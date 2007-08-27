@@ -565,12 +565,15 @@ begin
 end;
 
 procedure TfrmMain.acRemoveTaskFromViewExecute(Sender: TObject);
-var t : TTask;
+var
+  t : TTask;
+  c : TCategory;
 begin
   if TasksView.FocusedNode <> nil then begin
     t := tsk(TasksView.FocusedNode);
-    if t.HasCategory then
-      t.RemoveCategory(cat(CategoryTree.FocusedNode))
+    c := cat(CategoryTree.FocusedNode);
+    if (c <> nil) and (c.Name <> CategoryAll) and (c.Name <> CategoryNone) and t.HasCategory then
+      t.RemoveCategory(c)
     else
       if MessageDlg('Delete task "' + t.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
         TaskSelection.Delete(t);
@@ -641,6 +644,7 @@ begin
     t := TTask.Create;
     t.Name := eQuickNewTask.Text;
     TaskSelection.Add(t);
+    frmTaskSwitch.AddTask(t);
     eQuickNewTask.Text := '';
   end;
 end;

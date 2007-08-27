@@ -15,7 +15,6 @@ type
     lDescr: TLabel;
     btnApply: TSpeedButton;
     cbComplete: TCheckBox;
-    btnReminder: TSpeedButton;
     btnDelete: TSpeedButton;
     eTimeSpent: TLabeledEdit;
     btnLog: TSpeedButton;
@@ -137,7 +136,6 @@ begin
   if not mRemninderTimestamp.Modified then
     if task.Reminder <> nil then
       mRemninderTimestamp.Text := task.Reminder.TimeStamp;
-  btnReminder.Enabled := task.Name <> '';
   btnLog.Enabled := task.TaskID <> 0;
 end;
 
@@ -165,7 +163,6 @@ begin
   EnableControls(False);
   btnApply.Enabled := False;
   btnDelete.Enabled := False;
-  btnReminder.Enabled := False;
   btnLog.Enabled := False;
 end;
 
@@ -259,7 +256,6 @@ begin
     task.EndUpdate;
   end;
   btnApply.Enabled := False;
-  btnReminder.Enabled := task.Name <> '';
   btnLog.Enabled := task.TaskID <> 0;
   ModalResult := mrOK;
 end;

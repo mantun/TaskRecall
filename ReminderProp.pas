@@ -63,7 +63,7 @@ begin
   if not mTimeStamp.Modified then
     mTimeStamp.Text := Reminder.TimeStamp;
   EnableControls(True);
-  btnApply.Enabled := False;
+  btnApply.Enabled := eName.Modified or mTimeStamp.Modified;
   btnDelete.Enabled := True;
 end;
 
