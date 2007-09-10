@@ -23,7 +23,7 @@ var
 
 implementation
 
-uses Parse, Func;
+uses Parse, Eval;
 
 {$R *.dfm}
 

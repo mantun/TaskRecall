@@ -189,7 +189,7 @@ end;
 
 function TBoolResult.ToString : String;
 begin
-  Result := BoolToStr(FValue);
+  Result := BoolToStr(FValue, True);
 end;
 
 function TBoolResult.CompareTo(other : IResult) : Integer;
