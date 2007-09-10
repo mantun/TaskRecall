@@ -5,14 +5,6 @@ interface
 uses SysUtils, Lists, ResultDecl;
 
 type
-  EFunctionException = class(Exception);
-
-  IFuncResult = interface(IResult)
-    ['{0804CB08-0CDA-4032-90CA-783D532F4857}']
-    function GetName : String;
-    function Apply(const arguments : ILinkedList) : IResult;
-  end;
-
   TPredefinedFunc = class(TInterfacedObject, IFuncResult, IResult)
   private
     FName : String;
@@ -38,7 +30,7 @@ var
 
 implementation
 
-uses DateUtils, Func;
+uses DateUtils, Eval;
 
 var
   FalseRes : IBoolResult;

@@ -5,6 +5,7 @@ interface
 Uses SysUtils, Lists;
 
 type
+  EFunctionException = class(Exception);
   EEvaluationException = class(Exception);
   IResult = interface(IData)
     ['{A040AE41-C5E5-4CCB-8C54-31822220DCBB}']
@@ -33,6 +34,11 @@ type
   IListResult = interface(IResult)
     ['{7B90DFA0-16C7-4244-8014-9E94F29BB76A}']
     function GetValue : ILinkedList;
+  end;
+  IFuncResult = interface(IResult)
+    ['{0804CB08-0CDA-4032-90CA-783D532F4857}']
+    function GetName : String;
+    function Apply(const arguments : ILinkedList) : IResult;
   end;
   // IStringResult could be used for string literals (later)
   // so we make dedicated result type for names
