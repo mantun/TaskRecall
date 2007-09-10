@@ -7,7 +7,8 @@ uses
   Parse in 'Parse.pas',
   ResultDecl in 'ResultDecl.pas',
   Eval in 'Eval.pas',
-  BuiltinDefs in 'BuiltinDefs.pas';
+  BuiltinDefs in 'BuiltinDefs.pas',
+  UserDefs in 'UserDefs.pas';
 
 {$R *.res}
 
