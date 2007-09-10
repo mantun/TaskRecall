@@ -8,11 +8,8 @@ type
   TPredefinedFunc = class(TInterfacedObject, IFuncResult, IResult)
   private
     FName : String;
-    function Eval(const r : IData) : IResult;
-    function GetTimeParam(const args : ILinkedList; const defaultValue : TDateTime) : TDateTime;
   protected
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
+    function Eval(const r : IData) : IResult;
   public
     function ToString : String;
     function GetName : String;
@@ -20,33 +17,15 @@ type
     constructor Create(const AName : String);
   end;
 
-  TDefinition = record
-    name : String;
-    value : IResult;
-  end;
-
-var
-  BuiltinDefinitions : Array Of TDefinition;
-
 implementation
 
-uses DateUtils, Eval;
+uses Eval;
 
 var
   FalseRes : IBoolResult;
   TrueRes : IBoolResult;
 
 { TPredefinedFunc }
-
-function TPredefinedFunc._AddRef: Integer;
-begin
-  Result := -1;
-end;
-
-function TPredefinedFunc._Release: Integer;
-begin
-  Result := -1;
-end;
 
 function TPredefinedFunc.ToString : String;
 begin
@@ -63,189 +42,10 @@ begin
   Result := Evaluator.Evaluate(IResult(r));
 end;
 
-function TPredefinedFunc.GetTimeParam(const args : ILinkedList; const defaultValue : TDateTime) : TDateTime;
-var t : ITimeResult;
-begin
-  if not args.IsEmpty and Supports(Eval(args.Head), ITimeResult, t) then
-    Result := t.GetValue
-  else
-    Result := DefaultValue;
-end;
-
 constructor TPredefinedFunc.Create(const AName : String);
 begin
   inherited Create;
   FName := AName;
-end;
-
-{ Time }
-
-type
-  TNowFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TNowFunc.Apply(const args : ILinkedList) : IResult;
-begin
-  Result := TTimeResult.Create(Now);
-end;
-
-type
-  TTimeStampFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TTimeStampFunc.Apply(const args : ILinkedList) : IResult;
-var
-  d, t : ITimeResult;
-  it : IListIterator;
-begin
-  if args.IsEmpty then
-    Result := TTimeResult.Create(Now)
-  else begin
-    it := args.Iterator;
-    if Supports(Eval(it.Next), ITimeResult, d) and
-       it.HasNext and Supports(Eval(it.Next), ITimeResult, t) then
-      Result := TTimeResult.Create(Trunc(d.GetValue) + Frac(t.GetValue))
-    else
-      Raise EFunctionException.Create(GetName + ' requires date and time arguments');
-  end;
-end;
-
-type
-  TTimeFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TTimeFunc.Apply(const args : ILinkedList) : IResult;
-begin
-  Result := TTimeResult.Create(Frac(GetTimeParam(args, Time)));
-end;
-
-type
-  THourFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function THourFunc.Apply(const args : ILinkedList) : IResult;
-var h, m, s, ms : Word;
-begin
-  DecodeTime(GetTimeParam(args, Time), h, m, s, ms);
-  Result := TIntResult.Create(h);
-end;
-
-type
-  TMinuteFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TMinuteFunc.Apply(const args : ILinkedList) : IResult;
-var h, m, s, ms : Word;
-begin
-  DecodeTime(GetTimeParam(args, Time), h, m, s, ms);
-  Result := TIntResult.Create(m);
-end;
-
-type
-  TSecondFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TSecondFunc.Apply(const args : ILinkedList) : IResult;
-var h, m, s, ms : Word;
-begin
-  DecodeTime(GetTimeParam(args, Time), h, m, s, ms);
-  Result := TIntResult.Create(s);
-end;
-
-type
-  THourMinSecFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function THourMinSecFunc.Apply(const args : ILinkedList) : IResult;
-var
-  h, m, s : IIntResult;
-  it : IListIterator;
-begin
-  it := args.Iterator;
-  if it.HasNext and Supports(Eval(it.Next), IIntResult, h) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, m) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, s) then
-    Result := TTimeResult.Create(EncodeTime(h.GetValue, m.GetValue, s.GetValue, 0))
-  else
-    raise EFunctionException.Create('Invalid time for ' + GetName);
-end;
-
-{ Date }
-
-type
-  TDateFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TDateFunc.Apply(const args : ILinkedList) : IResult;
-begin
-  Result := TTimeResult.Create(GetTimeParam(args, Date));
-end;
-
-type
-  TDayFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TDayFunc.Apply(const args : ILinkedList) : IResult;
-begin
-  Result := TIntResult.Create(DayOfTheMonth(GetTimeParam(args, Date)));
-end;
-
-type
-  TMonthFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TMonthFunc.Apply(const args : ILinkedList) : IResult;
-var y, m, d : Word;
-begin
-  DecodeDate(GetTimeParam(args, Date), y, m, d);
-  Result := TIntResult.Create(m);
-end;
-
-type
-  TYearFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TYearFunc.Apply(const args : ILinkedList) : IResult;
-var y, m, d : Word;
-begin
-  DecodeDate(GetTimeParam(args, Date), y, m, d);
-  Result := TIntResult.Create(y);
-end;
-
-type
-  TDayOfWeekFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TDayOfWeekFunc.Apply(const args : ILinkedList) : IResult;
-begin
-  Result := TIntResult.Create(DayOfTheWeek(GetTimeParam(args, Date)));
-end;
-
-type
-  TDayOfYearFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TDayOfYearFunc.Apply(const args : ILinkedList) : IResult;
-begin
-  Result := TIntResult.Create(DayOfTheYear(GetTimeParam(args, Date)));
-end;
-
-type
-  TDayMonthYearFunc = class(TPredefinedFunc)
-    function Apply(const args : ILinkedList) : IResult; override;
-  end;
-function TDayMonthYearFunc.Apply(const args : ILinkedList) : IResult;
-var
-  d, m, y : IIntResult;
-  it : IListIterator;
-begin
-  it := args.Iterator;
-  if it.HasNext and Supports(Eval(it.Next), IIntResult, d) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, m) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, y) then
-    Result := TTimeResult.Create(EncodeDate(y.GetValue, m.GetValue, d.GetValue))
-  else
-    Raise EFunctionException.Create('Invalid date for ' + GetName);
 end;
 
 { Comparison }
@@ -516,37 +316,17 @@ begin
     raise EFunctionException.Create(GetName + ' requires 2 integer arguments');
 end;
 
-procedure AddFuncInternal(f : TPredefinedFunc);
+procedure AddFuncInternal(func : IFuncResult);
 begin
-  SetLength(BuiltinDefinitions, Length(BuiltinDefinitions) + 1);
-  BuiltinDefinitions[High(BuiltinDefinitions)].name := f.GetName;
-  BuiltinDefinitions[High(BuiltinDefinitions)].value := f;
+  Evaluator.AddDefinition(TDefinition.Create(func.GetName, func));
 end;
 
 initialization
+  Evaluator.PushFrame;
   FalseRes := TBoolResult.Create(False);
   TrueRes := TBoolResult.Create(True);
-  SetLength(BuiltinDefinitions, 2);
-  BuiltinDefinitions[0].name := 'false';
-  BuiltinDefinitions[0].value := FalseRes;
-  BuiltinDefinitions[1].name := 'true';
-  BuiltinDefinitions[1].value := TrueRes;
-
-  AddFuncInternal(TNowFunc.Create('now'));
-  AddFuncInternal(TTimeStampFunc.Create('ts'));
-  AddFuncInternal(TTimeFunc.Create('time'));
-  AddFuncInternal(THourFunc.Create('hour'));
-  AddFuncInternal(TMinuteFunc.Create('min'));
-  AddFuncInternal(TSecondFunc.Create('sec'));
-  AddFuncInternal(THourMinSecFunc.Create('hms'));
-
-  AddFuncInternal(TDateFunc.Create('date'));
-  AddFuncInternal(TDayFunc.Create('day'));
-  AddFuncInternal(TMonthFunc.Create('month'));
-  AddFuncInternal(TYearFunc.Create('year'));
-  AddFuncInternal(TDayOfWeekFunc.Create('dow'));
-  AddFuncInternal(TDayOfYearFunc.Create('doy'));
-  AddFuncInternal(TDayMonthYearFunc.Create('dmy'));
+  Evaluator.AddDefinition(TDefinition.Create('false', FalseRes));
+  Evaluator.AddDefinition(TDefinition.Create('true', TrueRes));
 
   AddFuncInternal(TEqualFunc.Create('='));
   AddFuncInternal(TInFunc.Create('in'));
@@ -564,4 +344,6 @@ initialization
   AddFuncInternal(TMultiplyFunc.Create('*'));
   AddFuncInternal(TDivideFunc.Create('/'));
   AddFuncInternal(TModuloFunc.Create('%'));
+finalization
+  Evaluator.PopFrame;
 end.

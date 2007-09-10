@@ -10,9 +10,10 @@ type
   IListIterator = interface
     function HasNext : Boolean;
     function Next : IData;
+    procedure Remove;
   end;
 
-  ILinkedList = interface
+  ILinkedList = interface(IData)
     procedure AddFirst(data : IData);
     procedure AddLast(data : IData);
 

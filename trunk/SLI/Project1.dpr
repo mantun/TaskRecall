@@ -8,7 +8,7 @@ uses
   ResultDecl in 'ResultDecl.pas',
   Eval in 'Eval.pas',
   BuiltinDefs in 'BuiltinDefs.pas',
-  UserDefs in 'UserDefs.pas';
+  TimeLibDefs in 'TimeLibDefs.pas';
 
 {$R *.res}
 

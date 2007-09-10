@@ -5,12 +5,32 @@ interface
 uses SysUtils, ResultDecl, Lists;
 
 type
+  IDefinition = interface(IData)
+    function GetName : String;
+    function GetValue : IResult;
+  end;
+
   TEvaluator = class
   private
+    FFrames : ILinkedList;
     function Lookup(name : INameResult) : IResult;
   public
+    procedure PushFrame;
+    procedure PopFrame;
+    procedure AddDefinition(def : IDefinition);
     function Evaluate(list : ILinkedList) : IResult; overload;
     function Evaluate(item : IResult) : IResult; overload;
+    constructor Create;
+  end;
+
+  TDefinition = class(TInterfacedObject, IDefinition)
+  private
+    FName : String;
+    FValue : IResult;
+  public
+    function GetName : String;
+    function GetValue : IResult;
+    constructor Create(AName : String; AValue : IResult);
   end;
 
 var
@@ -18,9 +38,13 @@ var
 
 implementation
 
-uses BuiltinDefs;
-
 { TEvaluator }
+
+constructor TEvaluator.Create;
+begin
+  inherited;
+  FFrames := CreateList;
+end;
 
 function TEvaluator.Evaluate(list : ILinkedList) : IResult;
 var it : IListIterator;
@@ -52,15 +76,55 @@ begin
 end;
 
 function TEvaluator.Lookup(name : INameResult) : IResult;
-var i : Integer;
+var
+  itf, itd : IListIterator;
+  def : IDefinition;
 begin
-  for i := Low(BuiltinDefinitions) to High(BuiltinDefinitions) do begin
-    if BuiltinDefinitions[i].name = name.GetValue then begin
-      Result := BuiltinDefinitions[i].value;
-      Exit;
+  itf := FFrames.Iterator;
+  while itf.HasNext do begin
+    itd := ILinkedList(itf.Next).Iterator;
+    while itd.HasNext do begin
+      def := IDefinition(itd.Next);
+      if def.GetName = name.GetValue then begin
+        Result := def.GetValue;
+        Exit;
+      end;
     end;
   end;
   raise EFunctionException.Create('Undefined name: ' + name.GetValue);
+end;
+
+procedure TEvaluator.PushFrame;
+begin
+  FFrames.AddFirst(CreateList);
+end;
+
+procedure TEvaluator.PopFrame;
+begin
+  FFrames.Iterator.Remove;
+end;
+
+procedure TEvaluator.AddDefinition(def : IDefinition);
+begin
+  ILinkedList(FFrames.Head).AddFirst(def);
+end;
+
+{ TDefinition }
+
+constructor TDefinition.Create(AName : String; AValue : IResult);
+begin
+  FName := AName;
+  FValue := AValue;
+end;
+
+function TDefinition.GetName : String;
+begin
+  Result := FName;
+end;
+
+function TDefinition.GetValue : IResult;
+begin
+  Result := FValue;
 end;
 
 initialization
