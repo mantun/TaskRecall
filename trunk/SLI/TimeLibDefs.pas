@@ -108,9 +108,13 @@ begin
   it := args.Iterator;
   if it.HasNext and Supports(Eval(it.Next), IIntResult, hr) then begin
     if it.HasNext and Supports(Eval(it.Next), IIntResult, mr) then
-      m := mr.GetValue;
+      m := mr.GetValue
+    else
+      m := 0;
     if it.HasNext and Supports(Eval(it.Next), IIntResult, sr) then
-      s := sr.GetValue;
+      s := sr.GetValue
+    else
+      s := 0;
     Result := TTimeResult.Create(EncodeTime(hr.GetValue, m, s, 0))
   end else
     raise EFunctionException.Create('Invalid time for ' + GetName);
@@ -182,15 +186,19 @@ type
   end;
 function TDayMonthYearFunc.Apply(const args : ILinkedList) : IResult;
 var
-  d, m, y : IIntResult;
+  dr, mr, yr : IIntResult;
+  y : Integer;
   it : IListIterator;
 begin
   it := args.Iterator;
-  if it.HasNext and Supports(Eval(it.Next), IIntResult, d) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, m) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, y) then
-    Result := TTimeResult.Create(EncodeDate(y.GetValue, m.GetValue, d.GetValue))
-  else
+  if it.HasNext and Supports(Eval(it.Next), IIntResult, dr) and
+     it.HasNext and Supports(Eval(it.Next), IIntResult, mr) then begin
+    if it.HasNext and Supports(Eval(it.Next), IIntResult, yr) then
+      y := yr.GetValue
+    else
+      y := 0;
+    Result := TTimeResult.Create(EncodeDate(y, mr.GetValue, dr.GetValue))
+  end else
     Raise EFunctionException.Create('Invalid date for ' + GetName);
 end;
 
