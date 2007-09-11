@@ -242,7 +242,7 @@ var
 
 implementation
 
-Uses SysUtils, Parse;
+Uses SysUtils, ResultDecl, Parse, Eval;
 
 const
   Quote = '"';
@@ -580,11 +580,11 @@ begin
 end;
 
 procedure TReminder.ValidateTimeStamp(const value : String);
-var r : TResult;
+var r : IResult;
 begin
   if value = '' then Exit;
-  r := Parser.Evaluate(value);
-  if (r.ResType <> rtTime) and ((FTask = nil) or (FTask.StartTime = 0) or (r.ResType <> rtInt)) then
+  r := Evaluator.Evaluate(Parser.Parse(value));
+  if not Supports(r, ITimeResult) and ((FTask = nil) or (FTask.StartTime = 0) or not Supports(r, IIntResult)) then
     raise EParseException.Create('Timestamp expression must be of date/time type or integer type (if task start time is specified)');
 end;
 
@@ -616,7 +616,10 @@ begin
 end;
 
 function TReminder.GetFireTime : TDateTime;
-var r : TResult;
+var
+  r : IResult;
+  t : ITimeResult;
+  i : IIntResult;
 begin
   if (FTask <> nil) and FTask.Complete then begin
     Result := 0;
@@ -628,14 +631,14 @@ begin
   end;
   Result := 0;
   if FTimeStamp <> '' then
-    r := Parser.Evaluate(FTimeStamp)
+    r := Evaluator.Evaluate(Parser.Parse(FTimeStamp))
   else
-    r := Parser.Evaluate('+0');
-  case r.ResType of
-    rtTime : Result := r.TimeValue;
-    rtInt  : if (FTask <> nil) and (FTask.StartTime <> 0) then Result := FTask.StartTime + r.IntValue / (24 * 60);
-    rtBool : Result := 0;
-    else Assert(False);
+    r := Evaluator.Evaluate(Parser.Parse('+0'));
+  if Supports(r, ITimeResult, t) then
+    Result := t.GetValue
+  else if Supports(r, IIntResult, i) then begin
+    if (FTask <> nil) and (FTask.StartTime <> 0) then
+      Result := FTask.StartTime + i.GetValue / (24 * 60);
   end;
 end;
 

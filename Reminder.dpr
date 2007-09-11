@@ -3,8 +3,6 @@ program Reminder;
 uses
   Forms,
   Main in 'Main.pas' {frmMain},
-  Parse in 'Parse.pas',
-  Func in 'Func.pas',
   Tasks in 'Tasks.pas',
   PopUp in 'PopUp.pas' {frmTaskPopup},
   TaskProp in 'TaskProp.pas' {frmTaskProperties},
@@ -16,7 +14,13 @@ uses
   TaskSwitch in 'TaskSwitch.pas',
   TimelineData in 'TimelineData.pas',
   TimeGraph in 'TimeGraph.pas',
-  TaskSwitchFrame in 'TaskSwitchFrame.pas' {frmTaskSwitch: TFrame};
+  TaskSwitchFrame in 'TaskSwitchFrame.pas' {frmTaskSwitch: TFrame},
+  Lists in 'SLI\Lists.pas',
+  ResultDecl in 'SLI\ResultDecl.pas',
+  Parse in 'SLI\Parse.pas',
+  Eval in 'SLI\Eval.pas',
+  BuiltinDefs in 'SLI\BuiltinDefs.pas',
+  TimeLibDefs in 'SLI\TimeLibDefs.pas';
 
 {$R *.res}
 
