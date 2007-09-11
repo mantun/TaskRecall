@@ -152,7 +152,7 @@ object frmMain: TfrmMain
         Header.Font.Name = 'MS Sans Serif'
         Header.Font.Style = []
         Header.MainColumn = 2
-        Header.Options = [hoAutoResize, hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
+        Header.Options = [hoAutoResize, hoColumnResize, hoShowSortGlyphs, hoVisible]
         Header.SortColumn = 1
         Header.Style = hsXPStyle
         NodeDataSize = 4

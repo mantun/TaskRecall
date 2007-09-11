@@ -1,14 +1,14 @@
-196
+197
 
-00A6319C
+00A62380
 TReminder
 "break"
 "(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) (false))"
 ""
-"27.08.2007 16:34:12"
+"11.09.2007 17:10:28"
 00000000
 
-00A62014
+00A62EEC
 TTask
 1
 "Track time"
@@ -23,7 +23,7 @@ TTask
 ""
 0
 
-00A65968
+00A6506C
 TTask
 2
 "Task logging"
@@ -38,7 +38,7 @@ TTask
 ""
 0
 
-00A66090
+00A65AAC
 TTask
 3
 "Multiple categories for task"
@@ -53,7 +53,7 @@ TTask
 "18.08.2007 19:53:38"
 0
 
-00A66AB8
+00A667BC
 TTask
 4
 "Mute option"
@@ -66,9 +66,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A67268
+00A67100
 TTask
 5
 "Parser to allow time lists and range comparison"
@@ -83,7 +84,7 @@ TTask
 "07.04.2007 14:29:13"
 0
 
-00A67C0C
+00A67B80
 TTask
 6
 "Quick new task"
@@ -98,7 +99,7 @@ TTask
 "27.08.2007 16:33:59"
 0
 
-00A62070
+00A66950
 TTask
 7
 "Quick search"
@@ -113,7 +114,7 @@ TTask
 "23.08.2007 18:40:58"
 0
 
-00A64378
+00A624B4
 TTask
 8
 "Sort reminders by their execution time"
@@ -128,7 +129,7 @@ TTask
 "05.04.2007 12:21:32"
 0
 
-00A632D0
+00A67E90
 TTask
 10
 "Reminder Time expression sometimes reverts to old value when apply is pressed"
@@ -143,7 +144,7 @@ TTask
 ""
 0
 
-00A621B8
+00A66A4C
 TTask
 11
 "Button 'properties' from PopUp for reminder without task displays empty form"
@@ -158,7 +159,7 @@ TTask
 ""
 0
 
-00A620D4
+00A632B0
 TTask
 15
 "Make TimeSpent real, instead of integer"
@@ -173,7 +174,7 @@ TTask
 ""
 0
 
-00A66984
+00A668EC
 TTask
 16
 "Double click on active tasks shall not display task properties"
@@ -188,7 +189,7 @@ TTask
 ""
 0
 
-00A66DB4
+00A66AD0
 TTask
 17
 "Install WinKey hook to activate tasks and log"
@@ -203,7 +204,7 @@ TTask
 ""
 0
 
-00A66BE8
+00A65438
 TTask
 18
 "Find a way to show/hide Active Tasks form"
@@ -218,7 +219,7 @@ TTask
 ""
 0
 
-00A6247C
+00A62520
 TTask
 19
 "Allow subtasks?"
@@ -231,9 +232,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A62608
+00A669EC
 TTask
 105
 "Allow task activation from PopUp form"
@@ -248,7 +250,7 @@ TTask
 ""
 0
 
-00A62944
+00A652B8
 TTask
 106
 "Enable Log Search and Save with visual clue"
@@ -263,7 +265,7 @@ TTask
 ""
 0
 
-00A628D0
+00A673E4
 TTask
 109
 "Track task switches and time along with the total time spent"
@@ -278,7 +280,7 @@ TTask
 ""
 0
 
-00A672B4
+00A6714C
 TTask
 114
 "Remove/rename log file upon deletion of task"
@@ -291,9 +293,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A62B64
+00A6731C
 TTask
 117
 "Show task ID everywhere"
@@ -308,7 +311,7 @@ TTask
 "06.04.2007 10:59:13"
 0
 
-00A62A10
+00A65DFC
 TTask
 118
 "Keyboard hook doesn't work"
@@ -323,7 +326,7 @@ TTask
 ""
 0
 
-00A629A4
+00A67678
 TTask
 122
 "Hierarchical Text"
@@ -338,7 +341,7 @@ TTask
 ""
 0
 
-00A662F8
+00A65D90
 TTask
 129
 "Display (and edit?) task switches"
@@ -353,7 +356,7 @@ TTask
 ""
 0
 
-00A67E08
+00A65AF8
 TTask
 141
 "Show open-ended tasks"
@@ -368,7 +371,7 @@ TTask
 "05.04.2007 12:19:47"
 0
 
-00A66C4C
+00A65198
 TTask
 142
 "Show hint for tasks on timeline"
@@ -383,7 +386,7 @@ TTask
 "27.08.2007 16:12:51"
 0
 
-00A65C20
+00A65B44
 TTask
 143
 "Allow vertical scrolling for timeline"
@@ -396,9 +399,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A62CE8
+00A65C64
 TTask
 144
 "Allow drag&drop editing of timeline"
@@ -411,9 +415,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A62DE4
+00A67594
 TTask
 145
 "Ability to create timeline for a single task or a task category only"
@@ -428,7 +433,7 @@ TTask
 "21.08.2007 16:59:42"
 0
 
-00A66A00
+00A650B8
 TTask
 146
 "Show Log entries in the timeline"
@@ -441,9 +446,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A62520
+00A675E0
 TTask
 147
 "Show Tasks in color in the lists?"
@@ -458,7 +464,7 @@ TTask
 "18.08.2007 19:53:48"
 0
 
-00A661BC
+00A63140
 TTask
 148
 "Show visually in the task properties whether a task has reminder"
@@ -473,7 +479,7 @@ TTask
 "21.08.2007 12:14:17"
 0
 
-00A62C50
+00A621F4
 TTask
 149
 "Ability to work with keyboard only"
@@ -486,9 +492,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A62C9C
+00A66254
 TTask
 153
 "Update timeline with new task switches"
@@ -503,7 +510,7 @@ TTask
 "06.04.2007 10:58:02"
 0
 
-00A62D44
+00A66538
 TTask
 159
 "Update timeline when task changes its start time to/from empty"
@@ -518,7 +525,7 @@ TTask
 "17.05.2007 14:07:59"
 0
 
-00A65744
+00A6609C
 TTask
 179
 "Shoosing 'Make Completed' on task swither, does not set end time"
@@ -533,7 +540,7 @@ TTask
 "10.05.2007 16:37:24"
 0
 
-00A65644
+00A66584
 TTask
 180
 "Reminder to have timestamp"
@@ -546,46 +553,31 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A6425C
+00A67B60
 TCategory
 "Reminder"
 4080FF
 3
 00000000
 
-00A671DC
+00A66798
 TCategory
 "(none)"
 C0C0C0
 1
 00000000
 
-00A66298
+00A66100
 TCategory
 "(all)"
 C0C0C0
 0
 00000000
 
-00A62D90
-TTask
-184
-"1234"
-""
-0
-000000
--1
-00000000
-0
-0
-"16.08.2007"
-"18.08.2007 10:04:35"
-1
-00A631D0
-
-00A657DC
+00A678A0
 TTask
 186
 "Time spent reports"
@@ -598,9 +590,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A6416C
+00A6689C
 TTask
 187
 "'Task due to' report"
@@ -613,9 +606,10 @@ TTask
 0
 ""
 ""
-0
+1
+00A67B60
 
-00A6320C
+00A66808
 TTask
 188
 "Move tasks between categories"
@@ -630,7 +624,7 @@ TTask
 "20.08.2007 18:32:00"
 0
 
-00A66758
+00A64FD8
 TTask
 189
 "Sorting of tasks does not quite work"
@@ -645,77 +639,7 @@ TTask
 "21.08.2007 12:24:18"
 0
 
-00A631D0
-TCategory
-"asd"
-00FF00
-2
-00000000
-
-00A67B30
-TTask
-190
-"asd"
-""
-0
-000000
-0
-00000000
-0
-0
-"21.08.2007 02:00:00"
-"21.08.2007 18:00:00"
-1
-00A6425C
-
-00A66B04
-TTask
-191
-"qwe"
-""
-0
-000000
-0
-00000000
-0
-0
-"21.08.2007 16:00:00"
-"21.08.2007 23:00:00"
-0
-
-00A66B68
-TTask
-184
-"1234"
-""
-0
-000000
--1
-00000000
-0
-0
-"16.08.2007"
-"18.08.2007 10:04:35"
-1
-00A631D0
-
-00A67CC8
-TTask
-192
-"iop"
-""
-0
-000000
--1
-00000000
-0
-0
-""
-"27.08.2007 15:44:03"
-1
-00A631D0
-
-00A65AD0
+00A64F58
 TTask
 193
 "escape does not cancel changes in reminder properties"
@@ -729,4 +653,20 @@ TTask
 ""
 "27.08.2007 16:25:40"
 0
+
+00A63520
+TTask
+196
+"Improve usability of reminders"
+"* Boolean for date and for timestamp\r\n* time sequence\r\n* relative to start/end date"
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A67B60
 
