@@ -80,7 +80,7 @@ end;
 destructor TLinkedList.Destroy;
 var n, p : PNode;
 begin
-  if FOwner <> nil then begin
+  if FOwner = nil then begin
     n := FHead;
     while n <> nil do begin
       p := n^.Next;

@@ -13,6 +13,7 @@ type
   TEvaluator = class
   private
     FFrames : ILinkedList;
+    FrameCount : Integer;
     function Lookup(name : INameResult) : IResult;
   public
     procedure PushFrame;
@@ -44,6 +45,7 @@ constructor TEvaluator.Create;
 begin
   inherited;
   FFrames := CreateList;
+  FrameCount := 0;
 end;
 
 function TEvaluator.Evaluate(list : ILinkedList) : IResult;
@@ -51,7 +53,7 @@ var it : IListIterator;
 begin
   it := list.Iterator;
   while it.HasNext do
-    Result := Evaluate(IResult(it.Next));
+    Result := Evaluate(it.Next as IResult);
 end;
 
 function TEvaluator.Evaluate(item : IResult) : IResult;
@@ -64,7 +66,7 @@ var
 begin
   if Supports(item, IListResult, listItem) then begin
     list := listItem.GetValue;
-    h := Evaluate(IResult(list.Head));
+    h := Evaluate(list.Head as IResult);
     if Supports(h, IFuncResult, func) then
       Result := func.Apply(list.Tail)
     else
@@ -96,12 +98,16 @@ end;
 
 procedure TEvaluator.PushFrame;
 begin
+  if FrameCount = 3000 then
+    raise EEvaluationException.Create('Recursion has gone too deep');
+  Inc(FrameCount);
   FFrames.AddFirst(CreateList);
 end;
 
 procedure TEvaluator.PopFrame;
 begin
   FFrames.Iterator.Remove;
+  Dec(FrameCount);
 end;
 
 procedure TEvaluator.AddDefinition(def : IDefinition);
