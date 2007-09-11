@@ -1,43 +1,110 @@
-Meta:
++Grammar:
 
-<:time>                                 - time/date/both expression
-<#int>                                  - integer expression
-<~bool>                                 - boolean expression
-<any>                                   - arbitrary expression
-= :                                     - returns time
-= #                                     - returns integer
-= ~                                     - returns boolean
+++Meta symbols meaning:
+<non-terminal>        - non-terminal symbol
+'terminal'            - terminal symbol
+<non-terminal> -> ... - production
+[optional]            - content is optional
+option1 | option2     - alternatives
 
-Grammar:
+++Productions
 
-(true) = ~                              - const true
-(false) = ~                             - const false
+<reminder text> -> <sequence>      // the sequence is evaluated and the result is the last item
+<sequence> -> ''
+<sequence> -> <item> [' ' <sequence>]
 
-(now) = :                               - current time and date
-(ts <:date> <:time>) = :                - make timestamp from given date and time
+<item> -> <number>
+<item> -> <time>
+<item> -> <date>
+<item> -> <identifier>
+<item> -> <list>
 
-(time [<:timestamp>]) = :               - extract time/current time
+<number> -> ['+' | '-'] <digits>
+<time> -> <hh> ':' <mm> ':' <ss>    // sorry, no format customization here
+<date> -> <dd> '.' <mm> '.' <yyyy>  // sorry, no format customization here
+<list> -> '(' <sequence> ')'
+
+<hh> -> <digits>                    // must represent valid time
+<mm> -> <digits>                    // must represent valid time
+<ss> -> <digits>                    // must represent valid time
+<dd> -> <digits>                    // must represent valid date
+<mm> -> <digits>                    // must represent valid date
+<yyyy> -> <digits>                  // must represent valid date
+
+<digits> -> ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9') [<digits>]
+
++Evaluation rules:
+
+<sequence> - All items are evaluated from left to right and the result is the value of the last item.
+<list> - The head of the list is evaluated and if it is a function, the function is called using the tail of the list as actual arguments. The actual arguments are not pre-evaluated upon calling, they may be evaluated in the body as needed.
+<identifier> - Identifier is looked up in user-defined names and then in predefined names. If an identifier is defined within a function, its scope is local to the function. Formal arguments are also local to the function. If the same identifier is defined twice, the second definition hides the first one (only in the scope of the second). The scope of an identifier spans in all functions called from within that scope.
+
++Predefined names:
+
+++Meta symbols meaning:
+<:time> - time/date/both expression
+<#int>  - integer expression
+<~bool> - boolean expression
+<@name> - atom identifier (not expression)
+<.list> - list expression
+<any>   - arbitrary expression
+= :     - returns time
+= #     - returns integer
+= ~     - returns boolean
+= .     - returns list
+= ?     - returns multiple types, see description
+...     - repetition
+
+Note: every expression is evaluated upon function execution, except when noted otherwise.
+
+++List of predefined names
+
+true = ~   - const true
+false = ~  - const false
+
+(define <@name> <value>) = ?       - defines alias for the value, returns value
+(lambda ([<@formalarg1> ...]) <value1> [<value2> ...]) = <function>
+        - creates a function, which evaluates all expressions in its body when called and returns the result of the last one. Defining the function does not evaluate any expression in its body.
+
+(list [<value1> ...]) = .          - creates a list of values (they are not evaluated)
+(head <.list>) = ?                 - returns the first element of a list, not evaluated
+(tail <.list>) = .                 - returns list of all elements in the list except the first one
+(empty? <.list>) = ~               - returns true if the list is empty
+(cons <first> <second>) = .        - returns list of the two arguments
+(cons <head> <.tail>) = .          - attaches the head to the tail
+
+(= <value1> [<value2> ...]) = ~            - returns true if all values are equal
+(in <value> [<value1> ...]) = ~            - returns true if 'value' is equal to one of the following values
+(between <value> <bound1> <bound2>) = ~    - returns true if value >= bound1 and value <= bound2
+(>= <value1> <value2>) = ~                 - returns true if value1 >= value2
+(<= <value1> <value2>) = ~                 - returns true if value1 <= value2
+
+(if <~cond> <value1> <value2>) = ?   - evaluates and returns value1 if condition is true and value2 otherwise
+(and <~value1> [<~value2> ...]) = ~  - returns true if all values are true
+(or <~value1> [<~value2> ...]) = ~   - returns true if any value is true
+(not <~value>) = ~                   - returns true if value is false
+
+(+ <#value1> [<#value2> ...]) = #    - returns the sum of the values
+(- <#value1> <#value2>) = #          - returns value1 - value2
+(* <#value1> [<#value2> ...]) = #    - returns the product of the values
+(/ <#value1> [<#value2> ...]) = #    - returns value1 / value2
+(% <#value1> <#value2>) = #          - returns value1 % value2
+(abs <#value>) = #                   - returns the absolute value if the argument
+
+(now) = :                    - current time and date
+(ts <:date> <:time>) = :     - make timestamp from given date and time
+(ts <~bool> <:time>) = :     - make timestamp from given time and today if bool is true. If bool is false returns zero time.
+
+(time [<:timestamp>]) = :               - extract time from given/current time
 (hour [<:time>]) = #                    - hour of given/current time
 (min [<:time>]) = #                     - minute of given/current time
 (sec [<:time>]) = #                     - minute of given/current time
-(hms <#hour> <#min> [<#sec>]) = :       - returns the specified time
+(hms <#hour> [<#min>] [<#sec>]) = :     - returns the specified time
 
-(date [<:timestamp>]) = :               - extract date/current date
-(day [<:date>]) = #                     - day of given/current date
-(month [<:date>]) = #                   - month of given/current date
-(year [<:date>]) = #                    - year of given/current date
-(dow [<:date>]) = #                     - day of week of given/current date
-(doy [<:date>]) = #                     - day of year of given/current date
-(dmy <#day> <#month> [<#year>]) = :     - returns the specified date
-
-(= <value1> [<value2> ...]) = ~         - returns true if all values are equal
-(in <value> [<value1> ...]) = ~         - returns true if 'value' is equal to one of the following values
-(between <value> <bound1> <bound2>) = ~ - returns true if value >= bound1 and value <= bound2
-(>= <value1> <value2>) = ~              - returns true if value1 >= value2
-(<= <value1> <value2>) = ~              - returns true if value1 <= value2
-
-(if <~cond> <value1> <value2>) = ?      - returns value1 if condition is true and value2 otherwise
-(and <~value1> [<~value2> ...]) = ~     - returns true if all values are true
-(or <~value1> [<~value2> ...]) = ~      - returns true if any value is true
-(not <~value>) = ~                      - returns true if value is false
-
+(date [<:timestamp>]) = :              - extract date/current date
+(day [<:date>]) = #                    - day of given/current date
+(month [<:date>]) = #                  - month of given/current date
+(year [<:date>]) = #                   - year of given/current date
+(dow [<:date>]) = #                    - day of week of given/current date
+(doy [<:date>]) = #                    - day of year of given/current date
+(dmy <#day> <#month> [<#year>]) = :    - returns the specified date
