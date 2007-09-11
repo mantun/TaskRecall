@@ -39,18 +39,60 @@ type
 function TTimeStampFunc.Apply(const args : ILinkedList) : IResult;
 var
   d, t : ITimeResult;
+  b : IBoolResult;
+  first : IResult;
   it : IListIterator;
 begin
   if args.IsEmpty then
     Result := TTimeResult.Create(Now)
   else begin
     it := args.Iterator;
-    if Supports(Eval(it.Next), ITimeResult, d) and
-       it.HasNext and Supports(Eval(it.Next), ITimeResult, t) then
-      Result := TTimeResult.Create(Trunc(d.GetValue) + Frac(t.GetValue))
-    else
+    first := Eval(it.Next);
+    if not it.HasNext or not Supports(Eval(it.Next), ITimeResult, t) then
       Raise EFunctionException.Create(GetName + ' requires date and time arguments');
+    if Supports(first, ITimeResult, d) then
+      Result := TTimeResult.Create(Trunc(d.GetValue) + Frac(t.GetValue))
+    else if Supports(first, IBoolResult, b) then
+      if b.GetValue then
+        Result := TTimeResult.Create(Date + Frac(t.GetValue))
+      else
+        Result := TTimeResult.Create(0)
+    else
+      Raise EFunctionException.Create(GetName + ' requires date and time arguments')
   end;
+end;
+
+type
+  TTimeSequenceFunc = class(TTimeLibFunc)
+    function Apply(const args : ILinkedList) : IResult; override;
+  end;
+function TTimeSequenceFunc.Apply(const args : ILinkedList) : IResult;
+var
+  it : IListIterator;
+  tr : ITimeResult;
+  t, nearest : TDateTime;
+  InitT : Boolean;
+begin
+  if args.IsEmpty then
+    raise EFunctionException.Create(GetName + ' requires time arguments');
+  it := args.Iterator;
+  InitT := False;
+  t := 0;
+  nearest := 0;
+  while it.HasNext do begin
+    if not Supports(Eval(it.Next), ITimeResult, tr) then
+      raise EFunctionException.Create(GetName + ' requires time arguments');
+    if not InitT then begin
+      if Trunc(tr.GetValue) = 0 then t := Time
+                                else t := Now;
+      nearest := tr.GetValue;
+      InitT := True;
+    end;
+    if Abs(t - nearest) > Abs(t - tr.GetValue) then
+      nearest := tr.GetValue;
+  end;
+  Assert(InitT);
+  Result := TTimeResult.Create(nearest);
 end;
 
 type
@@ -211,6 +253,8 @@ initialization
   Evaluator.PushFrame;
   AddFuncInternal(TNowFunc.Create('now'));
   AddFuncInternal(TTimeStampFunc.Create('ts'));
+  AddFuncInternal(TTimeSequenceFunc.Create('seq'));
+
   AddFuncInternal(TTimeFunc.Create('time'));
   AddFuncInternal(THourFunc.Create('hour'));
   AddFuncInternal(TMinuteFunc.Create('min'));
