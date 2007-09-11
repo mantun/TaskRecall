@@ -33,7 +33,7 @@ implementation
 function TParser.GetNext : IToken;
 begin
   if FPos.HasNext then begin
-    FToken := IToken(FPos.Next);
+    FToken := FPos.Next as IToken;
     Result := FToken;
   end else
     raise EParseException.Create('Unexpected end of stream');
@@ -69,11 +69,11 @@ function TParser.GetList : ILinkedList;
 begin
   Result := CreateList;
   GetNext;
-  repeat
+  while FToken.GetValue <> ')' do begin
     Result.AddLast(GetItem);
     if FPos.HasNext then GetNext
                     else Break;
-  until FToken.GetValue = ')';
+  end;
 end;
 
 function TParser.tokenize(const s : String) : ILinkedList;

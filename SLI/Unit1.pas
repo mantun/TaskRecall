@@ -23,13 +23,15 @@ var
 
 implementation
 
-uses Parse, Eval;
+uses Lists, Parse, Eval;
 
 {$R *.dfm}
 
 procedure TForm1.Button1Click(Sender: TObject);
+var st : ILinkedList;
 begin
-  memo2.Text := Evaluator.Evaluate(Parser.Parse(memo1.text)).ToString;
+  st := Parser.Parse(memo1.text);
+  memo2.Text := Evaluator.Evaluate(st).ToString;
 end;
 
 end.

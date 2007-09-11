@@ -101,15 +101,18 @@ type
   end;
 function THourMinSecFunc.Apply(const args : ILinkedList) : IResult;
 var
-  h, m, s : IIntResult;
+  hr, mr, sr : IIntResult;
+  m, s : Integer;
   it : IListIterator;
 begin
   it := args.Iterator;
-  if it.HasNext and Supports(Eval(it.Next), IIntResult, h) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, m) and
-     it.HasNext and Supports(Eval(it.Next), IIntResult, s) then
-    Result := TTimeResult.Create(EncodeTime(h.GetValue, m.GetValue, s.GetValue, 0))
-  else
+  if it.HasNext and Supports(Eval(it.Next), IIntResult, hr) then begin
+    if it.HasNext and Supports(Eval(it.Next), IIntResult, mr) then
+      m := mr.GetValue;
+    if it.HasNext and Supports(Eval(it.Next), IIntResult, sr) then
+      s := sr.GetValue;
+    Result := TTimeResult.Create(EncodeTime(hr.GetValue, m, s, 0))
+  end else
     raise EFunctionException.Create('Invalid time for ' + GetName);
 end;
 
