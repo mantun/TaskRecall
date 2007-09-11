@@ -1166,7 +1166,7 @@ begin
   for i := 0 to FPointers.Count - 1 do begin
     ip := FObjects.IndexOf(FPointers[i]);
     if ip < 0 then
-      raise Exception.Create('Unable to reconcile pointers');
+      raise Exception.Create('Unable to reconcile pointers (' + FPointers[i] + ')');
     p := FPointers.Objects[i];
     o := FObjects.Objects[ip];
     PTObject(p)^ := o;

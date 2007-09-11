@@ -497,8 +497,14 @@ var i : Integer;
 begin
   if TaskStorage = nil then Exit;
   for i := 0 to TaskStorage.Count - 1 do
-    if (TaskStorage[i] is TReminder) and TReminder(TaskStorage[i]).isFireTime then
-      TfrmTaskPopup.PopUp(Application, TReminder(TaskStorage[i]));
+    try
+      if (TaskStorage[i] is TReminder) and TReminder(TaskStorage[i]).isFireTime then
+        TfrmTaskPopup.PopUp(Application, TReminder(TaskStorage[i]));
+    except
+      if (TaskStorage[i] is TReminder) then
+        TReminder(TaskStorage[i]).SnoozeTime := 1000000; // very far in the future
+      raise;  
+    end;
 end;
 
 procedure TfrmMain.ApplicationEventsMinimize(Sender: TObject);
