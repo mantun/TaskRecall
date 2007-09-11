@@ -11,32 +11,27 @@ File_8=SourceModule,'D:\Alex\taskline\TimeGraph.pas',0,1,118,49,136,0,0
 File_9=SourceModule,'D:\Alex\taskline\TimelineData.pas',0,1,117,1,141,0,0
 
 [Modules]
-Module0=D:\Alex\taskline\SLI\Eval.pas
-Module1=D:\Alex\taskline\SLI\BuiltinDefs.pas
-Module2=D:\Alex\taskline\SLI\ResultDecl.pas
-Module3=D:\Alex\taskline\SLI\Project1.dpr
-Module4=D:\Alex\taskline\SLI\Lists.pas
-Module5=D:\Alex\taskline\SLI\TimeLibDefs.pas
-Module6=D:\Alex\taskline\SLI\Unit1.pas
+Module0=D:\Alex\taskline\SLI\TimeLibDefs.pas
+Module1=D:\Alex\taskline\SLI\Eval.pas
+Module2=D:\Alex\taskline\SLI\Unit1.pas
+Module3=D:\Alex\taskline\SLI\Lists.pas
+Module4=D:\Alex\taskline\SLI\ResultDecl.pas
+Module5=D:\Alex\taskline\SLI\BuiltinDefs.pas
+Module6=D:\Alex\taskline\SLI\Project1.dpr
 Count=7
 EditWindowCount=1
+
+[D:\Alex\taskline\SLI\TimeLibDefs.pas]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
 
 [D:\Alex\taskline\SLI\Eval.pas]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[D:\Alex\taskline\SLI\BuiltinDefs.pas]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
-
-[D:\Alex\taskline\SLI\ResultDecl.pas]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
-
-[D:\Alex\taskline\SLI\Project1.dpr]
+[D:\Alex\taskline\SLI\Unit1.pas]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
@@ -46,12 +41,17 @@ ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[D:\Alex\taskline\SLI\TimeLibDefs.pas]
+[D:\Alex\taskline\SLI\ResultDecl.pas]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
-[D:\Alex\taskline\SLI\Unit1.pas]
+[D:\Alex\taskline\SLI\BuiltinDefs.pas]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[D:\Alex\taskline\SLI\Project1.dpr]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
@@ -62,7 +62,7 @@ FormOnTop=0
 
 [EditWindow0]
 ViewCount=7
-CurrentView=2
+CurrentView=6
 View0=0
 View1=1
 View2=2
@@ -86,7 +86,7 @@ LeftPanelSize=0
 RightPanelSize=0
 BottomPanelSize=0
 BottomPanelClients=MessageView@EditWindow0
-BottomPanelData=00000400010000000B0000004D6573736167655669657700000000000000000000000000000000000100000000000000000B0000004D65737361676556696577FFFFFFFF
+BottomPanelData=00000400010000000B0000004D65737361676556696577000000000000000000000000000000000001000000000000000000000000FFFFFFFF
 
 [View0]
 Module=D:\Alex\taskline\SLI\Project1.dpr
@@ -132,9 +132,9 @@ LeftCol=1
 
 [View6]
 Module=D:\Alex\taskline\SLI\TimeLibDefs.pas
-CursorX=22
-CursorY=217
-TopLine=195
+CursorX=1
+CursorY=61
+TopLine=45
 LeftCol=1
 
 [Watches]

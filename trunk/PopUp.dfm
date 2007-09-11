@@ -1,11 +1,10 @@
 object frmTaskPopup: TfrmTaskPopup
   Left = 192
   Top = 114
+  Width = 305
+  Height = 143
   ActiveControl = cbSnoozeTime
-  BorderStyle = bsNone
   Caption = 'Task Activated'
-  ClientHeight = 109
-  ClientWidth = 297
   Color = clBtnFace
   Constraints.MinHeight = 140
   Constraints.MinWidth = 305
