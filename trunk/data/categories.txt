@@ -1,7 +1,0 @@
-(none)
-(all)
-Mine
-	Projects
-		Reminder
-			Features
-			Bugs
