@@ -26,6 +26,7 @@ uses
 
 begin
   Application.Initialize;
+  TaskStorage.PersistentStorageFile := TasksFileName;
   Application.CreateForm(TfrmMain, frmMain);
   Application.CreateForm(TfrmTaskProperties, frmTaskProperties);
   Application.CreateForm(TfrmReminderProperties, frmReminderProperties);
