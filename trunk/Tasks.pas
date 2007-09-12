@@ -1181,6 +1181,7 @@ end;
 procedure FreeStorage;
 var i : Integer;
 begin
+  TaskStorage.PersistentStorageFile := '';
   for i := 0 to TaskStorage.Count - 1 do
     TaskStorage[i].Free;
   TaskStorage.Free;
@@ -1189,7 +1190,6 @@ end;
 
 initialization
   TaskStorage := TNamedObjectsStorage.Create;
-  TaskStorage.PersistentStorageFile := TasksFileName;
 finalization
   FreeStorage;
 end.
