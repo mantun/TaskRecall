@@ -91,15 +91,18 @@ false = ~  - const false
 (% <#value1> <#value2>) = #          - returns value1 % value2
 (abs <#value>) = #                   - returns the absolute value if the argument
 
-(now) = :                    - current time and date
-(ts <:date> <:time>) = :     - make timestamp from given date and time
-(ts <~bool> <:time>) = :     - make timestamp from given time and today if bool is true. If bool is false returns zero time.
+(now) = :                                      - current time and date
+(ts <:date> <:time>) = :                       - make timestamp from given date and time
+(ts <~bool> <:time>) = :                       - make timestamp from given time and today if bool is true. If bool is false returns zero time.
+(seq <:time1> [<:time2> ...]) = :              - returns the closest time to current time from the given times
+(seq <:date1> [<:date2> ...]) = :              - returns the closest date to now from the given dates
+(seq <:timestamp1> [<:timestamp2> ...]) = :    - returns the closest timestamp to now from the given timestamps
 
-(time [<:timestamp>]) = :               - extract time from given/current time
-(hour [<:time>]) = #                    - hour of given/current time
-(min [<:time>]) = #                     - minute of given/current time
-(sec [<:time>]) = #                     - minute of given/current time
-(hms <#hour> [<#min>] [<#sec>]) = :     - returns the specified time
+(time [<:timestamp>]) = :              - extract time from given/current time
+(hour [<:time>]) = #                   - hour of given/current time
+(min [<:time>]) = #                    - minute of given/current time
+(sec [<:time>]) = #                    - minute of given/current time
+(hms <#hour> [<#min>] [<#sec>]) = :    - returns the specified time
 
 (date [<:timestamp>]) = :              - extract date/current date
 (day [<:date>]) = #                    - day of given/current date
