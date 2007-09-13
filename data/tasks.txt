@@ -5,7 +5,7 @@ TReminder
 "break"
 "(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) (false))"
 ""
-"12.09.2007 13:07:28"
+"13.09.2007 14:08:57"
 00000000
 
 00A63C54

@@ -18,14 +18,16 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
-    btnDismiss: TBitBtn;
-    btnSnooze: TBitBtn;
     TimerPop: TTimer;
     TimerFlash: TTimer;
     cbComplete: TCheckBox;
-    btnDelete: TBitBtn;
-    btnProperties: TBitBtn;
     cbActive: TCheckBox;
+    btnDismiss: TSpeedButton;
+    Bevel1: TBevel;
+    btnSnooze: TSpeedButton;
+    btnProperties: TSpeedButton;
+    btnDelete: TSpeedButton;
+    Shape1: TShape;
     procedure cbSnoozeTimeChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnSnoozeClick(Sender: TObject);
@@ -43,6 +45,7 @@ type
     FPopState : TPopState;
     FPopStateTime : TDateTime;
     procedure OnDelete(Sender : TObject; item : TNamedObject);
+    procedure WMNCHitTest(var msg: TWMNCHitTest); message WM_NCHITTEST;
   protected
     procedure CreateParams(var Params: TCreateParams); Override;
   public
@@ -85,6 +88,17 @@ begin
   Close;
 end;
 
+procedure TfrmTaskPopup.WMNCHitTest(var msg: TWMNCHitTest);
+const HT_CAPTION = 2;
+var pt : TPoint;
+begin
+  pt.Y := msg.YPos;
+  if ScreenToClient(pt).Y <= 9 then
+    msg.Result := HT_CAPTION
+  else
+    inherited;
+end;
+
 procedure TfrmTaskPopup.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -124,6 +138,7 @@ procedure TfrmTaskPopup.btnSnoozeClick(Sender: TObject);
 begin
   if (FReminder.Item <> nil) then
     TReminder(FReminder.Item).SnoozeTime := Now + seDays.Value + seHours.Value / 24 + seMinutes.Value / (24 * 60);
+  ModalResult := mrRetry;  
   Close;
 end;
 
@@ -138,6 +153,7 @@ begin
     if cbActive.Checked then
       frmMain.frmTaskSwitch.AddTask(task)
   end;
+  ModalResult := mrOK;
   Close;
 end;
 
@@ -186,6 +202,7 @@ begin
   Hide;
   if MessageDlg('Delete reminder "' + FReminder.Item.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     FReminder.Delete(FReminder.Item);
+  ModalResult := mrOK;
   Close;
 end;
 
@@ -195,10 +212,12 @@ begin
     if TReminder(FReminder.Item).Task <> nil then begin
       frmTaskProperties.Task := TReminder(FReminder.Item).Task;
       frmTaskProperties.Show;
+    end else begin
+      frmReminderProperties.Reminder := TReminder(FReminder.Item);
+      frmReminderProperties.Show;
     end;
-    frmReminderProperties.Reminder := TReminder(FReminder.Item);
-    frmReminderProperties.Show;
   end;
+  ModalResult := mrOK;
   Close;
 end;
 
