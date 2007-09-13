@@ -1,14 +1,14 @@
 203
 
-00A630E8
+011F98C0
 TReminder
 "break"
 "(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) (false))"
 ""
-"13.09.2007 16:25:51"
+"13.09.2007 19:39:55"
 00000000
 
-00A63C54
+0117C530
 TTask
 1
 "Track time"
@@ -23,7 +23,7 @@ TTask
 ""
 0
 
-00A65D4C
+0117C6D0
 TTask
 2
 "Task logging"
@@ -38,7 +38,7 @@ TTask
 ""
 0
 
-00A6678C
+0117C7A0
 TTask
 3
 "Multiple categories for task"
@@ -53,23 +53,7 @@ TTask
 "18.08.2007 19:53:38"
 0
 
-00A6749C
-TTask
-4
-"Mute option"
-"A 'mute' mode to be available, to disallow popping of anything. A tray popup menu to be included? To be available by keystroke win+something?"
--2
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67DE0
+0117C600
 TTask
 5
 "Parser to allow time lists and range comparison"
@@ -84,7 +68,7 @@ TTask
 "07.04.2007 14:29:13"
 0
 
-00A67630
+0117C870
 TTask
 6
 "Quick new task"
@@ -99,7 +83,7 @@ TTask
 "27.08.2007 16:33:59"
 0
 
-00A63F54
+0117C940
 TTask
 7
 "Quick search"
@@ -114,7 +98,7 @@ TTask
 "23.08.2007 18:40:58"
 0
 
-00A6321C
+0117CA10
 TTask
 8
 "Sort reminders by their execution time"
@@ -129,7 +113,7 @@ TTask
 "05.04.2007 12:21:32"
 0
 
-00A631B0
+0117CAE0
 TTask
 10
 "Reminder Time expression sometimes reverts to old value when apply is pressed"
@@ -144,7 +128,7 @@ TTask
 ""
 0
 
-00A6772C
+0117CBB0
 TTask
 11
 "Button 'properties' from PopUp for reminder without task displays empty form"
@@ -159,7 +143,7 @@ TTask
 ""
 0
 
-00A677CC
+0117CC80
 TTask
 15
 "Make TimeSpent real, instead of integer"
@@ -174,7 +158,7 @@ TTask
 ""
 0
 
-00A63288
+0117CE20
 TTask
 16
 "Double click on active tasks shall not display task properties"
@@ -189,7 +173,7 @@ TTask
 ""
 0
 
-00A65E94
+0117CD50
 TTask
 17
 "Install WinKey hook to activate tasks and log"
@@ -204,7 +188,7 @@ TTask
 ""
 0
 
-00A676D4
+0117CEF0
 TTask
 18
 "Find a way to show/hide Active Tasks form"
@@ -219,23 +203,7 @@ TTask
 ""
 0
 
-00A63154
-TTask
-19
-"Allow subtasks?"
-""
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A65FA4
+0117CFC0
 TTask
 105
 "Allow task activation from PopUp form"
@@ -250,7 +218,7 @@ TTask
 ""
 0
 
-00A65F1C
+0117D160
 TTask
 106
 "Enable Log Search and Save with visual clue"
@@ -265,7 +233,7 @@ TTask
 ""
 0
 
-00A66B8C
+0117D3D0
 TTask
 109
 "Track task switches and time along with the total time spent"
@@ -280,23 +248,7 @@ TTask
 ""
 0
 
-00A67F44
-TTask
-114
-"Remove/rename log file upon deletion of task"
-""
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A668EC
+0117D300
 TTask
 117
 "Show task ID everywhere"
@@ -311,7 +263,7 @@ TTask
 "06.04.2007 10:59:13"
 0
 
-00A66878
+0117D230
 TTask
 118
 "Keyboard hook doesn't work"
@@ -326,22 +278,7 @@ TTask
 ""
 0
 
-00A669BC
-TTask
-122
-"Hierarchical Text"
-"Investigate the possibility to create a hierarchical text structure with decent search and side-by-side compare functions."
--5
-000000
-0
-00000000
-0
-0
-""
-""
-0
-
-00A63DF0
+0117D4A0
 TTask
 129
 "Display (and edit?) task switches"
@@ -356,7 +293,7 @@ TTask
 ""
 0
 
-00A63CA0
+0117D640
 TTask
 141
 "Show open-ended tasks"
@@ -371,7 +308,7 @@ TTask
 "05.04.2007 12:19:47"
 0
 
-00A671F4
+0117D570
 TTask
 142
 "Show hint for tasks on timeline"
@@ -386,39 +323,7 @@ TTask
 "27.08.2007 16:12:51"
 0
 
-00A66C18
-TTask
-143
-"Allow vertical scrolling for timeline"
-"When tasks cannot fit in the visible height, a scrollbar should appear"
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A66E64
-TTask
-144
-"Allow drag&drop editing of timeline"
-"Tasks should be moved and resized with mouse on the timeline.\r\nAbility to open task properties.\r\nAbility to merge task switches?\r\n"
--1
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A63ED0
+0117D980
 TTask
 145
 "Ability to create timeline for a single task or a task category only"
@@ -433,23 +338,7 @@ TTask
 "21.08.2007 16:59:42"
 0
 
-00A6589C
-TTask
-146
-"Show Log entries in the timeline"
-""
--2
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67354
+0117D8B0
 TTask
 147
 "Show Tasks in color in the lists?"
@@ -464,7 +353,7 @@ TTask
 "18.08.2007 19:53:48"
 0
 
-00A63FC0
+0117DBF0
 TTask
 148
 "Show visually in the task properties whether a task has reminder"
@@ -479,23 +368,7 @@ TTask
 "21.08.2007 12:14:17"
 0
 
-00A67924
-TTask
-149
-"Ability to work with keyboard only"
-""
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67588
+0117DB20
 TTask
 153
 "Update timeline with new task switches"
@@ -510,7 +383,7 @@ TTask
 "06.04.2007 10:58:02"
 0
 
-00A65B90
+0117DE60
 TTask
 159
 "Update timeline when task changes its start time to/from empty"
@@ -525,7 +398,7 @@ TTask
 "17.05.2007 14:07:59"
 0
 
-00A6400C
+0117E000
 TTask
 179
 "Shoosing 'Make Completed' on task swither, does not set end time"
@@ -540,7 +413,7 @@ TTask
 "10.05.2007 16:37:24"
 0
 
-00A65AE4
+0117DD90
 TTask
 180
 "Reminder to have timestamp"
@@ -554,62 +427,30 @@ TTask
 ""
 "13.09.2007 15:04:02"
 1
-00A65BDC
+011ED748
 
-00A65BDC
+011ED748
 TCategory
 "Reminder"
 4080FF
 3
 00000000
 
-00A63E6C
+011ED878
 TCategory
 "(none)"
 C0C0C0
 1
 00000000
 
-00A67E78
+011EDAD8
 TCategory
 "(all)"
 C0C0C0
 0
 00000000
 
-00A6419C
-TTask
-186
-"Time spent reports"
-""
--2
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A66DE4
-TTask
-187
-"'Task due to' report"
-"today, tomorrow, this week, this month...\r\n"
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A66464
+0117E0D0
 TTask
 188
 "Move tasks between categories"
@@ -624,7 +465,7 @@ TTask
 "20.08.2007 18:32:00"
 0
 
-00A66380
+0117E270
 TTask
 189
 "Sorting of tasks does not quite work"
@@ -639,7 +480,7 @@ TTask
 "21.08.2007 12:24:18"
 0
 
-00A66418
+0117E410
 TTask
 193
 "escape does not cancel changes in reminder properties"
@@ -654,279 +495,7 @@ TTask
 "27.08.2007 16:25:40"
 0
 
-00A67D20
-TTask
-196
-"Improve usability of reminders"
-"+* boolean for date in timestamp\r\n* boolean for time expression\r\n+* time sequence\r\n* relative to start/end date"
-0
-000000
-0
-00000000
-1
-0
-"12.09.2007 10:00:59"
-""
-1
-00A65BDC
-
-00A6625C
-TTask
-197
-"Handle screensaver while tracking time"
-"When screensaver is activated, time tracking stops. When screensaver is deactivated, user can choose whether the time is to be added to current task, discarded, or added to another task."
--1
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A66F0C
-TTask
-198
-"Put version in tasks.txt"
-"And do not crash if the file is corrupted."
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67AAC
-TTask
-199
-"Adding a task places it at the end, instead of re-sorting"
-""
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A63524
-TTask
-200
-"Reindex categories upon add"
-""
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A6370C
-TTask
-201
-"Editing of task name from the list does not work"
-"F2 shows wrong\r\nWhen using mouse the name is not affected"
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A634B8
-TTask
-202
-"Enter and ctrl+enter must act as apply"
-"in task and reminder properties"
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67AAC
-TTask
-199
-"Adding a task places it at the end, instead of re-sorting"
-""
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A6370C
-TTask
-201
-"Editing of task name from the list does not work"
-"F2 shows wrong\r\nWhen using mouse the name is not affected"
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A634B8
-TTask
-202
-"Enter and ctrl+enter must act as apply"
-"in task and reminder properties"
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67D20
-TTask
-196
-"Improve usability of reminders"
-"+* boolean for date in timestamp\r\n* boolean for time expression\r\n+* time sequence\r\n* relative to start/end date"
-0
-000000
-0
-00000000
-1
-0
-"12.09.2007 10:00:59"
-""
-1
-00A65BDC
-
-00A66F0C
-TTask
-198
-"Put version in tasks.txt"
-"And do not crash if the file is corrupted."
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A63524
-TTask
-200
-"Reindex categories upon add"
-""
-0
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A66E64
-TTask
-144
-"Allow drag&drop editing of timeline"
-"Tasks should be moved and resized with mouse on the timeline.\r\nAbility to open task properties.\r\nAbility to merge task switches?\r\n"
--1
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A6625C
-TTask
-197
-"Handle screensaver while tracking time"
-"When screensaver is activated, time tracking stops. When screensaver is deactivated, user can choose whether the time is to be added to current task, discarded, or added to another task."
--1
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A6749C
-TTask
-4
-"Mute option"
-"A 'mute' mode to be available, to disallow popping of anything. A tray popup menu to be included? To be available by keystroke win+something?"
--2
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A6589C
-TTask
-146
-"Show Log entries in the timeline"
-""
--2
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A6419C
+0117E4E0
 TTask
 186
 "Time spent reports"
@@ -940,73 +509,9 @@ TTask
 ""
 ""
 1
-00A65BDC
+011ED748
 
-00A66DE4
-TTask
-187
-"'Task due to' report"
-"today, tomorrow, this week, this month...\r\n"
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67924
-TTask
-149
-"Ability to work with keyboard only"
-""
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A63154
-TTask
-19
-"Allow subtasks?"
-""
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A66C18
-TTask
-143
-"Allow vertical scrolling for timeline"
-"When tasks cannot fit in the visible height, a scrollbar should appear"
--3
-000000
-0
-00000000
-0
-0
-""
-""
-1
-00A65BDC
-
-00A67F44
+0117E5B0
 TTask
 114
 "Remove/rename log file upon deletion of task"
@@ -1020,9 +525,9 @@ TTask
 ""
 ""
 1
-00A65BDC
+011ED748
 
-00A669BC
+0117E680
 TTask
 122
 "Hierarchical Text"
@@ -1036,4 +541,228 @@ TTask
 ""
 ""
 0
+
+0117E750
+TTask
+196
+"Improve usability of reminders"
+"+* boolean for date in timestamp\r\n* boolean for time expression\r\n+* time sequence\r\n* relative to start/end date"
+0
+000000
+0
+00000000
+1
+0
+"12.09.2007 10:00:59"
+""
+1
+011ED748
+
+0117E8F0
+TTask
+143
+"Allow vertical scrolling for timeline"
+"When tasks cannot fit in the visible height, a scrollbar should appear"
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117E820
+TTask
+144
+"Allow drag&drop editing of timeline"
+"Tasks should be moved and resized with mouse on the timeline.\r\nAbility to open task properties.\r\nAbility to merge task switches?\r\n"
+-1
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117E9C0
+TTask
+202
+"Enter and ctrl+enter must act as apply"
+"in task and reminder properties"
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117EA90
+TTask
+198
+"Put version in tasks.txt"
+"And do not crash if the file is corrupted."
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117EC30
+TTask
+200
+"Reindex categories upon add"
+""
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117ED00
+TTask
+146
+"Show Log entries in the timeline"
+""
+-2
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117EDD0
+TTask
+187
+"'Task due to' report"
+"today, tomorrow, this week, this month...\r\n"
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117EF70
+TTask
+201
+"Editing of task name from the list does not work"
+"F2 shows wrong\r\nWhen using mouse the name is not affected"
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117EEA0
+TTask
+197
+"Handle screensaver while tracking time"
+"When screensaver is activated, time tracking stops. When screensaver is deactivated, user can choose whether the time is to be added to current task, discarded, or added to another task."
+-1
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117F040
+TTask
+4
+"Mute option"
+"A 'mute' mode to be available, to disallow popping of anything. A tray popup menu to be included? To be available by keystroke win+something?"
+-2
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117F110
+TTask
+149
+"Ability to work with keyboard only"
+""
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117F1E0
+TTask
+19
+"Allow subtasks?"
+""
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117F2B0
+TTask
+199
+"Adding a task places it at the end, instead of re-sorting"
+""
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
 

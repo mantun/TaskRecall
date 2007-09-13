@@ -209,6 +209,9 @@ end;
 destructor TfrmTaskSwitch.Destroy;
 begin
   FActiveTasks.Free;
+  FActiveTasks := nil;
+  FTaskSwitches.Free;
+  FTaskSwitches := nil;
   inherited;
 end;
 

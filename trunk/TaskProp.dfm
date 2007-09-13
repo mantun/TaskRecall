@@ -16,6 +16,7 @@ object frmTaskProperties: TfrmTaskProperties
   KeyPreview = True
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
   DesignSize = (

@@ -1,9 +1,10 @@
 program Reminder;
 
 uses
+  FastMM4,
   Forms,
-  Main in 'Main.pas' {frmMain},
   Tasks in 'Tasks.pas',
+  Main in 'Main.pas' {frmMain},
   PopUp in 'PopUp.pas' {frmTaskPopup},
   TaskProp in 'TaskProp.pas' {frmTaskProperties},
   ReminderProp in 'ReminderProp.pas' {frmReminderProperties},

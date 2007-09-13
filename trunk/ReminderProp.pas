@@ -19,6 +19,7 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FReminder : TSingletonSelection;
     procedure SetReminder(const value : TReminder);
@@ -130,6 +131,12 @@ begin
   else
     if MessageDlg('Delete reminder "' + FReminder.Item.Name + '"?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       FReminder.Delete(FReminder.Item);
+end;
+
+procedure TfrmReminderProperties.FormDestroy(Sender: TObject);
+begin
+  FReminder.Free;
+  FReminder := nil;
 end;
 
 end.
