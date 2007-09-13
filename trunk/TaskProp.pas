@@ -208,6 +208,8 @@ begin
     if eTaskName.Modified then begin
       task.Name := eTaskName.Text;
       eTaskName.Modified := False;
+      if task.Reminder <> nil then
+        task.Reminder.Name := task.Name;
     end;
     if sePriority.Modified then begin
       task.Priority := sePriority.Value;
@@ -244,8 +246,10 @@ begin
     end;
     if mRemninderTimestamp.Modified then begin
       if Trim(mRemninderTimestamp.Text) <> '' then begin
-        if task.Reminder = nil then
-          task.Reminder := TReminder.Create;
+        if task.Reminder = nil then begin
+          task.Reminder := TReminder.Create(task.Name);
+          TaskStorage.Add(task.Reminder);
+        end;
         task.Reminder.TimeStamp := mRemninderTimestamp.Text;
       end else
         if task.Reminder <> nil then
