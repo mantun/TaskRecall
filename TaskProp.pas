@@ -37,6 +37,7 @@ type
     procedure cbColorChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormDestroy(Sender: TObject);
   private
     FCompleteModified : Boolean;
     FColorModified : Boolean;
@@ -342,6 +343,12 @@ procedure TfrmTaskProperties.cbColorChange(Sender: TObject);
 begin
   FColorModified := True;
   TaskChange(Sender);
+end;
+
+procedure TfrmTaskProperties.FormDestroy(Sender: TObject);
+begin
+  FTask.Free;
+  FTask := nil;
 end;
 
 end.

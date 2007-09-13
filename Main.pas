@@ -475,6 +475,8 @@ end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
+  CategorySelection.Free;
+  CategorySelection := nil;
   TaskSelection.Free;
   TaskSelection := nil;
   ReminderSelection.Free;
@@ -723,7 +725,7 @@ var
 begin
   s := TManualSelection.Create(TaskStorage);
   for i := 0 to TaskSelection.Count - 1 do
-    s.add(TaskSelection[i]);
+    s.Select(TaskSelection[i]);
   TfrmTimeline.Create(Application, s).Show;
 end;
 

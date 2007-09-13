@@ -16,6 +16,7 @@ object frmReminderProperties: TfrmReminderProperties
   KeyPreview = True
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
   DesignSize = (
     370
