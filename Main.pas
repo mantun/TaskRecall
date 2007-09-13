@@ -87,6 +87,7 @@ type
     acCategoryColor: TAction;
     ColorDialog: TColorDialog;
     SetColor1: TMenuItem;
+    btnTimeline: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -155,6 +156,7 @@ type
     procedure TasksViewCompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure acCategoryColorExecute(Sender: TObject);
+    procedure btnTimelineClick(Sender: TObject);
   private
     TrayIconData : TNotifyIconData;
 
@@ -980,6 +982,11 @@ begin
       cat(CategoryTree.FocusedNode).Color := ColorDialog.Color;
       TasksView.Invalidate;
     end;
+end;
+
+procedure TfrmMain.btnTimelineClick(Sender: TObject);
+begin
+  acShowTimeline.Execute;
 end;
 
 end.

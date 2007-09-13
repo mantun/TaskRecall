@@ -1,11 +1,11 @@
-197
+203
 
 00A630E8
 TReminder
 "break"
 "(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) (false))"
 ""
-"13.09.2007 14:08:57"
+"13.09.2007 16:25:51"
 00000000
 
 00A63C54
@@ -67,7 +67,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A67DE0
 TTask
@@ -233,7 +233,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A65FA4
 TTask
@@ -294,7 +294,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A668EC
 TTask
@@ -400,7 +400,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A66E64
 TTask
@@ -416,7 +416,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A63ED0
 TTask
@@ -447,7 +447,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A67354
 TTask
@@ -493,7 +493,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A67588
 TTask
@@ -547,37 +547,37 @@ TTask
 "Instead of date and time, a reminder will have a single field - timestamp. A new type will be introduced (timestamp) with methods for creating and decomposition - ts, dt, tm. The field will support sequences of several expressions. ?A define expression will also be included. ?What about Lambda definition?"
 -1
 000000
-0
+-1
 00000000
 0
 0
 ""
-""
+"13.09.2007 15:04:02"
 1
-00A63E6C
+00A65BDC
 
-00A63E6C
+00A65BDC
 TCategory
 "Reminder"
 4080FF
 3
 00000000
 
-00A642B0
+00A63E6C
 TCategory
 "(none)"
 C0C0C0
 1
 00000000
 
-00A66764
+00A67E78
 TCategory
 "(all)"
 C0C0C0
 0
 00000000
 
-00A64190
+00A6419C
 TTask
 186
 "Time spent reports"
@@ -591,7 +591,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A66DE4
 TTask
@@ -607,7 +607,7 @@ TTask
 ""
 ""
 1
-00A63E6C
+00A65BDC
 
 00A66464
 TTask
@@ -639,7 +639,7 @@ TTask
 "21.08.2007 12:24:18"
 0
 
-00A6625C
+00A66418
 TTask
 193
 "escape does not cancel changes in reminder properties"
@@ -654,11 +654,11 @@ TTask
 "27.08.2007 16:25:40"
 0
 
-00A65A74
+00A67D20
 TTask
 196
 "Improve usability of reminders"
-"* boolean for date in timestamp\r\n* boolean for time expression\r\n* time sequence\r\n* relative to start/end date"
+"+* boolean for date in timestamp\r\n* boolean for time expression\r\n+* time sequence\r\n* relative to start/end date"
 0
 000000
 0
@@ -668,5 +668,372 @@ TTask
 "12.09.2007 10:00:59"
 ""
 1
-00A63E6C
+00A65BDC
+
+00A6625C
+TTask
+197
+"Handle screensaver while tracking time"
+"When screensaver is activated, time tracking stops. When screensaver is deactivated, user can choose whether the time is to be added to current task, discarded, or added to another task."
+-1
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A66F0C
+TTask
+198
+"Put version in tasks.txt"
+"And do not crash if the file is corrupted."
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A67AAC
+TTask
+199
+"Adding a task places it at the end, instead of re-sorting"
+""
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A63524
+TTask
+200
+"Reindex categories upon add"
+""
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A6370C
+TTask
+201
+"Editing of task name from the list does not work"
+"F2 shows wrong\r\nWhen using mouse the name is not affected"
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A634B8
+TTask
+202
+"Enter and ctrl+enter must act as apply"
+"in task and reminder properties"
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A67AAC
+TTask
+199
+"Adding a task places it at the end, instead of re-sorting"
+""
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A6370C
+TTask
+201
+"Editing of task name from the list does not work"
+"F2 shows wrong\r\nWhen using mouse the name is not affected"
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A634B8
+TTask
+202
+"Enter and ctrl+enter must act as apply"
+"in task and reminder properties"
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A67D20
+TTask
+196
+"Improve usability of reminders"
+"+* boolean for date in timestamp\r\n* boolean for time expression\r\n+* time sequence\r\n* relative to start/end date"
+0
+000000
+0
+00000000
+1
+0
+"12.09.2007 10:00:59"
+""
+1
+00A65BDC
+
+00A66F0C
+TTask
+198
+"Put version in tasks.txt"
+"And do not crash if the file is corrupted."
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A63524
+TTask
+200
+"Reindex categories upon add"
+""
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A66E64
+TTask
+144
+"Allow drag&drop editing of timeline"
+"Tasks should be moved and resized with mouse on the timeline.\r\nAbility to open task properties.\r\nAbility to merge task switches?\r\n"
+-1
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A6625C
+TTask
+197
+"Handle screensaver while tracking time"
+"When screensaver is activated, time tracking stops. When screensaver is deactivated, user can choose whether the time is to be added to current task, discarded, or added to another task."
+-1
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A6749C
+TTask
+4
+"Mute option"
+"A 'mute' mode to be available, to disallow popping of anything. A tray popup menu to be included? To be available by keystroke win+something?"
+-2
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A6589C
+TTask
+146
+"Show Log entries in the timeline"
+""
+-2
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A6419C
+TTask
+186
+"Time spent reports"
+""
+-2
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A66DE4
+TTask
+187
+"'Task due to' report"
+"today, tomorrow, this week, this month...\r\n"
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A67924
+TTask
+149
+"Ability to work with keyboard only"
+""
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A63154
+TTask
+19
+"Allow subtasks?"
+""
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A66C18
+TTask
+143
+"Allow vertical scrolling for timeline"
+"When tasks cannot fit in the visible height, a scrollbar should appear"
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A67F44
+TTask
+114
+"Remove/rename log file upon deletion of task"
+""
+-3
+000000
+0
+00000000
+0
+0
+""
+""
+1
+00A65BDC
+
+00A669BC
+TTask
+122
+"Hierarchical Text"
+"Investigate the possibility to create a hierarchical text structure with decent search and side-by-side compare functions."
+-5
+000000
+0
+00000000
+0
+0
+""
+""
+0
 
