@@ -113,8 +113,7 @@ begin
   Memo.SelStart := Memo.GetTextLen;
   PostMessage(Memo.Handle, EM_SCROLLCARET, 0, 0);
   Show;
-  Application.BringToFront;
-  BringToFront;
+  SetForegroundWindow(Handle);
 end;
 
 procedure TfrmLog.CreateParams(var Params: TCreateParams);
