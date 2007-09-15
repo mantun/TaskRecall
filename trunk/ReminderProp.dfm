@@ -17,6 +17,7 @@ object frmReminderProperties: TfrmReminderProperties
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
   DesignSize = (
     370
@@ -148,7 +149,6 @@ object frmReminderProperties: TfrmReminderProperties
     EditLabel.Caption = '&Name'
     TabOrder = 0
     OnChange = ReminderChange
-    OnKeyPress = EditKeyPress
   end
   object mTimeStamp: TMemo
     Left = 8
