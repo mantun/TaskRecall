@@ -157,6 +157,8 @@ type
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure acCategoryColorExecute(Sender: TObject);
     procedure btnTimelineClick(Sender: TObject);
+    procedure RemindersListViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     TrayIconData : TNotifyIconData;
 
@@ -994,6 +996,15 @@ end;
 procedure TfrmMain.btnTimelineClick(Sender: TObject);
 begin
   acShowTimeline.Execute;
+end;
+
+procedure TfrmMain.RemindersListViewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) and not RemindersListView.IsEditing then
+    acRemoveReminder.Execute
+  else if (Key = VK_F2) and (RemindersListView.Selected <> nil) then
+    RemindersListView.Selected.EditCaption;
 end;
 
 end.

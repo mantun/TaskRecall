@@ -250,6 +250,7 @@ object frmMain: TfrmMain
         OnData = RemindersListViewData
         OnDblClick = RemindersListViewDblClick
         OnEdited = RemindersListViewEdited
+        OnKeyDown = RemindersListViewKeyDown
         OnSelectItem = RemindersListViewSelectItem
       end
     end

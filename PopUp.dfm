@@ -13,10 +13,12 @@ object frmTaskPopup: TfrmTaskPopup
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
+  KeyPreview = True
   OldCreateOrder = False
   OnClick = FormClick
   OnClose = FormClose
   OnDestroy = FormDestroy
+  OnKeyPress = FormKeyPress
   DesignSize = (
     297
     109)

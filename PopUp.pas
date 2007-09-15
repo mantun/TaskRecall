@@ -40,6 +40,7 @@ type
     procedure cbCompleteClick(Sender: TObject);
     procedure cbActiveClick(Sender: TObject);
     procedure FormClick(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     FReminder : TSingletonSelection;
     FPopState : TPopState;
@@ -234,6 +235,12 @@ end;
 procedure TfrmTaskPopup.FormClick(Sender: TObject);
 begin
   FPopState := psEnd;
+end;
+
+procedure TfrmTaskPopup.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then btnDismiss.Click;
+  if Key = #27 then btnSnooze.Click;
 end;
 
 end.

@@ -96,7 +96,7 @@ destructor TTaskSwitches.Destroy;
 var i : Integer;
 begin
   for i := 0 to FSwitchData.Count - 1 do
-    FSwitchData.Free;
+    TObject(FSwitchData[i]).Free;
   FSwitchData.Free;
   inherited;
 end;
