@@ -14,12 +14,13 @@ type
     mTimeStamp: TMemo;
     Label1: TLabel;
     procedure ReminderChange(Sender: TObject);
-    procedure EditKeyPress(Sender: TObject; var Key: Char);
     procedure btnApplyClick(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FReminder : TSingletonSelection;
     procedure SetReminder(const value : TReminder);
@@ -30,7 +31,6 @@ type
     procedure EnableControls(Enabled : Boolean);
   public
     property Reminder : TReminder read GetReminder write SetReminder;
-    property Selection : TSingletonSelection read FReminder;
   end;
 
 var
@@ -104,15 +104,21 @@ begin
   ModalResult := mrOK;
 end;
 
-procedure TfrmReminderProperties.EditKeyPress(Sender: TObject; var Key: Char);
-begin
-  if (Key = #13) and btnApply.Enabled then
-    btnApply.Click;
-end;
-
 procedure TfrmReminderProperties.FormKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #27 then Close;
+  if Key = #10 then Key := #0;
+end;
+
+procedure TfrmReminderProperties.FormKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN)
+      and ((Shift = [ssCtrl]) or (ActiveControl <> mTimeStamp))
+      and btnApply.Enabled then begin
+    btnApply.Click;
+    Key := 0;
+  end;
 end;
 
 procedure TfrmReminderProperties.FormCreate(Sender: TObject);

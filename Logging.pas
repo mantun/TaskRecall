@@ -71,8 +71,9 @@ begin
   for i := 0 to InstanceList.Count - 1 do begin
     frm := TfrmLog(InstanceList[i]);
     if frm.FTask.Item = task then begin
-      frm.NewEntry;
       found := True;
+      frm.NewEntry;
+      Break;
     end;
   end;
   if not found then begin
@@ -110,8 +111,10 @@ begin
   if WindowState = wsMinimized then
     WindowState := wsNormal;
   Memo.SelStart := Memo.GetTextLen;
-  Show;
   PostMessage(Memo.Handle, EM_SCROLLCARET, 0, 0);
+  Show;
+  Application.BringToFront;
+  BringToFront;
 end;
 
 procedure TfrmLog.CreateParams(var Params: TCreateParams);

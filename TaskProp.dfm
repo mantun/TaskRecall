@@ -236,7 +236,6 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Caption = '&Name:'
     TabOrder = 0
     OnChange = TaskChange
-    OnKeyPress = EditKeyPress
   end
   object sePriority: TSpinEdit
     Left = 8
@@ -248,7 +247,6 @@ object frmTaskProperties: TfrmTaskProperties
     TabOrder = 3
     Value = 0
     OnChange = sePriorityChange
-    OnKeyPress = EditKeyPress
   end
   object mDescription: TMemo
     Left = 136
@@ -268,7 +266,6 @@ object frmTaskProperties: TfrmTaskProperties
     Caption = 'C&omplete'
     TabOrder = 4
     OnClick = cbCompleteClick
-    OnKeyPress = EditKeyPress
   end
   object eTimeSpent: TLabeledEdit
     Left = 8
@@ -280,7 +277,6 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Caption = '&Time spent: '
     TabOrder = 5
     OnChange = TaskChange
-    OnKeyPress = EditKeyPress
   end
   object eStartTime: TLabeledEdit
     Left = 8
@@ -292,7 +288,6 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Caption = '&Start Date/Time:'
     TabOrder = 6
     OnChange = TaskChange
-    OnKeyPress = EditKeyPress
   end
   object eEndTime: TLabeledEdit
     Left = 8
@@ -304,7 +299,6 @@ object frmTaskProperties: TfrmTaskProperties
     EditLabel.Caption = '&End Date/Time:'
     TabOrder = 7
     OnChange = TaskChange
-    OnKeyPress = EditKeyPress
   end
   object cbColor: TColorBox
     Left = 8
@@ -316,7 +310,6 @@ object frmTaskProperties: TfrmTaskProperties
     ItemHeight = 16
     TabOrder = 2
     OnChange = cbColorChange
-    OnKeyPress = EditKeyPress
   end
   object mRemninderTimestamp: TMemo
     Left = 8

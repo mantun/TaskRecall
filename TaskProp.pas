@@ -26,10 +26,8 @@ type
     Label2: TLabel;
     procedure TaskChange(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
-    procedure EditKeyPress(Sender: TObject; var Key: Char);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormCreate(Sender: TObject);
-    procedure btnReminderClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure cbCompleteClick(Sender: TObject);
     procedure sePriorityChange(Sender: TObject);
@@ -265,21 +263,18 @@ begin
   ModalResult := mrOK;
 end;
 
-procedure TfrmTaskProperties.EditKeyPress(Sender: TObject; var Key: Char);
-begin
-  if (Key = #13) and btnApply.Enabled then
-    btnApply.Click;
-end;
-
 procedure TfrmTaskProperties.FormKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #27 then Close;
+  if Key = #10 then Key := #0;
 end;
 
 procedure TfrmTaskProperties.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_RETURN) and (Shift = [ssCtrl]) and btnApply.Enabled then begin
+  if (Key = VK_RETURN)
+      and ((Shift = [ssCtrl]) or ((ActiveControl <> mDescription) and (ActiveControl <> mRemninderTimestamp)))
+      and btnApply.Enabled then begin
     btnApply.Click;
     Key := 0;
   end;
@@ -291,24 +286,6 @@ begin
   FTask.OnAdd := OnAdd;
   FTask.OnItemChange := OnChange;
   FTask.OnDelete := OnDelete;
-end;
-
-procedure TfrmTaskProperties.btnReminderClick(Sender: TObject);
-var task : TTask;
-begin
-  if FTask.Item = nil then Exit;
-  task := TTask(FTask.Item);
-  if task.Reminder = nil then begin
-    task.Reminder := TReminder.Create(task.Name);
-    frmReminderProperties.Selection.ClearSelection;
-    frmReminderProperties.Selection.Add(task.Reminder);
-  end;
-  frmReminderProperties.Reminder := task.Reminder;
-  if not frmReminderProperties.Visible then begin
-    frmReminderProperties.Left := Left;
-    frmReminderProperties.Top := Top + Height;
-  end;
-  frmReminderProperties.Show;
 end;
 
 procedure TfrmTaskProperties.btnDeleteClick(Sender: TObject);

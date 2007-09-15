@@ -203,6 +203,10 @@ const
   CategoryAll = '(all)';
   CategoryNone = '(none)';
 
+  ciName = 2;
+  ciPriority = 1;
+  ciID = 0;
+
 type
   PCategory = ^TCategory;
   PTask = ^TTask;  
@@ -329,6 +333,7 @@ end;
 procedure TfrmMain.OnTaskAdd(Sender : TObject; obj : TNamedObject);
 begin
   TasksView.AddChild(nil, obj);
+  TasksView.Sort(nil, TasksView.Header.SortColumn, TasksView.Header.SortDirection);
 end;
 
 procedure TfrmMain.OnTaskDelete(Sender : TObject; obj : TNamedObject);
@@ -342,7 +347,7 @@ end;
 
 procedure TfrmMain.OnTaskChange(Sender : TObject; obj : TNamedObject);
 begin
-  TasksView.Sort(nil, 1, sdAscending, True);
+  TasksView.Sort(nil, ciPriority, sdAscending, True);
   TasksView.Invalidate;
 end;
 
@@ -891,7 +896,7 @@ begin
     else
       acRemoveTaskFromView.Execute
   else if (Key = VK_F2) and (TasksView.FocusedNode <> nil) then
-    TasksView.EditNode(TasksView.FocusedNode, -1);
+    TasksView.EditNode(TasksView.FocusedNode, ciName);
 end;
 
 procedure TfrmMain.TasksViewDblClick(Sender: TObject);
@@ -919,7 +924,7 @@ procedure TfrmMain.TasksViewNewText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; NewText: WideString);
 begin
   case Column of
-    1 : tsk(node).Name := NewText;
+    ciName : tsk(node).Name := NewText;
   end;
 end;
 
@@ -929,7 +934,7 @@ procedure TfrmMain.TasksViewBeforeCellPaint(Sender: TBaseVirtualTree;
 var p, sh : Integer;
 begin
   case Column of
-    1 : begin
+    ciPriority : begin
           p := tsk(Node).Priority;
           if p > 10 then p := 10;
           if p < -10 then p := -10;
@@ -940,7 +945,7 @@ begin
             TargetCanvas.Brush.Color := RGB(sh, $FF, sh);
           TargetCanvas.FillRect(CellRect);
         end;
-    0 : begin
+    ciID : begin
           TargetCanvas.Brush.Color := tsk(Node).Color;
           TargetCanvas.FillRect(CellRect);
         end;
@@ -952,9 +957,9 @@ procedure TfrmMain.TasksViewGetText(Sender: TBaseVirtualTree;
   var CellText: WideString);
 begin
   case Column of
-    0 : CellText := IntToStr(tsk(Node).TaskID);
-    1 : CellText := IntToStr(tsk(Node).Priority);
-    2 : CellText := tsk(Node).Name;
+    ciID : CellText := IntToStr(tsk(Node).TaskID);
+    ciPriority : CellText := IntToStr(tsk(Node).Priority);
+    ciName : CellText := tsk(Node).Name;
   end;
 end;
 
@@ -963,8 +968,8 @@ procedure TfrmMain.TasksViewPaintText(Sender: TBaseVirtualTree;
   TextType: TVSTTextType);
 begin
   case Column of
-    0 : TargetCanvas.Font.Color := GetContrastColor(tsk(Node).Color);
-    2 : if tsk(Node).Complete then begin
+    ciID : TargetCanvas.Font.Color := GetContrastColor(tsk(Node).Color);
+    ciName : if tsk(Node).Complete then begin
           TargetCanvas.Font.Color := $808080;
           TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsStrikeOut];
         end;

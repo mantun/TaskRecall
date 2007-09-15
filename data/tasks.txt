@@ -1,11 +1,11 @@
-203
+208
 
 011F98C0
 TReminder
 "break"
 "(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) (false))"
 ""
-"13.09.2007 19:39:55"
+"15.09.2007 13:06:20"
 00000000
 
 0117C530
@@ -551,7 +551,7 @@ TTask
 000000
 0
 00000000
-1
+0
 0
 "12.09.2007 10:00:59"
 ""
@@ -597,12 +597,12 @@ TTask
 "in task and reminder properties"
 0
 000000
-0
+-1
 00000000
 0
-0
+1
 ""
-""
+"15.09.2007 12:26:53"
 1
 011ED748
 
@@ -677,12 +677,12 @@ TTask
 "F2 shows wrong\r\nWhen using mouse the name is not affected"
 0
 000000
-0
+-1
 00000000
 0
 0
 ""
-""
+"15.09.2007 12:20:34"
 1
 011ED748
 
@@ -757,11 +757,59 @@ TTask
 ""
 0
 000000
+-1
+00000000
+0
+0
+""
+"15.09.2007 12:14:59"
+1
+011ED748
+
+0117F380
+TTask
+203
+"Make Enter work in popup form"
+""
+0
+000000
 0
 00000000
 0
 0
 ""
+""
+1
+011ED748
+
+0117F450
+TTask
+204
+"Try to make new task form modal only with respect to main form, but not log or popup"
+""
+0
+000000
+0
+00000000
+0
+0
+""
+""
+1
+011ED748
+
+0117F5F0
+TTask
+205
+"Log form to be brung to front when activated using a hotkey"
+""
+0
+000000
+0
+00000000
+0
+4.00028333184309
+"15.09.2007 13:00:13"
 ""
 1
 011ED748
