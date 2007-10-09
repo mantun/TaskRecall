@@ -109,6 +109,10 @@ begin
   FTimeline.Map.Scale := Max(0.05, FTimeline.Map.Scale * (1 - step * WheelDelta));
   FTimeline.Map.itBase := FTimeline.Map.itBase + it - FTimeline.Map.ITFromPX(clPos.X);
   FTimeline.Map.pxMinTickWidth := 5;
+  if FLDown then begin
+    DownXPos := clPos.X;
+    DownBase := FTimeline.Map.itBase;
+  end;
   Invalidate;
 end;
 
