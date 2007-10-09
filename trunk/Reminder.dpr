@@ -2,7 +2,9 @@ program Reminder;
 
 uses
   FastMM4,
+  SysUtils,
   Forms,
+  Dialogs,
   Tasks in 'Tasks.pas',
   Main in 'Main.pas' {frmMain},
   PopUp in 'PopUp.pas' {frmTaskPopup},
@@ -21,13 +23,19 @@ uses
   Parse in 'SLI\Parse.pas',
   Eval in 'SLI\Eval.pas',
   BuiltinDefs in 'SLI\BuiltinDefs.pas',
-  TimeLibDefs in 'SLI\TimeLibDefs.pas';
+  TimeLibDefs in 'SLI\TimeLibDefs.pas',
+  TasksFileConvert in 'TasksFileConvert.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  TaskStorage.PersistentStorageFile := TasksFileName;
+  try
+    TaskStorage.PersistentStorageFile := TasksFileName;
+  except
+    MessageDlg('Error loading tasks file:'#13#10 + Exception(ExceptObject).Message, mtError, [mbAbort], 0);
+    Exit;
+  end;
   Application.CreateForm(TfrmMain, frmMain);
   Application.CreateForm(TfrmTaskProperties, frmTaskProperties);
   Application.CreateForm(TfrmReminderProperties, frmReminderProperties);
