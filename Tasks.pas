@@ -40,6 +40,7 @@ type
     FReminder : TReminder;
     FActiveNo : Integer;
     FTimeSpent : Double;
+    FOnDismiss : String;
     FStartTime : TDateTime;
     FEndTime : TDateTime;
 
@@ -56,6 +57,7 @@ type
     function GetTimeSpentStr : String;
     procedure SetStartTime(value : TDateTime);
     procedure SetEndTime(value : TDateTime);
+    procedure SetOnDismiss(value : String);
   public
     property TaskID : Integer read FTaskID;
     property Description : String read FDescription write SetDescription;
@@ -66,6 +68,7 @@ type
     property ActiveNo : Integer read FActiveNo write SetActiveNo;
     property StartTime : TDateTime read FStartTime write SetStartTime;
     property EndTime : TDateTime read FEndTime write SetEndTime;
+    property OnDismiss : String read FOnDismiss write SetOnDismiss;
     property TimeSpent : Double read FTimeSpent write SetTimeSpent;
     property TimeSpentAsString : String read GetTimeSpentStr write SetTimeSpentStr;
 
@@ -237,12 +240,13 @@ type
 
 const
   TasksFileName = 'data\tasks.txt';
+  TasksFileRevision = 1;
 var
   TaskStorage : TNamedObjectsStorage;
 
 implementation
 
-Uses SysUtils, ResultDecl, Parse, Eval;
+Uses SysUtils, ResultDecl, Parse, Eval, TasksFileConvert;
 
 const
   Quote = '"';
@@ -435,6 +439,14 @@ begin
   end;
 end;
 
+procedure TTask.SetOnDismiss(value : String);
+begin
+  if FOnDismiss <> value then begin
+    FOnDismiss := value;
+    Changed;
+  end;
+end;
+
 constructor TTask.FromString(const s : String; const Resolver : TPointerResolver);
 var
   sl : TStringList;
@@ -453,19 +465,20 @@ begin
     Resolver.AddPointer(sl[6], @FReminder);
     FActiveNo := StrToInt(sl[7]);
     FTimeSpent := StrToFloat(sl[8]);
-    ss := Decode(sl[9]);
+    FOnDismiss := Decode(sl[9]);
+    ss := Decode(sl[10]);
     if ss <> '' then
       FStartTime := StrToDateTime(ss)
     else
       FStartTime := 0;
-    ss := Decode(sl[10]);
+    ss := Decode(sl[11]);
     if ss <> '' then
       FEndTime := StrToDateTime(ss)
     else
       FEndTime := 0;
-    SetLength(FCategories, StrToInt(sl[11]));
+    SetLength(FCategories, StrToInt(sl[12]));
     for i := 0 to High(FCategories) do
-      Resolver.AddPointer(sl[12 + i], @FCategories[i]);
+      Resolver.AddPointer(sl[13 + i], @FCategories[i]);
   finally
     sl.Free;
   end;
@@ -488,6 +501,7 @@ begin
     sl.add(TPointerResolver.PointerToStr(FReminder));
     sl.add(IntToStr(FActiveNo));
     sl.add(FloatToStr(FTimeSpent));
+    sl.add(Encode(FOnDismiss));
     if FStartTime <> 0 then
       ss := DateTimeToStr(FStartTime)
     else
@@ -890,9 +904,13 @@ var
   Resolver : TPointerResolver;
   t : TextFile;
   o : TNamedObject;
+  FileRevision : Integer;
 begin
   AssignFile(t, FileName);
   Reset(t);
+  ReadLn(t, FileRevision);
+  if FileRevision > TasksFileRevision then
+    raise Exception.Create('Tasks file format is newer and is not supported by this program version');
   ReadLn(t, FNextID);
   ReadLn(t);
   sl := TStringList.Create;
@@ -906,6 +924,8 @@ begin
         ReadLn(t, s);
         sl.Add(s);
       until s = '';
+      if FileRevision < TasksFileRevision then
+        FromRevision(FileRevision, ObjID, ClassName, sl);
       if ClassName = TTask.ClassName then
         o := TTask.FromString(sl.Text, Resolver)
       else if ClassName = TReminder.ClassName then
@@ -935,6 +955,7 @@ var
 begin
   AssignFile(t, FileName + '.new');
   Rewrite(t);
+  WriteLn(t, TasksFileRevision);
   WriteLn(t, FNextID);
   WriteLn(t);
   try
