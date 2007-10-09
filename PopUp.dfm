@@ -122,7 +122,7 @@ object frmTaskPopup: TfrmTaskPopup
     Width = 113
     Height = 22
     Anchors = [akLeft, akBottom]
-    Caption = '&Dismiss'
+    Caption = 'D&ismiss'
     Flat = True
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
