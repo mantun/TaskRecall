@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 193
   Top = 115
   Width = 612
-  Height = 348
+  Height = 400
   ActiveControl = eQuickNewTask
   Caption = 'All reminders'
   Color = clBtnFace
@@ -19,14 +19,14 @@ object frmMain: TfrmMain
   OnDestroy = FormDestroy
   DesignSize = (
     604
-    314)
+    366)
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl: TPageControl
     Left = 0
     Top = 0
     Width = 606
-    Height = 316
+    Height = 368
     ActivePage = tsTasks
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
@@ -50,7 +50,7 @@ object frmMain: TfrmMain
         Left = 121
         Top = 36
         Width = 6
-        Height = 240
+        Height = 292
       end
       object Panel1: TPanel
         Left = 0
@@ -148,7 +148,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 36
         Width = 121
-        Height = 240
+        Height = 292
         Align = alLeft
         DragOperations = [doMove]
         DragType = dtVCL
@@ -179,7 +179,7 @@ object frmMain: TfrmMain
         Left = 127
         Top = 36
         Width = 471
-        Height = 240
+        Height = 292
         Align = alClient
         DragMode = dmAutomatic
         Header.AutoSizeIndex = 2
@@ -238,7 +238,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 598
-        Height = 276
+        Height = 328
         Align = alClient
         Columns = <>
         HideSelection = False
@@ -267,12 +267,12 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 598
-        Height = 276
+        Height = 328
         Align = alClient
         TabOrder = 0
         inherited ListView: TListView
           Width = 598
-          Height = 276
+          Height = 328
         end
       end
     end
