@@ -1,13 +1,13 @@
 object frmTaskProperties: TfrmTaskProperties
   Left = 571
   Top = 115
-  Width = 378
-  Height = 348
+  Width = 400
+  Height = 400
   BorderStyle = bsSizeToolWin
   Caption = 'Task Properties'
   Color = clBtnFace
-  Constraints.MinHeight = 192
-  Constraints.MinWidth = 210
+  Constraints.MinHeight = 325
+  Constraints.MinWidth = 400
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -20,32 +20,32 @@ object frmTaskProperties: TfrmTaskProperties
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
   DesignSize = (
-    370
-    314)
+    392
+    366)
   PixelsPerInch = 96
   TextHeight = 13
   object lPriority: TLabel
-    Left = 8
-    Top = 80
+    Left = 264
+    Top = 0
     Width = 31
     Height = 13
     Caption = '&Priority'
     FocusControl = sePriority
   end
   object lDescr: TLabel
-    Left = 136
-    Top = 0
+    Left = 8
+    Top = 80
     Width = 56
     Height = 13
     Caption = '&Description:'
     FocusControl = mDescription
   end
   object btnApply: TSpeedButton
-    Left = 336
-    Top = 292
+    Left = 360
+    Top = 320
     Width = 24
-    Height = 24
-    Anchors = [akLeft, akBottom]
+    Height = 41
+    Anchors = [akRight, akBottom]
     Glyph.Data = {
       36060000424D3606000000000000360000002800000020000000100000000100
       18000000000000060000C40E0000C40E00000000000000000000000000000000
@@ -101,12 +101,12 @@ object frmTaskProperties: TfrmTaskProperties
     OnClick = btnApplyClick
   end
   object btnDelete: TSpeedButton
-    Left = 336
-    Top = 268
+    Left = 360
+    Top = 276
     Width = 24
-    Height = 24
+    Height = 41
     Hint = 'Delete Task...'
-    Anchors = [akLeft, akBottom]
+    Anchors = [akRight, akBottom]
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       20000000000000040000C40E0000C40E00000000000000000000FFFFFF00FFFF
@@ -147,12 +147,12 @@ object frmTaskProperties: TfrmTaskProperties
     OnClick = btnDeleteClick
   end
   object btnLog: TSpeedButton
-    Left = 336
-    Top = 244
+    Left = 360
+    Top = 232
     Width = 24
-    Height = 24
+    Height = 41
     Hint = 'New log entry...'
-    Anchors = [akLeft, akBottom]
+    Anchors = [akRight, akBottom]
     Glyph.Data = {
       96060000424D9606000000000000360000002800000020000000110000000100
       18000000000060060000C40E0000C40E000000000000000000001F1F1F1F1F1F
@@ -220,11 +220,21 @@ object frmTaskProperties: TfrmTaskProperties
   end
   object Label2: TLabel
     Left = 8
-    Top = 240
+    Top = 217
     Width = 48
     Height = 13
+    Anchors = [akLeft, akRight, akBottom]
     Caption = '&Reminder:'
     FocusControl = mRemninderTimestamp
+  end
+  object Label3: TLabel
+    Left = 8
+    Top = 303
+    Width = 55
+    Height = 13
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'On D&ismiss:'
+    FocusControl = mOnDismiss
   end
   object eTaskName: TLabeledEdit
     Left = 8
@@ -238,66 +248,66 @@ object frmTaskProperties: TfrmTaskProperties
     OnChange = TaskChange
   end
   object sePriority: TSpinEdit
-    Left = 8
-    Top = 96
+    Left = 264
+    Top = 16
     Width = 49
     Height = 22
     MaxValue = 10
     MinValue = -10
-    TabOrder = 3
+    TabOrder = 4
     Value = 0
     OnChange = sePriorityChange
   end
   object mDescription: TMemo
-    Left = 136
-    Top = 16
-    Width = 225
-    Height = 221
+    Left = 8
+    Top = 96
+    Width = 375
+    Height = 120
     Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssVertical
-    TabOrder = 1
+    TabOrder = 7
     OnChange = TaskChange
   end
   object cbComplete: TCheckBox
-    Left = 64
-    Top = 99
+    Left = 320
+    Top = 19
     Width = 65
     Height = 17
     Caption = 'C&omplete'
-    TabOrder = 4
+    TabOrder = 5
     OnClick = cbCompleteClick
   end
   object eTimeSpent: TLabeledEdit
-    Left = 8
-    Top = 136
+    Left = 264
+    Top = 56
     Width = 121
     Height = 21
     EditLabel.Width = 58
     EditLabel.Height = 13
     EditLabel.Caption = '&Time spent: '
-    TabOrder = 5
+    TabOrder = 6
     OnChange = TaskChange
   end
   object eStartTime: TLabeledEdit
-    Left = 8
-    Top = 176
+    Left = 136
+    Top = 16
     Width = 121
     Height = 21
     EditLabel.Width = 79
     EditLabel.Height = 13
     EditLabel.Caption = '&Start Date/Time:'
-    TabOrder = 6
+    TabOrder = 2
     OnChange = TaskChange
   end
   object eEndTime: TLabeledEdit
-    Left = 8
-    Top = 216
+    Left = 136
+    Top = 56
     Width = 121
     Height = 21
     EditLabel.Width = 76
     EditLabel.Height = 13
     EditLabel.Caption = '&End Date/Time:'
-    TabOrder = 7
+    TabOrder = 3
     OnChange = TaskChange
   end
   object cbColor: TColorBox
@@ -308,14 +318,14 @@ object frmTaskProperties: TfrmTaskProperties
     DefaultColorColor = clGray
     Style = [cbStandardColors, cbExtendedColors, cbIncludeNone, cbCustomColor, cbPrettyNames]
     ItemHeight = 16
-    TabOrder = 2
+    TabOrder = 1
     OnChange = cbColorChange
   end
   object mRemninderTimestamp: TMemo
     Left = 8
-    Top = 256
-    Width = 313
-    Height = 57
+    Top = 233
+    Width = 345
+    Height = 63
     Anchors = [akLeft, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -325,6 +335,22 @@ object frmTaskProperties: TfrmTaskProperties
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 8
+    OnChange = TaskChange
+  end
+  object mOnDismiss: TMemo
+    Left = 8
+    Top = 319
+    Width = 345
+    Height = 41
+    Anchors = [akLeft, akRight, akBottom]
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Lucida Console'
+    Font.Style = []
+    ParentFont = False
+    ScrollBars = ssVertical
+    TabOrder = 9
     OnChange = TaskChange
   end
 end

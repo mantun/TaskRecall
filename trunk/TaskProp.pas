@@ -24,6 +24,8 @@ type
     Label1: TLabel;
     mRemninderTimestamp: TMemo;
     Label2: TLabel;
+    mOnDismiss: TMemo;
+    Label3: TLabel;
     procedure TaskChange(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -93,6 +95,7 @@ begin
   sePriority.Enabled := Enabled;
   mDescription.Enabled := Enabled;
   mRemninderTimestamp.Enabled := Enabled;
+  mOnDismiss.Enabled := Enabled;
   cbComplete.Enabled := Enabled;
   cbColor.Enabled := Enabled;
   eTimeSpent.Enabled := Enabled;
@@ -114,8 +117,6 @@ begin
     cbColor.Selected := task.Color;
   if not mDescription.Modified then
     mDescription.Lines.Text := task.Description;
-  if not mDescription.Modified then
-    mDescription.Lines.Text := task.Description;
   if not FCompleteModified then
     cbComplete.Checked := task.Complete;
   if not eTimeSpent.Modified then
@@ -135,6 +136,8 @@ begin
   if not mRemninderTimestamp.Modified then
     if task.Reminder <> nil then
       mRemninderTimestamp.Text := task.Reminder.TimeStamp;
+  if not mOnDismiss.Modified then
+    mOnDismiss.Lines.Text := task.OnDismiss;
   btnLog.Enabled := task.TaskID <> 0;
 end;
 
@@ -159,6 +162,8 @@ begin
   eEndTime.Modified := False;
   mRemninderTimestamp.Text := '';
   mRemninderTimestamp.Modified := false;
+  mOnDismiss.Text := '';
+  mOnDismiss.Modified := false;
   EnableControls(False);
   btnApply.Enabled := False;
   btnDelete.Enabled := False;
@@ -255,6 +260,10 @@ begin
           TaskStorage.Delete(task.Reminder);
       mRemninderTimestamp.Modified := false;
     end;
+    if mOnDismiss.Modified then begin
+      task.OnDismiss := mOnDismiss.Lines.Text;
+      mOnDismiss.Modified := False;
+    end;
   finally
     task.EndUpdate;
   end;
@@ -273,7 +282,7 @@ procedure TfrmTaskProperties.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_RETURN)
-      and ((Shift = [ssCtrl]) or ((ActiveControl <> mDescription) and (ActiveControl <> mRemninderTimestamp)))
+      and ((Shift = [ssCtrl]) or not (ActiveControl is TMemo))
       and btnApply.Enabled then begin
     btnApply.Click;
     Key := 0;
