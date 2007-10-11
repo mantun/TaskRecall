@@ -6,7 +6,7 @@ TReminder
 "break"
 "(if (in (dow) 1 2 3 4 5) (ts (date) (hms (if (<= (min) 15) (hour) (+ (hour) 1)) 10)) (false))"
 ""
-"11.10.2007 13:26:19"
+"11.10.2007 14:41:12"
 00000000
 
 0117C530
@@ -866,20 +866,20 @@ TTask
 1
 011ED748
 
-011803C0
+0117F520
 TTask
 210
 "Handle shutdown message (do not ask for exit)"
 ""
 -1
 000000
-0
+-1
 00000000
 0
 0
 ""
 ""
-""
+"11.10.2007 14:41:05"
 1
 011ED748
 

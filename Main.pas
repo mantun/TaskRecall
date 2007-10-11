@@ -166,8 +166,11 @@ type
     ReminderSelection : TReminderSelection;
     CategorySelection : TCategorySelection;
 
+    FWindowsSessionEnds : Boolean;
+
     procedure TrayMessage(var Msg : TMessage); message WM_TRAYICON;
     procedure KeyHookHandler(var msg : TMessage); message WM_HOTKEY;
+    procedure WMEndSession(var msg : TWMEndSession); message WM_ENDSESSION;
 
     procedure OnTaskAdd(Sender : TObject; obj : TNamedObject);
     procedure OnTaskDelete(Sender : TObject; obj : TNamedObject);
@@ -495,7 +498,8 @@ end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  CanClose := MessageDlg('Exit?', mtConfirmation, [mbYes, mbNo], 0) = mrYes;
+  CanClose := FWindowsSessionEnds or
+              (MessageDlg('Exit?', mtConfirmation, [mbYes, mbNo], 0) = mrYes);
 end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -546,6 +550,12 @@ begin
       SetForegroundWindow(Application.Handle);
     end;
   end;
+end;
+
+procedure TfrmMain.WMEndSession(var msg : TWMEndSession);
+begin
+  if msg.EndSession = TRUE then
+    FWindowsSessionEnds := true;
 end;
 
 procedure TfrmMain.acAddTaskExecute(Sender: TObject);
