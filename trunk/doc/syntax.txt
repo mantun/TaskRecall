@@ -16,12 +16,15 @@ option1 | option2     - alternatives
 <item> -> <number>
 <item> -> <time>
 <item> -> <date>
+<item> -> <timestamp>
 <item> -> <identifier>
 <item> -> <list>
 
+// Be aware that changing Regional Settigs may prevent the data file from opening
+<time> -> <hh> ':' <mm> ':' <ss>    // Regional time separator is used, 24h time
+<date> -> <dd> '.' <mm> '.' <yyyy>  // Regional short date format is used
+<timestamp> -> <dd> '.' <mm> '.' <yyyy> ',' <hh> ':' <mm> ':' <ss> // Regional date/time format is used, ',' is in fact the list separator and is replaced by ' ' upon parsing 
 <number> -> ['+' | '-'] <digits>
-<time> -> <hh> ':' <mm> ':' <ss>    // sorry, no format customization here
-<date> -> <dd> '.' <mm> '.' <yyyy>  // sorry, no format customization here
 <list> -> '(' <sequence> ')'
 
 <hh> -> <digits>                    // must represent valid time
@@ -111,3 +114,10 @@ false = ~  - const false
 (dow [<:date>]) = #                    - day of week of given/current date
 (doy [<:date>]) = #                    - day of year of given/current date
 (dmy <#day> <#month> [<#year>]) = :    - returns the specified date
+
++++Special names
+sd                         - Task's Start Date/Time (available only for task reminders)
+ed                         - Task's End Date/Time (available only for task reminders)
+(set-start <:timestamp>)   - Sets Task's Start Date/Time (available only in task's 'On Dismiss' field)
+(set-end <:timestamp>)     - Sets Task's End Date/Time (available only in task's 'On Dismiss' field)
+

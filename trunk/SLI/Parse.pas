@@ -40,7 +40,9 @@ begin
 end;
 
 function TParser.GetSimpleResult : IResult;
-var t : String;
+var
+  t : String;
+  k : Integer;
 begin
   t := FToken.GetValue;
   if t = ')' then
@@ -48,9 +50,11 @@ begin
   else if not (t[1] in ['0'..'9', '+', '-']) or (t = '+') or (t = '-') then
     Result := TStringResult.Create(t)
   else begin
-    if pos(DateSeparator, t) > 0 then
+    if pos(DateSeparator, t) > 0 then begin
+      k := Pos(ListSeparator, t);
+      if k > 0 then t[k] := ' ';
       Result := TTimeResult.Create(StrToDateTime(t))
-    else if pos(TimeSeparator, t) > 0 then
+    end else if pos(TimeSeparator, t) > 0 then
       Result := TTimeResult.Create(StrToTime(t))
     else
       Result := TIntResult.Create(StrToInt(t))
