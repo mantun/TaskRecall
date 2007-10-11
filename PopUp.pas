@@ -58,9 +58,39 @@ var
 
 implementation
 
-uses TaskProp, ReminderProp, Types, Main;
+uses TaskProp, ReminderProp, Types, Main, Parse, Eval, BuiltinDefs, Lists,
+  ResultDecl;
 
 {$R *.dfm}
+
+type
+  TSetDateFunc = class(TPredefinedFunc)
+  private
+    FTask : TTask;
+    FStartEnd : Boolean;
+  public
+    function Apply(const arguments : ILinkedList) : IResult; override;
+    constructor Create(const AName : String; task : TTask; StartEnd : Boolean);
+  end;
+
+constructor TSetDateFunc.Create(const AName : String; task : TTask; StartEnd : Boolean);
+begin
+  inherited Create(AName);
+  FTask := task;
+  FStartEnd := StartEnd;
+end;
+
+function TSetDateFunc.Apply(const arguments : ILinkedList) : IResult;
+var t : ITimeResult;
+begin
+  if not arguments.IsEmpty and Supports(Eval(arguments.Head), ITimeResult, t) then
+    if FStartEnd then
+      FTask.StartTime := t.GetValue
+    else
+      FTask.EndTime := t.GetValue
+  else
+    raise EFunctionException.Create(GetName + ' requires time argument')
+end;
 
 constructor TfrmTaskPopup.PopUp(AOwner : TComponent; Reminder : TReminder);
 begin
@@ -80,7 +110,7 @@ begin
   Top := Screen.WorkAreaRect.Bottom - Height - 10;
   AlphaBlend := True;
   AlphaBlendValue := 0;
-  FPopState := psShowing; 
+  FPopState := psShowing;
   Show;
 end;
 
@@ -152,7 +182,17 @@ begin
     if task.Complete and (task.EndTime = 0) then
       task.EndTime := Now;
     if cbActive.Checked then
-      frmMain.frmTaskSwitch.AddTask(task)
+      frmMain.frmTaskSwitch.AddTask(task);
+    if task.OnDismiss <> '' then begin
+      Evaluator.PushFrame;
+      try
+        Evaluator.AddDefinition(TDefinition.Create('set-start', TSetDateFunc.Create('set-start', task, True)));
+        Evaluator.AddDefinition(TDefinition.Create('set-end', TSetDateFunc.Create('set-end', task, False)));
+        Evaluator.Evaluate(Parser.Parse(task.OnDismiss));
+      finally
+        Evaluator.PopFrame;
+      end;
+    end;
   end;
   ModalResult := mrOK;
   Close;

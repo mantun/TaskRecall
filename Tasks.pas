@@ -597,9 +597,16 @@ procedure TReminder.ValidateTimeStamp(const value : String);
 var r : IResult;
 begin
   if value = '' then Exit;
-  r := Evaluator.Evaluate(Parser.Parse(value));
-  if not Supports(r, ITimeResult) and ((FTask = nil) or (FTask.StartTime = 0) or not Supports(r, IIntResult)) then
-    raise EParseException.Create('Timestamp expression must be of date/time type or integer type (if task start time is specified)');
+  Evaluator.PushFrame;
+  try
+    Evaluator.AddDefinition(TDefinition.Create('sd', TTimeResult.Create(FTask.StartTime)));
+    Evaluator.AddDefinition(TDefinition.Create('ed', TTimeResult.Create(FTask.EndTime)));
+    r := Evaluator.Evaluate(Parser.Parse(value));
+    if not Supports(r, ITimeResult) and ((FTask = nil) or (FTask.StartTime = 0) or not Supports(r, IIntResult)) then
+      raise EParseException.Create('Timestamp expression must be of date/time type or integer type (if task start time is specified)');
+  finally
+    Evaluator.PopFrame;
+  end;
 end;
 
 procedure TReminder.SetTimeStamp(const value : String);
@@ -644,13 +651,25 @@ begin
     Exit;
   end;
   Result := 0;
-  if FTimeStamp <> '' then
-    r := Evaluator.Evaluate(Parser.Parse(FTimeStamp))
-  else
+  if FTimeStamp <> '' then begin
+    if FTask <> nil then begin
+      Evaluator.PushFrame;
+      try
+        Evaluator.AddDefinition(TDefinition.Create('sd', TTimeResult.Create(FTask.StartTime)));
+        Evaluator.AddDefinition(TDefinition.Create('ed', TTimeResult.Create(FTask.EndTime)));
+        r := Evaluator.Evaluate(Parser.Parse(FTimeStamp));
+      finally
+        Evaluator.PopFrame;
+      end;
+    end else
+      r := Evaluator.Evaluate(Parser.Parse(FTimeStamp))
+  end else
     r := Evaluator.Evaluate(Parser.Parse('+0'));
-  if Supports(r, ITimeResult, t) then
-    Result := t.GetValue
-  else if Supports(r, IIntResult, i) then begin
+  if Supports(r, ITimeResult, t) then begin
+    Result := t.GetValue;
+    if Trunc(Result) = 0 then
+      Result := Result + Date; 
+  end else if Supports(r, IIntResult, i) then begin
     if (FTask <> nil) and (FTask.StartTime <> 0) then
       Result := FTask.StartTime + i.GetValue / (24 * 60);
   end;
