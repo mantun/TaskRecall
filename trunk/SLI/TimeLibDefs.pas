@@ -4,7 +4,7 @@ interface
 
 implementation
 
-uses SysUtils, DateUtils, Lists, Eval, ResultDecl, BuiltinDefs;
+uses SysUtils, DateUtils, Math, Lists, Eval, ResultDecl, BuiltinDefs;
 
 type
   TTimeLibFunc = class(TPredefinedFunc)
@@ -223,6 +223,17 @@ begin
 end;
 
 type
+  TEndOfMonthFunc = class(TTimeLibFunc)
+    function Apply(const args : ILinkedList) : IResult; override;
+  end;
+function TEndOfMonthFunc.Apply(const args : ILinkedList) : IResult;
+var t : TDateTime;
+begin
+  t := GetTimeParam(args, Date);
+  Result := TTimeResult.Create(Trunc(EndOfTheMonth(t)) + Frac(t));
+end;
+
+type
   TDayMonthYearFunc = class(TTimeLibFunc)
     function Apply(const args : ILinkedList) : IResult; override;
   end;
@@ -242,6 +253,70 @@ begin
     Result := TTimeResult.Create(EncodeDate(y, mr.GetValue, dr.GetValue))
   end else
     Raise EFunctionException.Create('Invalid date for ' + GetName);
+end;
+
+type
+  TMoveDateFunc = class(TTimeLibFunc)
+    function Apply(const args : ILinkedList) : IResult; override;
+    function GetNewDate(date : TDateTime; offs : Integer) : TDateTime; virtual; abstract;
+  end;
+function TMoveDateFunc.Apply(const args : ILinkedList) : IResult;
+var
+  d : IIntResult;
+  t : ITimeResult;
+  it : IListIterator;
+begin
+  it := args.Iterator;
+  if it.HasNext and Supports(Eval(it.Next), ITimeResult, t) and
+     it.HasNext and Supports(Eval(it.Next), IIntResult, d) then
+    Result := TTimeResult.Create(GetNewDate(t.GetValue, d.GetValue))
+  else
+    Raise EFunctionException.Create(GetName + ' requires date and integer');
+end;
+
+type
+  TMoveDayFunc = class(TMoveDateFunc)
+    function GetNewDate(date : TDateTime; offs : Integer) : TDateTime; override;
+  end;
+function TMoveDayFunc.GetNewDate(date : TDateTime; offs : Integer) : TDateTime;
+begin
+  Result := IncDay(date, offs);
+end;
+
+type
+  TMoveMonthFunc = class(TMoveDateFunc)
+    function GetNewDate(date : TDateTime; offs : Integer) : TDateTime; override;
+  end;
+function TMoveMonthFunc.GetNewDate(date : TDateTime; offs : Integer) : TDateTime;
+begin
+  Result := IncMonth(date, offs);
+end;
+
+type
+  TMoveYearFunc = class(TMoveDateFunc)
+    function GetNewDate(date : TDateTime; offs : Integer) : TDateTime; override;
+  end;
+function TMoveYearFunc.GetNewDate(date : TDateTime; offs : Integer) : TDateTime;
+begin
+  Result := IncYear(date, offs);
+end;
+
+type
+  TMoveHourFunc = class(TMoveDateFunc)
+    function GetNewDate(date : TDateTime; offs : Integer) : TDateTime; override;
+  end;
+function TMoveHourFunc.GetNewDate(date : TDateTime; offs : Integer) : TDateTime;
+begin
+  Result := IncHour(date, offs);
+end;
+
+type
+  TMoveMinuteFunc = class(TMoveDateFunc)
+    function GetNewDate(date : TDateTime; offs : Integer) : TDateTime; override;
+  end;
+function TMoveMinuteFunc.GetNewDate(date : TDateTime; offs : Integer) : TDateTime;
+begin
+  Result := IncMinute(date, offs);
 end;
 
 procedure AddFuncInternal(func : IFuncResult);
@@ -267,7 +342,14 @@ initialization
   AddFuncInternal(TYearFunc.Create('year'));
   AddFuncInternal(TDayOfWeekFunc.Create('dow'));
   AddFuncInternal(TDayOfYearFunc.Create('doy'));
+  AddFuncInternal(TEndOfMonthFunc.Create('eom'));
   AddFuncInternal(TDayMonthYearFunc.Create('dmy'));
+
+  AddFuncInternal(TMoveDayFunc.Create('move-day'));
+  AddFuncInternal(TMoveMonthFunc.Create('move-month'));
+  AddFuncInternal(TMoveYearFunc.Create('move-year'));
+  AddFuncInternal(TMoveHourFunc.Create('move-hour'));
+  AddFuncInternal(TMoveMinuteFunc.Create('move-min'));
 finalization
   Evaluator.PopFrame;
 end.
