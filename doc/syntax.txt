@@ -113,11 +113,18 @@ false = ~  - const false
 (year [<:date>]) = #                   - year of given/current date
 (dow [<:date>]) = #                    - day of week of given/current date
 (doy [<:date>]) = #                    - day of year of given/current date
+(eom [<:date>]) = :                    - returns date that is at the end of the month of the given date; time is unaffected
 (dmy <#day> <#month> [<#year>]) = :    - returns the specified date
 
+(move-day <:date> <#offset>) = :       - moves the date some days forward or backward
+(move-month <:date> <#offset>) = :     - moves the date some months forward or backward
+(move-year <:date> <#offset>) = :      - moves the date some years forward or backward
+(move-hour <:date> <#offset>) = :      - moves the date some hours forward or backward
+(move-min <:date> <#offset>) = :       - moves the date some minutes forward or backward
+
 +++Special names
-sd                         - Task's Start Date/Time (available only for task reminders)
-ed                         - Task's End Date/Time (available only for task reminders)
-(set-start <:timestamp>)   - Sets Task's Start Date/Time (available only in task's 'On Dismiss' field)
-(set-end <:timestamp>)     - Sets Task's End Date/Time (available only in task's 'On Dismiss' field)
+sd = :                        - Task's Start Date/Time (available only for task reminders)
+ed = :                        - Task's End Date/Time (available only for task reminders)
+(set-start <:timestamp>) = :  - Sets Task's Start Date/Time (available only in task's 'On Dismiss' field)
+(set-end <:timestamp>) - :    - Sets Task's End Date/Time (available only in task's 'On Dismiss' field)
 
