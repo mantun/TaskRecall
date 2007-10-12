@@ -83,12 +83,13 @@ end;
 function TSetDateFunc.Apply(const arguments : ILinkedList) : IResult;
 var t : ITimeResult;
 begin
-  if not arguments.IsEmpty and Supports(Eval(arguments.Head), ITimeResult, t) then
+  if not arguments.IsEmpty and Supports(Eval(arguments.Head), ITimeResult, t) then begin
+    Result := TTimeResult.Create(t.GetValue);
     if FStartEnd then
       FTask.StartTime := t.GetValue
     else
       FTask.EndTime := t.GetValue
-  else
+  end else
     raise EFunctionException.Create(GetName + ' requires time argument')
 end;
 
