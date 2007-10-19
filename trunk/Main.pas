@@ -159,6 +159,7 @@ type
     procedure btnTimelineClick(Sender: TObject);
     procedure RemindersListViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure eSearchKeyPress(Sender: TObject; var Key: Char);
   private
     TrayIconData : TNotifyIconData;
 
@@ -171,6 +172,7 @@ type
     procedure TrayMessage(var Msg : TMessage); message WM_TRAYICON;
     procedure KeyHookHandler(var msg : TMessage); message WM_HOTKEY;
     procedure WMEndSession(var msg : TWMEndSession); message WM_ENDSESSION;
+    procedure WMQueryEndSession(var msg : TWMQueryEndSession); message WM_QUERYENDSESSION;
 
     procedure OnTaskAdd(Sender : TObject; obj : TNamedObject);
     procedure OnTaskDelete(Sender : TObject; obj : TNamedObject);
@@ -552,10 +554,20 @@ begin
   end;
 end;
 
+procedure TfrmMain.WMQueryEndSession(var msg : TWMQueryEndSession);
+begin
+  // We do not use inherited here, because the default implementation of TForm
+  // calls OnCloseQuery, and we ask the user for confirmation there - exactly
+  // what we are trying to prevent
+  msg.Result := Integer(True);
+end;
+
 procedure TfrmMain.WMEndSession(var msg : TWMEndSession);
 begin
-  if msg.EndSession = TRUE then
-    FWindowsSessionEnds := true;
+  inherited;
+  if msg.EndSession then begin
+    FWindowsSessionEnds := True;
+  end;
 end;
 
 procedure TfrmMain.acAddTaskExecute(Sender: TObject);
@@ -679,6 +691,11 @@ end;
 procedure TfrmMain.eSearchChange(Sender: TObject);
 begin
   TaskSelection.FilterString := eSearch.Text;
+end;
+
+procedure TfrmMain.eSearchKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #27 then eSearch.Text := '';
 end;
 
 procedure TfrmMain.RemindersListViewDblClick(Sender: TObject);

@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 193
-  Top = 115
+  Left = 194
+  Top = 117
   Width = 612
   Height = 400
   ActiveControl = eQuickNewTask
@@ -85,6 +85,7 @@ object frmMain: TfrmMain
           LabelPosition = lpLeft
           TabOrder = 1
           OnChange = eSearchChange
+          OnKeyPress = eSearchKeyPress
         end
         object cbCompleteTasks: TCheckBox
           Left = 320
