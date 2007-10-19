@@ -395,6 +395,7 @@ var pnode : PVirtualNode;
 begin
   Result := nil;
   if category = nil then Exit;
+  if FindCatNode(category) <> nil then Exit;
   if category.Parent <> nil then begin
     pnode := FindCatNode(category.Parent);
     if pnode = nil then
@@ -442,10 +443,10 @@ begin
     if CategorySelection[i].Name = CategoryAll then hasAll := true;
     if CategorySelection[i].Name = CategoryNone then hasNone := true;
   end;
-  if not hasNone then
-    CategorySelection.Add(TCategory.Create(CategoryNone, nil));
   if not hasAll then
     CategorySelection.Add(TCategory.Create(CategoryAll, nil));
+  if not hasNone then
+    CategorySelection.Add(TCategory.Create(CategoryNone, nil));
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -893,6 +894,7 @@ var c : TCategory;
 begin
   c := TCategory.Create('New Category', cat(CategoryTree.FocusedNode));
   CategorySelection.Add(c);
+  ReindexCategories;
   CategoryTree.EditNode(FindCatNode(c), -1);
 end;
 
@@ -913,6 +915,7 @@ begin
       if TaskStorage[i] is TTask then
         TTask(TaskStorage[i]).RemoveCategory(c); 
     CategorySelection.Delete(c);
+    ReindexCategories;
   end;
 end;
 
