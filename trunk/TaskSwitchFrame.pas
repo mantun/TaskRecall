@@ -215,12 +215,21 @@ begin
   inherited;
 end;
 
+function GetIdleTime : Integer; { in minutes }
+var
+  liInfo: TLastInputInfo;
+begin
+  liInfo.cbSize := SizeOf(TLastInputInfo);
+  GetLastInputInfo(liInfo);
+  Result := (GetTickCount - liInfo.dwTime) DIV (1000 * 60 * 60);
+end;
+
 procedure TfrmTaskSwitch.TimerTimer(Sender: TObject);
 var
   i : Integer;
   task : TTask;
 begin
-  if FActiveTask <> 0 then begin
+  if (FActiveTask <> 0) and (GetIdleTime < 15) then begin
     for i := 0 to FActiveTasks.Count - 1 do begin
       task := TTask(FActiveTasks[i]);
       if task.ActiveNo = FActiveTask then begin
