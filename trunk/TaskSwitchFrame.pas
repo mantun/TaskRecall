@@ -221,7 +221,7 @@ var
 begin
   liInfo.cbSize := SizeOf(TLastInputInfo);
   GetLastInputInfo(liInfo);
-  Result := (GetTickCount - liInfo.dwTime) DIV (1000 * 60 * 60);
+  Result := (GetTickCount - liInfo.dwTime) div (1000 * 60);
 end;
 
 procedure TfrmTaskSwitch.TimerTimer(Sender: TObject);
