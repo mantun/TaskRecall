@@ -404,7 +404,7 @@ var h, m, k : Integer;
 begin
   k := Pos(':', value);
   if k = 0 then
-    raise EConvertError('''' + value + ''' is not a valid time');
+    raise EConvertError.Create('''' + value + ''' is not a valid time');
   h := StrToInt(Copy(value, 1, k - 1));
   m := StrToInt(Copy(value, k + 1, Length(value) - k));
   TimeSpent := h * 60 + m;
