@@ -6,6 +6,8 @@ Set the default options for FastMM here.
 
 }
 
+{.$define Release}
+
 {---------------------------Miscellaneous Options-----------------------------}
 
 {Enable this define to align all blocks on 16 byte boundaries so aligned SSE
@@ -242,16 +244,16 @@ Set the default options for FastMM here.
 {Group the options you use for release and debug versions below}
 {$ifdef Release}
   {Specify the options you use for release versions below}
-  {.$undef FullDebugMode}
-  {.$undef CheckHeapForCorruption}
-  {.$define ASMVersion}
-  {.$undef EnableMemoryLeakReporting}
-  {.$undef UseOutputDebugString}
+  {$undef FullDebugMode}
+  {$undef CheckHeapForCorruption}
+  {$define ASMVersion}
+  {$undef EnableMemoryLeakReporting}
+  {$undef UseOutputDebugString}
 {$else}
   {Specify the options you use for debugging below}
-  {.$define FullDebugMode}
-  {.$define EnableMemoryLeakReporting}
-  {.$define UseOutputDebugString}
+  {$define FullDebugMode}
+  {$define EnableMemoryLeakReporting}
+  {$define UseOutputDebugString}
 {$endif}
 
 {--------------------Compilation Options For borlndmm.dll---------------------}

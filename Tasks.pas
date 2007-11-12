@@ -926,7 +926,8 @@ var
   FileRevision : Integer;
 begin
   AssignFile(t, FileName);
-  Reset(t);
+  {$I-} Reset(t); {$I+}
+  if IOResult <> 0 then Exit;
   ReadLn(t, FileRevision);
   if FileRevision > TasksFileRevision then
     raise Exception.Create('Tasks file format is newer and is not supported by this program version');
@@ -971,7 +972,12 @@ procedure TNamedObjectsStorage.SaveToFile(const FileName : String);
 var
   t : TextFile;
   i : Integer;
+  dir : String;
 begin
+  dir := ExtractFileDir(FileName);
+  if not DirectoryExists(dir) then begin
+    CreateDir(dir);
+  end;
   AssignFile(t, FileName + '.new');
   Rewrite(t);
   WriteLn(t, TasksFileRevision);
