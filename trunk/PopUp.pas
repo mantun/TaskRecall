@@ -187,6 +187,8 @@ begin
     if task.OnDismiss <> '' then begin
       Evaluator.PushFrame;
       try
+        Evaluator.AddDefinition(TDefinition.Create('sd', TTimeResult.Create(task.StartTime)));
+        Evaluator.AddDefinition(TDefinition.Create('ed', TTimeResult.Create(task.EndTime)));
         Evaluator.AddDefinition(TDefinition.Create('set-start', TSetDateFunc.Create('set-start', task, True)));
         Evaluator.AddDefinition(TDefinition.Create('set-end', TSetDateFunc.Create('set-end', task, False)));
         Evaluator.Evaluate(Parser.Parse(task.OnDismiss));
