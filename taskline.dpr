@@ -1,4 +1,4 @@
-program Reminder;
+program taskline;
 
 uses
   FastMM4,
