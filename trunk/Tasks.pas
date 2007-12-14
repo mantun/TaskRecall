@@ -599,8 +599,10 @@ begin
   if value = '' then Exit;
   Evaluator.PushFrame;
   try
-    Evaluator.AddDefinition(TDefinition.Create('sd', TTimeResult.Create(FTask.StartTime)));
-    Evaluator.AddDefinition(TDefinition.Create('ed', TTimeResult.Create(FTask.EndTime)));
+    if FTask <> nil then begin
+      Evaluator.AddDefinition(TDefinition.Create('sd', TTimeResult.Create(FTask.StartTime)));
+      Evaluator.AddDefinition(TDefinition.Create('ed', TTimeResult.Create(FTask.EndTime)));
+    end;
     r := Evaluator.Evaluate(Parser.Parse(value));
     if not Supports(r, ITimeResult) and ((FTask = nil) or (FTask.StartTime = 0) or not Supports(r, IIntResult)) then
       raise EParseException.Create('Timestamp expression must be of date/time type or integer type (if task start time is specified)');
