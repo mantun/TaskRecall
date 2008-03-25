@@ -199,7 +199,7 @@ var
 
 implementation
 
-uses Math, Parse, TaskProp, PopUp, ReminderProp, Logging, TimeGraph,
+uses Math, StrMan, Parse, TaskProp, PopUp, ReminderProp, Logging, TimeGraph,
   TimelineData, TimelineForm;
 
 {$R *.dfm}
@@ -227,8 +227,8 @@ end;
 function TCategoryTaskSelection.MatchFilter(const task : TTask) : Boolean;
 begin
   Result := (FFilter = '')
-         or (Pos(FFilter, task.Name) > 0)
-         or (Pos(FFilter, task.Description) > 0)
+         or (sm.Pos(FFilter, task.Name, True) > 0)
+         or (sm.Pos(FFilter, task.Description, True) > 0)
          or (StrToIntDef(FFilter, 0) = task.TaskID);
 end;
 
