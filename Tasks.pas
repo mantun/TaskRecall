@@ -32,6 +32,7 @@ type
   TTask = class(TNamedObject)
   private
     FTaskID : Integer;
+    FParent : TTask;
     FDescription : String;
     FPriority : Integer;
     FColor : TColor;
@@ -45,6 +46,7 @@ type
     FEndTime : TDateTime;
 
     procedure SetName(const value : String); override;
+    procedure SetParent(value : TTask);
     procedure SetDescription(value : String);
     procedure SetPriority(value : Integer);
     function GetColor : TColor;
@@ -60,6 +62,7 @@ type
     procedure SetOnDismiss(value : String);
   public
     property TaskID : Integer read FTaskID;
+    property Parent : TTask read FParent write SetParent;
     property Description : String read FDescription write SetDescription;
     property Priority : Integer read FPriority write SetPriority;
     property Color : TColor read GetColor write SetColor;
@@ -331,6 +334,14 @@ begin
   inherited;
   if FReminder <> nil then
     FReminder.Name := FName;
+end;
+
+procedure TTask.SetParent(value : TTask);
+begin
+  if FParent <> value then begin
+    FParent := value;
+    Changed;
+  end;
 end;
 
 procedure TTask.SetDescription(value : String);
