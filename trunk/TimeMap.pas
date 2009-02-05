@@ -110,6 +110,7 @@ type
     FObjectRows : array of Integer;
     FTimeline : TTimeline;
     FMaxRow : Integer;
+    FUpdating : Boolean;
     function GetTimeObject(index : Integer) : TTimeObject;
     function GetObjectCount : Integer;
     procedure RepositionObjects;
@@ -123,6 +124,8 @@ type
     function GetRowCount : Integer;
     procedure AddTimeObject(o : TTimeObject);
     procedure DeleteTimeObject(o : TTimeObject);
+    procedure BeginUpdate;
+    procedure EndUpdate;
     procedure Draw(top : Integer);
     function GetObjectAt(x, y : Integer) : TTimeObject;
   end;
@@ -613,18 +616,35 @@ begin
   Result := TTimeObject(FTimeObjects[index]);
 end;
 
+procedure TTimeTrack.BeginUpdate;
+begin
+  FUpdating := True;
+end;
+
+procedure TTimeTrack.EndUpdate;
+begin
+  if FUpdating then begin
+    FTimeObjects.Sort(TimeObjectCompare);
+    RepositionObjects;
+    FUpdating := False;
+  end;
+end;
+
 procedure TTimeTrack.AddTimeObject(o : TTimeObject);
 begin
   o.FTimeline := FTimeline;
   FTimeObjects.Add(o);
-  FTimeObjects.Sort(TimeObjectCompare);
-  RepositionObjects;
+  if not FUpdating then begin
+    FTimeObjects.Sort(TimeObjectCompare);
+    RepositionObjects;
+  end;
 end;
 
 procedure TTimeTrack.DeleteTimeObject(o : TTimeObject);
 begin
   FTimeObjects.Remove(o);
-  RepositionObjects;
+  if not FUpdating then
+    RepositionObjects;
 end;
 
 procedure TTimeTrack.RepositionObjects;

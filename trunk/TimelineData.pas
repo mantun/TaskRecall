@@ -224,8 +224,13 @@ begin
 
   FSwitchTrack := TTimeTrack.Create;
   FTimeline.AddTimeTrack(FSwitchTrack);
-  for i := 0 to FSelection.Count - 1 do
-    AddTaskSwitches(FSelection[i] as TTask);
+  FSwitchTrack.BeginUpdate;
+  try
+    for i := 0 to FSelection.Count - 1 do
+      AddTaskSwitches(FSelection[i] as TTask);
+  finally
+    FSwitchTrack.EndUpdate;
+  end;
 end;
 
 procedure TTimelineDataProvider.AddTaskSwitches(task : TTask);
@@ -286,8 +291,14 @@ procedure TTimelineDataProvider.OnAdd(Sender : TObject; item : TNamedObject);
 begin
   if FTaskTrack <> nil then
     AddTask(item as TTask);
-  if FSwitchTrack <> nil then
-    AddTaskSwitches(item as TTask);
+  if FSwitchTrack <> nil then begin
+    FSwitchTrack.BeginUpdate;
+    try
+      AddTaskSwitches(item as TTask);
+    finally
+      FSwitchTrack.EndUpdate;
+    end;
+  end;
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;

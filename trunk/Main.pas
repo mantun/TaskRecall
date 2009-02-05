@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, StdCtrls, ExtCtrls, ShellAPI, Tasks, AppEvnts, XPMan,
-  ComCtrls, ActiveX, ImgList, Menus, ActnList, Spin, Buttons, TaskSwitchFrame,
+  ComCtrls, ActiveX, ImgList, Menus, ActnList, Buttons, TaskSwitchFrame,
   VirtualTrees;
 
 const
@@ -88,6 +88,8 @@ type
     ColorDialog: TColorDialog;
     SetColor1: TMenuItem;
     btnTimeline: TBitBtn;
+    NewSubtask1: TMenuItem;
+    acAddSubTask: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
@@ -220,8 +222,10 @@ type
 
 function TCategoryTaskSelection.Belongs(const obj : TNamedObject) : Boolean;
 begin
-  Result := (obj is TTask) and (TTask(obj).Complete and FComplete or not TTask(obj).Complete and FIncomplete);
-  Result := Result and MatchCategory(TTask(obj)) and MatchFilter(TTask(obj));
+  Result := (obj is TTask);
+  Result := Result and (TTask(obj).Complete and FComplete or not TTask(obj).Complete and FIncomplete);
+  Result := Result and (MatchCategory(TTask(obj)) or (TTask(obj).Parent <> nil) and MatchCategory(TTask(obj).Parent));
+  Result := Result and MatchFilter(TTask(obj));
 end;
 
 function TCategoryTaskSelection.MatchFilter(const task : TTask) : Boolean;
@@ -583,6 +587,8 @@ begin
     if (catname <> CategoryAll) and (catname <> CategoryNone) Then
       t.AddCategory(cat(CategoryTree.FocusedNode));
   end;
+  if (TasksView.FocusedNode <> nil) and ((Sender as TComponent).Tag <> 0) then
+    t.Parent := tsk(TasksView.FocusedNode);
   frmTaskProperties.Task := t;
   vis := frmTaskProperties.Visible;
   frmTaskProperties.Hide;

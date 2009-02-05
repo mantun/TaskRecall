@@ -249,6 +249,7 @@ Set the default options for FastMM here.
   {$define ASMVersion}
   {$undef EnableMemoryLeakReporting}
   {$undef UseOutputDebugString}
+  {$define NoDebugInfo}
 {$else}
   {Specify the options you use for debugging below}
   {$define FullDebugMode}

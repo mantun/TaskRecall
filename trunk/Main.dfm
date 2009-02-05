@@ -367,12 +367,21 @@ object frmMain: TfrmMain
       Caption = 'Set &Color...'
       OnExecute = acCategoryColorExecute
     end
+    object acAddSubTask: TAction
+      Tag = 1
+      Category = 'Tasks'
+      Caption = 'New &Subtask...'
+      OnExecute = acAddTaskExecute
+    end
   end
   object pmTasks: TPopupMenu
     Left = 136
     Top = 144
     object NewTask1: TMenuItem
       Action = acAddTask
+    end
+    object NewSubtask1: TMenuItem
+      Caption = 'New &Subtask...'
     end
     object DeleteTask1: TMenuItem
       Action = acRemoveTaskFromView
